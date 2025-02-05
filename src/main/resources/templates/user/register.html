@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- <head> 태그 내 공통된 stylesheets 분리 -->
+  <head th:replace="~{stylesheets/head :: head (title='회원가입')}"></head>
+
+  <style>
+
+    /* 메인화면 */
+    .main {
+      padding: 20vh 0 25vh 0;
+    }
+
+    /* 입력폼 */
+    .register-form input {
+      width: 60%;
+    }
+
+    /* 입력폼 + 안내글 */
+    .register-form .form-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* 안내글 */
+    .register-form label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.7rem;
+    }
+
+    /* 폼 별 제목 */
+    .form-group p {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 5%;
+    }
+
+  </style>
+
+  <body class="index-page">
+
+  <!-- 헤더 레이아웃 분리 -->
+  <header th:replace="~{layout/header::header}"></header>
+
+  <main class="main text-center">
+
+    <h1>회원가입</h1>
+
+    <section id="comment-form" class="comment-form section register-form">
+      <div class="container">
+        <form action="">
+
+          <div class="row">
+            <div class="col form-group">
+              <p>아이디</p>
+              <input id="id" name="id" type="text" class="form-control" placeholder="아이디를 입력해주세요.">
+              <label for="id">8~16자의 영문 대소문자, 숫자, 특수문자만 가능합니다.</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>비밀번호</p>
+              <input id="password" name="password" type="password" class="form-control" placeholder="비밀번호를 입력해주세요.">
+              <label for="password">비밀번호는 숫자와 영문자, 특수문자를 혼용하여 8자리 이상 입력해주세요.</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>이름</p>
+              <input id="name" name="name" type="text" class="form-control" placeholder="이름을 입력해주세요.">
+              <label for="password">이름은 6자~12자 이내로 입력해주세요.</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>닉네임</p>
+              <input id="nickname" name="nickname" type="text" class="form-control" placeholder="닉네임을 입력해주세요.">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>프로필</p>
+              <input id="profile_image" name="profile_image" type="file" class="form-control" placeholder="프로필사진을 선택해주세요.">
+            </div>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">가입하기</button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- footer 레이아웃 분리 -->
+  <footer th:replace="~{layout/footer::footer}"></footer>
+
+  <!-- 공통 script 분리 -->
+  <div th:replace="~{scripts/scripts::scripts}"></div>
+
+  </body>
+</html>

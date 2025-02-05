@@ -17,4 +17,10 @@ public class MainController {
     public String loginPage() {
        return "user/login";
     }
+
+    /* 회원가입 페이지 */
+    @GetMapping("/register.html")
+    public String register() {
+        return "user/register";
+    }
 }
