@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 public class MainController {
 
+    // 메인 페이지
+    @GetMapping({"/index.page", "/"})
+    public String mainPage() {
+        return "index";
+    }
+
 /*    @GetMapping("/")
     public String mainP() {
         return "Main Controller";
