@@ -1,6 +1,5 @@
 package com.project.snackpick.controller;
 
-import com.project.snackpick.dto.MemberDTO;
 import com.project.snackpick.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.Map;
 
@@ -30,10 +30,9 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/signup")
-    public String signup(MemberDTO memberDTO) {
+    public String signup(MultipartHttpServletRequest multipartHttpServletRequest) {
 
-        memberService.signup(memberDTO);
-        // 여기서 true일 경우 가입 진행, false인 경우 이미 등록된 아이디입니다. 라고 전달.
+        memberService.signup(multipartHttpServletRequest);
         return "ok";
     }
 }

@@ -1,12 +1,14 @@
 package com.project.snackpick.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity(name = "MEMBER_T")
 public class MemberEntity {
 
