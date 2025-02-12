@@ -19,6 +19,7 @@ public class MemberDTO {
                 .name(name)
                 .nickname(nickname)
                 .profileImage(profileImage)
+                .role(role)
                 .build();
     }
 

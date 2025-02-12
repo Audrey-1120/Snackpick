@@ -35,6 +35,15 @@
       justify-content: space-between;
     }
 
+    .btn-login {
+      color: white;
+      background: #d9232d;
+      font-size: 14px;
+      padding: 8px 25px;
+      border-radius: 4px;
+      border: none;
+    }
+
   </style>
 
   <body class="index-page">
@@ -54,11 +63,11 @@
 
           <div class="main-section">
             <div class="detail-section">
-              <form action="forms/contact.php" method="post" class="php-email-form pb-5 pt-3" data-aos="fade-up" data-aos-delay="200">
+              <form action="/member/login" method="post" class="pb-5 pt-3">
                 <div>
                   <div class="login-section">
                     <div class="w-100">
-                      <input type="text" name="text" class="form-control" placeholder="아이디를 입력해주세요" required="">
+                      <input type="text" name="id" class="form-control" placeholder="아이디를 입력해주세요" required="">
                     </div>
                     <div class="w-100">
                       <input type="password" class="form-control" name="password" placeholder="비밀번호를 입력해주세요" required="">
@@ -68,16 +77,14 @@
                       <a>비밀번호 찾기</a>
                     </div>
                     <div class="w-100">
-                      <button type="submit">로그인</button>
+                      <button type="submit" class="btn-login">로그인</button>
                     </div>
                   </div>
                 </div>
               </form>
             </div>
           </div>
-
         </div>
-
       </section>
 
     </main>
