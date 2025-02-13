@@ -91,8 +91,6 @@
       <div class="container">
         <form id="signup-form"
               class="p-5"
-              action="/member/signup"
-              method="POST"
               enctype="multipart/form-data">
           <div class="row">
             <div class="col form-group">
@@ -126,7 +124,7 @@
           <div class="row">
             <div class="col form-group">
               <p>프로필사진</p>
-              <input id="profile_image" name="profileImage" type="file" class="form-control" placeholder="프로필사진을 선택해주세요.">
+              <input id="profileImage" name="profileImage" type="file" class="form-control" placeholder="프로필사진을 선택해주세요.">
             </div>
           </div>
           <div class="row d-flex">
@@ -134,7 +132,7 @@
             <p>프로필 이미지는 5MB까지 업로드 가능합니다.</p>
           </div>
           <div class="text-center">
-            <button type="submit" class="btn btn-primary btn-signup">가입하기</button>
+            <button type="button" class="btn btn-primary btn-signup">가입하기</button>
           </div>
         </form>
       </div>

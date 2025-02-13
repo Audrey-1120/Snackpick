@@ -25,9 +25,8 @@ $('#nickname').on('keyup', () => {
     fnValidateNickname($('#nickname').val());
 });
 
-$('#signup-form').on('submit', (evt) => {
-    evt.preventDefault();
-    fnSignup(evt);
+$('.btn-signup').on('click', (evt) => {
+    fnSignupFinalCheck(evt);
 })
 
 $('.btn-checkId').on('click', () => {
@@ -226,7 +225,7 @@ const fnCheckProfileImage = (fileInput) => {
 }
 
 // 회원가입 최종 체크
-const fnSignup = (evt) => {
+const fnSignupFinalCheck = () => {
 
     let currentId = $('#id').val();
 
@@ -271,5 +270,24 @@ const fnSignup = (evt) => {
         $('#nickname').focus();
         return;
     }
-    evt.target.submit();
+
+    fnSignup();
+}
+
+const fnSignup = () => {
+
+    let signupForm = $('#signup-form')[0];
+    let formData = new FormData(signupForm);
+
+    axios.post('/member/signup', formData)
+        .then((response) => {
+            if(response.data.success) {
+                alert(response.data.message);
+                window.location.href = response.data.redirectUrl;
+            } else {
+                alert(response.data.message);
+            }
+        }).catch((error) => {
+        alert("회원가입 중 오류가 발생했습니다.");
+    })
 }
