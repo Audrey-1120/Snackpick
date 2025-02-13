@@ -17,7 +17,8 @@ public class MyFileUtils {
 
     // 프로필 사진 경로 반환
     public String getProfilePath() {
-        return "/profile" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
+        String homeDir = System.getProperty("user.home");
+        return homeDir + "/profile" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
     }
 
     // 저장 파일명 반환
