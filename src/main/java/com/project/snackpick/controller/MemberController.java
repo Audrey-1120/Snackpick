@@ -25,14 +25,14 @@ public class MemberController {
     // 아이디 중복 체크
     @GetMapping("/checkId")
     public ResponseEntity<Map<String, Object>> checkId(String id) {
-        return ResponseEntity.ok(Map.of("isExist", memberService.checkId(id)));
+        Boolean isExist =  memberService.checkId(id);
+        return ResponseEntity.ok(Map.of("isExist", isExist));
     }
 
     // 회원가입
     @PostMapping("/signup")
-    public String signup(MultipartHttpServletRequest multipartHttpServletRequest) {
-
-        memberService.signup(multipartHttpServletRequest);
-        return "ok";
+    public ResponseEntity<Map<String, Object>> signup(MultipartHttpServletRequest multipartHttpServletRequest) {
+        Map<String, Object> response = memberService.signup(multipartHttpServletRequest);
+        return ResponseEntity.ok(response);
     }
 }
