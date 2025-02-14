@@ -34,7 +34,7 @@ $('.btn-checkId').on('click', () => {
 });
 
 // 프로필 사진 미리보기
-$('#profile_image').on('change', (evt) => {
+$('#profileImage').on('change', (evt) => {
     fnCheckProfileImage(evt);
 })
 
