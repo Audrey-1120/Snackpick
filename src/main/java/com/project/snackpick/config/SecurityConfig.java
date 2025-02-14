@@ -1,6 +1,7 @@
 package com.project.snackpick.config;
 
 import com.project.snackpick.handler.LoginFailureHandler;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,6 +36,18 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true)
                         .failureHandler(authenticationFailureHandler)
                         .loginProcessingUrl("/member/login").permitAll());
+
+        http
+                .logout(logout -> logout
+                        .logoutUrl("/member/logout")
+                        .logoutSuccessUrl("/")
+                        .addLogoutHandler((request, response, authentication) -> {
+                            HttpSession session = request.getSession();
+                            session.invalidate();
+                        })
+                        .logoutSuccessHandler((request, response, authentication) ->
+                                response.sendRedirect("/"))
+                        .deleteCookies("JSESSIONID", "access_token"));
 
         // 개발환경에서는 토큰을 보내지 않으면 로그인이 진행이 안되므로 개발환경에서만 csrf 환경을 disabled한다.
         http
