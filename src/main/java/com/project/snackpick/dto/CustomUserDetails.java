@@ -45,6 +45,11 @@ public class CustomUserDetails implements UserDetails {
         return memberEntity.getId();
     }
 
+    // 닉네임 반환
+    public String getNickname() {
+        return memberEntity.getNickname();
+    }
+
     // 하단 부분 구현 시 DB에 해당 칼럼 추가
 
     // 사용자의 아이디가 만료되었는가?
