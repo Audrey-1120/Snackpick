@@ -3,16 +3,13 @@ package com.project.snackpick.controller;
 import com.project.snackpick.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.Map;
 
 @Controller
-@ResponseBody
 @RequestMapping("/member")
 public class MemberController {
 
@@ -34,5 +31,16 @@ public class MemberController {
     public ResponseEntity<Map<String, Object>> signup(MultipartHttpServletRequest multipartHttpServletRequest) {
         Map<String, Object> response = memberService.signup(multipartHttpServletRequest);
         return ResponseEntity.ok(response);
+    }
+
+    // 로그인 실패
+    @GetMapping("/loginFail")
+    public String loginFail(@RequestParam(value="error", required = false) String error,
+                            @RequestParam(value = "exception", required = false) String errorMessage,
+                            Model model) {
+
+        model.addAttribute("error", error);
+        model.addAttribute("errorMessage", errorMessage);
+        return "member/login";
     }
 }

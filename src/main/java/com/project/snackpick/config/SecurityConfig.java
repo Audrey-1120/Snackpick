@@ -1,5 +1,6 @@
 package com.project.snackpick.config;
 
+import com.project.snackpick.handler.LoginFailureHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +19,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, LoginFailureHandler authenticationFailureHandler) throws Exception {
 
         // 경로별 인가 작업
         http
@@ -32,11 +33,23 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.loginPage("/member/login.page")
                         .usernameParameter("id")
                         .defaultSuccessUrl("/", true)
+                        .failureHandler(authenticationFailureHandler)
                         .loginProcessingUrl("/member/login").permitAll());
 
         // 개발환경에서는 토큰을 보내지 않으면 로그인이 진행이 안되므로 개발환경에서만 csrf 환경을 disabled한다.
         http
                 .csrf((auth) -> auth.disable());
+
+
+        http
+                .sessionManagement((auth) -> auth
+                .maximumSessions(1) // 1개의 아이디에서 최대 몇개까지 중복 로그인 허용할 수 있는가?
+                .maxSessionsPreventsLogin(true)); // 다중 로그인 개수를 초과하였을 경우 -> true(새로운 로그인 차단) / false(기존 세션 하나 삭제)
+
+        // 세션 고정 보호
+        http
+                .sessionManagement((auth) -> auth
+                        .sessionFixation().changeSessionId());
 
         return http.build();
     }

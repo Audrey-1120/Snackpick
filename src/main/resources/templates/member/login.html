@@ -35,6 +35,7 @@
       font-size: 0.7rem;
     }
 
+    /* 로그인 버튼 */
     .btn-login {
       padding: 8px 25px;
       border: none;
@@ -42,6 +43,12 @@
       background: #d9232d;
       color: white;
       font-size: 14px;
+    }
+
+    /* 로그인 안내 문구 */
+    .login-label {
+      font-size: 0.8rem;
+      color: red;
     }
 
   </style>
@@ -71,6 +78,9 @@
                     </div>
                     <div class="w-100">
                       <input type="password" class="form-control" name="password" placeholder="비밀번호를 입력해주세요" required="">
+                    </div>
+                    <div th:if="${error}" class="w-100">
+                      <p th:text="${errorMessage}" class="login-label">아이디와 비밀번호를 다시 확인해주세요.</p>
                     </div>
                     <div class="login-submenu">
                       <a href="/member/signup.page">회원가입</a>
