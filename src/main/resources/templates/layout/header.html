@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <!--
+  ********************************
+  * 파일명    : header.html
+  * 작성자    : audrey
+  * 작성일    : 2025-02-03
+  * 설명      : header 레이아웃 분리
+  * 사용법    : <header th:replace="~{layout/header::header}"></header>
+  * 수정 이력 :
+  *   - 2025-02-03: 최초 작성
+  ********************************
+  -->
+
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="/index.page" class="logo d-flex align-items-center me-auto">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1 class="sitename">Snackpick</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="/member/index.page" class="active">홈</a></li>
+          <li><a href="services.html">스낵픽이란?</a></li>
+          <li><a href="portfolio.html">리뷰 작성</a></li>
+          <li><a href="pricing.html">리뷰 조회</a></li>
+          <li th:if="${nickname != null}"><a href="/member/logout">로그아웃</a></li>
+          <li th:if="${nickname != null}"><p th:text="${nickname}"></p>님 환영합니다.</li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a th:if="${session == null}" class="btn-getstarted" href="/member/login.page">로그인</a>
+      <a th:if="${session != null}" class="btn-getstarted" href="/member/profile.page"><i class="fa-solid fa-user"></i></a>
+
+    </div>
+  </header>
+</html>

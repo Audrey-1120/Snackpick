@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- <head> 태그 내 공통된 stylesheets 분리 -->
+  <head th:replace="~{stylesheets/head :: head (title='회원가입')}"></head>
+
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+
+    /* 메인화면 */
+    .main {
+      padding: 20vh 0 25vh 0;
+    }
+
+    /* 입력폼 */
+    .register-form input {
+      width: 40%;
+    }
+
+    /* 입력폼 + 안내글 */
+    .register-form .form-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* 안내글 */
+    .register-form label {
+      display: flex;
+      justify-content: center;
+      font-size: 0.7rem;
+      align-items: center;
+    }
+
+    /* 폼 별 제목 */
+    .form-group p {
+      display: flex;
+      justify-content: center;
+      width: 5%;
+      align-items: center;
+    }
+
+    /* 아이디 중복 체크 버튼 */
+    .btn-checkId {
+      padding: 0 1%;
+      border: none;
+      border-radius: 10%;
+      background-color: #556270;
+      color: white;
+      font-size: 0.8rem;
+    }
+
+    /* 프로필 사진 미리보기 */
+    #image-preview {
+      width: 100px;
+      height: 100px;
+      border: 1px solid gainsboro;
+      border-radius: 10%;
+    }
+
+    /* 프로필 사진 안내문구 */
+    #image-preview + p {
+      width: 50%;
+      color: steelblue;
+      font-size: 0.7rem;
+      text-align: justify;
+    }
+
+    /* 프로필 사진 미리보기 */
+    #image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+  </style>
+
+  <body class="index-page">
+
+  <!-- 헤더 레이아웃 분리 -->
+  <header th:replace="~{layout/header::header}"></header>
+
+  <main class="main text-center">
+
+    <h1>회원가입</h1>
+
+    <section id="comment-form" class="comment-form section register-form">
+      <div class="container">
+        <form id="signup-form"
+              class="p-5"
+              enctype="multipart/form-data">
+          <div class="row">
+            <div class="col form-group">
+              <p>아이디</p>
+              <input id="id" name="id" type="text" class="form-control" placeholder="아이디를 입력해주세요." maxlength="12">
+              <button class="btn-checkId" type="button">중복확인</button>
+              <label for="id"></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>비밀번호</p>
+              <input id="password" name="password" type="password" class="form-control" placeholder="비밀번호를 입력해주세요." maxlength="16">
+              <label for="password"></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>이름</p>
+              <input id="name" name="name" type="text" class="form-control" placeholder="이름을 입력해주세요." maxlength="20">
+              <label for="name"></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>닉네임</p>
+              <input id="nickname" name="nickname" type="text" class="form-control" placeholder="닉네임을 입력해주세요." maxlength="20">
+              <label for="nickname"></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col form-group">
+              <p>프로필사진</p>
+              <input id="profileImage" name="profileImage" type="file" class="form-control" placeholder="프로필사진을 선택해주세요.">
+            </div>
+          </div>
+          <div class="row d-flex">
+            <div id="image-preview"></div>
+            <p>프로필 이미지는 5MB까지 업로드 가능합니다.</p>
+          </div>
+          <div class="text-center">
+            <button type="button" class="btn btn-primary btn-signup">가입하기</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- footer 레이아웃 분리 -->
+  <footer th:replace="~{layout/footer::footer}"></footer>
+
+  <!-- 공통 script 분리 -->
+  <div th:replace="~{scripts/scripts::scripts}"></div>
+
+  <script src="/assets/js/signup.js"></script>
+
+  </body>
+</html>

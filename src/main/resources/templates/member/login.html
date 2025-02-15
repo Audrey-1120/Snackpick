@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <!-- <head> 태그 내 공통된 stylesheets 분리 -->
+  <head th:replace="~{stylesheets/head :: head (title='로그인')}"></head>
+
+  <!-- 임시 css -->
+  <style>
+
+    /* 메인화면 */
+    .main {
+      padding: 20vh 0 25vh 0;
+    }
+
+    .main-section {
+      display: flex;
+      justify-content: center;
+    }
+
+    .detail-section {
+      width: 25%;
+    }
+
+    /* 로그인 폼 */
+    .login-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* 회원가입 & 비밀번호 찾기 */
+    .login-submenu {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+    }
+
+    /* 로그인 버튼 */
+    .btn-login {
+      padding: 8px 25px;
+      border: none;
+      border-radius: 4px;
+      background: #d9232d;
+      color: white;
+      font-size: 14px;
+    }
+
+    /* 로그인 안내 문구 */
+    .login-label {
+      font-size: 0.8rem;
+      color: red;
+    }
+
+  </style>
+
+  <body class="index-page">
+
+    <!-- 헤더 레이아웃 분리 -->
+    <header th:replace="~{layout/header::header}"></header>
+
+    <!-- 메인 부분 -->
+    <main class="main text-center">
+
+      <!-- 로그인 폼 -->
+      <section id="contact" class="contact section">
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+          <h1>로그인</h1>
+
+          <div class="main-section">
+            <div class="detail-section">
+              <form action="/member/login" method="post" class="pb-5 pt-3">
+                <div>
+                  <div class="login-section">
+                    <div class="w-100">
+                      <input type="text" name="id" class="form-control" placeholder="아이디를 입력해주세요" required="">
+                    </div>
+                    <div class="w-100">
+                      <input type="password" class="form-control" name="password" placeholder="비밀번호를 입력해주세요" required="">
+                    </div>
+                    <div th:if="${error}" class="w-100">
+                      <p th:text="${errorMessage}" class="login-label">아이디와 비밀번호를 다시 확인해주세요.</p>
+                    </div>
+                    <div class="login-submenu">
+                      <a href="/member/signup.page">회원가입</a>
+                      <a>비밀번호 찾기</a>
+                    </div>
+                    <div class="w-100">
+                      <button type="submit" class="btn-login">로그인</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- footer 레이아웃 분리 -->
+    <footer th:replace="~{layout/footer::footer}"></footer>
+
+    <!-- 공통 script 분리 -->
+    <div th:replace="~{scripts/scripts::scripts}"></div>
+
+  </body>
+</html>

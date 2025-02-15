@@ -1,0 +1,21 @@
+/**
+********************************
+* 파일명    : init.css
+* 작성자    : audrey
+* 작성일    : 2025-02-03
+* 설명      : 공통 css 적용사항
+* 사용법    : <link href="assets/css/init.css" rel="stylesheet">
+* 수정 이력 :
+*   - 2025-02-03: 최초 작성
+********************************
+**/
+
+@charset "UTF-8";
+
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: "Open Sans", "Noto Sans KR", sans-serif !important ;
+}
+
+p {
+    margin-bottom: 0 !important;
+}
