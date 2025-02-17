@@ -43,7 +43,7 @@ public class MemberService {
                 .name(name)
                 .nickname(nickname)
                 .profileImage(profileImagePath)
-                .role("ROLE_ADMIN")
+                .role("ROLE_USER")
                 .build();
 
         MemberEntity member = memberDTO.toMemberEntity();
