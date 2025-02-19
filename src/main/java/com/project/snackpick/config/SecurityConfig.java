@@ -25,7 +25,7 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth // 람다식 형태 활용
-                        .requestMatchers("/member/**", "/", "/index.page").permitAll() // 로그인, 회원가입, 메인(루트)경로에 대해서는 모든 권한 허용(permitAll())
+                        .requestMatchers("/member/**", "/product/**", "/", "/index.page").permitAll() // 로그인, 회원가입, 메인(루트)경로에 대해서는 모든 권한 허용(permitAll())
                         .requestMatchers("/assets/**", "/css/**", "/js/**", "/images/**").permitAll() // 정적 파일 허용
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN") // admin 경로는 ADMIN이라는 권한만 가진 사용자만 접근 가능
