@@ -1,4 +1,4 @@
-package com.project.snackpick.controller;
+package com.project.snackpick.controller.member;
 
 import com.project.snackpick.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
