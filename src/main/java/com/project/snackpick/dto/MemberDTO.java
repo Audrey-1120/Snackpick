@@ -2,15 +2,14 @@ package com.project.snackpick.dto;
 
 import com.project.snackpick.entity.MemberEntity;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Builder
 public class MemberDTO {
 
-    private String memberId, id, password, name, nickname, profileImage, role;
+    private String id, password, name, nickname, profileImage, role;
+    private int memberId;
 
     public MemberEntity toMemberEntity() {
         return MemberEntity.builder()

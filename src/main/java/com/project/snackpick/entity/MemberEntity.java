@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity(name = "MEMBER_T")
-public class MemberEntity {
+public class MemberEntity { // 회원
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
