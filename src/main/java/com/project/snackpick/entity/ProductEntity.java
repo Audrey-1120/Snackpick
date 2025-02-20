@@ -48,8 +48,8 @@ public class ProductEntity { // 제품
     public ProductDTO toProductDTO() {
         return ProductDTO.builder()
                 .productName(productName)
-                .productCat1Nm(productCat1Name)
-                .productCat2Nm(productCat2Name)
+                .productCat1Name(productCat1Name)
+                .productCat2Name(productCat2Name)
                 .ratingTasteAverage(ratingTasteAverage)
                 .ratingPriceAverage(ratingPriceAverage)
                 .build();

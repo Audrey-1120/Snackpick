@@ -169,8 +169,10 @@
               <!-- 맛 별점 평균 -->
               <div class="stars-taste">
                 <p>맛</p>
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                <div th:each="num:${#numbers.sequence(1,5)}" class="stars">
+                  <i th:if="${product.ratingTasteAverage >= num}" class="bi bi-star-fill"></i>
+                  <i th:if="${product.ratingTasteAverage > num - 1 and product.ratingTasteAverage < num}" class="bi bi-star-half"></i>
+                  <i th:unless="${product.ratingTasteAverage >= num or product.ratingTasteAverage > num - 1}" class="bi bi-star"></i>
                 </div>
                 <p th:text="${product.ratingTasteAverage}">점</p>
               </div>
@@ -178,8 +180,10 @@
               <!-- 가격 별점 평균 -->
               <div class="stars-price">
                 <p>가격</p>
-                <div class="stars">
-                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                <div th:each="num:${#numbers.sequence(1,5)}" class="stars">
+                  <i th:if="${product.ratingPriceAverage >= num}" class="bi bi-star-fill"></i>
+                  <i th:if="${product.ratingPriceAverage > num - 1 and product.ratingPriceAverage < num}" class="bi bi-star-half"></i>
+                  <i th:unless="${product.ratingPriceAverage >= num or product.ratingPriceAverage > num - 1}" class="bi bi-star"></i>
                 </div>
                 <p th:text="${product.ratingPriceAverage}">점</p>
               </div>
