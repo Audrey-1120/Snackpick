@@ -25,9 +25,24 @@
 
     /* 검색폼 input*/
     .main-searchform > input{
-      width: 40%;
-      border-width: 0;
+        width: 40%;
+        padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+        border-width: 0;
+        border: 1px solid #ADADAD;
+        border-radius: 0.5rem;
+        outline: none;
     }
+
+    /* 대분류, 소분류, 리뷰 개수 */
+    .description, .title{
+        text-align: justify;
+    }
+
+    /* 검색버튼 */
+    .btn-search {
+        cursor: pointer;
+    }
+
   </style>
 
   <body class="index-page">
@@ -46,19 +61,7 @@
 
         <section id="services" class="services section">
           <div class="container">
-            <div class="row gy-4 result-section">
-
-<!--              <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">-->
-<!--                <div class="service-item d-flex position-relative h-100">-->
-<!--                  <i class="bi bi-briefcase icon flex-shrink-0"></i>-->
-<!--                  <div>-->
-<!--                    <h4 class="title"><a href="#" class="stretched-link"></a></h4>-->
-<!--                    <p class="description"></p>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
-
-            </div>
+            <div class="row gy-4 result-section"></div>
           </div>
         </section>
 
