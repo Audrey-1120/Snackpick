@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- <head> 태그 내 공통된 stylesheets 분리 -->
+<head th:replace="~{stylesheets/head :: head (title='상품 상세')}"></head>
+
+<style>
+  /* 메인화면 */
+  .main {
+    padding-top: 10vh;
+  }
+
+  /* 타이틀 + 검색폼 */
+  .main-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* 제목 */
+  .main-title {
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  /* 검색폼 input*/
+  .main-searchform > input{
+    width: 40%;
+    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+    border-width: 0;
+    border: 1px solid #ADADAD;
+    border-radius: 0.5rem;
+    outline: none;
+  }
+
+  /* 검색버튼 */
+  .btn-search {
+    cursor: pointer;
+  }
+
+  /* 제품 상세 */
+  #product-detail *{
+    text-align: justify;
+  }
+
+  /* 제품 제목(분류, 별점평균) */
+  .product-title {
+    font-size: 1.2rem;
+  }
+
+  /* 분류 */
+  .category-section > div, .rating-average-section > div:first-child {
+    border-left: 2px solid #ADADAD;
+    padding-left: 0.5rem;
+  }
+
+  .stars-taste, .stars-price {
+    display: flex;
+    gap: 0.7rem;
+  }
+
+  /* 리뷰 아이템 */
+  .testimonial-item {
+    text-align: justify;
+  }
+
+  /* 리뷰 아이템 p */
+  .testimonials .testimonial-item p {
+    font-size: 0.7rem;
+    font-style: normal;
+  }
+
+  /* 별 아이콘 */
+  .testimonials .testimonial-item .stars {
+    margin: 0;
+  }
+
+  /* 리뷰 작성자 프로필 */
+  .writer-profile {
+    display: flex;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* 리뷰 작성자명 */
+  .writer-name {
+    align-content: center;
+    padding-bottom: 0.5rem;
+    margin: 0 !important;
+  }
+
+  /* 리뷰 사진 및 내용 */
+  .review-main {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  /* 리뷰 내용 폼 */
+  .content-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 별점 */
+  .rating {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .rating > * {
+    align-content: center;
+  }
+
+  /* 구분선 */
+  .line {
+    border-bottom: 1px solid #ADADAD;
+  }
+
+  .stars i {
+    color: #ffc107;
+  }
+
+  .category-section > p, .stars-taste, .stars-price {
+    margin-left: 1rem;
+  }
+
+
+</style>
+
+<body class="index-page">
+
+<!-- 헤더 레이아웃 분리 -->
+<header th:replace="~{layout/header::header}"></header>
+
+<!-- 메인 부분 -->
+<main class="main text-center">
+  <div class="main-section">
+
+    <div class="newsletter-form main-searchform">
+      <input type="text" name="productName" placeholder="원하는 제품명을 입력해주세요.">
+      <i class="fa-solid fa-magnifying-glass btn-search"></i>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials section">
+
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <!-- 상품 상세 -->
+          <div id="product-detail" class="col-lg-5">
+            <h1 class="main-title">이곳에 상품 이름</h1>
+
+            <!-- 분류 -->
+            <div class="category-section mt-4">
+              <div>
+                <p class="product-title">분류</p>
+              </div>
+              <p>빵류 > 과자</p>
+            </div>
+
+            <!-- 별점 -->
+            <div class="rating-average-section mt-4">
+              <div>
+                <p class="product-title">별점 평균</p>
+              </div>
+
+              <!-- 맛 별점 평균 -->
+              <div class="stars-taste">
+                <p>맛</p>
+                <div class="stars">
+                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p>5점</p>
+              </div>
+
+              <!-- 가격 별점 평균 -->
+              <div class="stars-price">
+                <p>가격</p>
+                <div class="stars">
+                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p>3점</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 리뷰 -->
+          <div id="review-section" class="col-lg-7">
+
+            <div data-aos="fade-up" data-aos-delay="100" class="mt-3">
+              <div class="testimonial-item">
+
+                <!-- 작성자 프로필 -->
+                <div class="writer-profile">
+                  <div class="writer-image" style="width: 30px; height: 30px; background-color: gray; border-radius: 50%;"></div>
+                  <p class="writer-name">작성자명</p>
+                </div>
+
+                <!-- 리뷰 사진 및 내용 -->
+                <div class="review-main">
+                  <!-- 리뷰 사진 -->
+                  <div style="width: 100px; height: 100px; background-color: black;"></div>
+
+                  <!-- 리뷰 내용 -->
+                  <div class="content-form">
+
+                    <!-- 별점 -->
+                    <div class="rating mb-1">
+                      <h4>맛</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                      <h4>가격</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!-- 리뷰 내용 -->
+                    <h4 class="review-content mt-3">생각보다 맛있어요. 가격도 나쁘지 않아요. 묶음팩으로 구매하면 가성비 좋음.</h4>
+
+                    <!-- 편의점 위치 -->
+                    <p class="review-location mt-3"><span style="color: #d9232d;">세븐일레븐 AA점</span>에서 구매했어요!</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="200" class="mt-3">
+              <div class="testimonial-item">
+
+                <!-- 작성자 프로필 -->
+                <div class="writer-profile">
+                  <div class="writer-image" style="width: 30px; height: 30px; background-color: gray; border-radius: 50%;"></div>
+                  <p class="writer-name">작성자명</p>
+                </div>
+
+                <!-- 리뷰 사진 및 내용 -->
+                <div class="review-main">
+                  <!-- 리뷰 사진 -->
+                  <div style="width: 100px; height: 100px; background-color: black;"></div>
+
+                  <!-- 리뷰 내용 -->
+                  <div class="content-form">
+
+                    <!-- 별점 -->
+                    <div class="rating mb-1">
+                      <h4>맛</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                      <h4>가격</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!-- 리뷰 내용 -->
+                    <h4 class="review-content mt-3">생각보다 맛있어요. 가격도 나쁘지 않아요. 묶음팩으로 구매하면 가성비 좋음.</h4>
+
+                    <!-- 편의점 위치 -->
+                    <p class="review-location mt-3"><span style="color: #d9232d;">세븐일레븐 AA점</span>에서 구매했어요!</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="300" class="mt-3">
+              <div class="testimonial-item">
+
+                <!-- 작성자 프로필 -->
+                <div class="writer-profile">
+                  <div class="writer-image" style="width: 30px; height: 30px; background-color: gray; border-radius: 50%;"></div>
+                  <p class="writer-name">작성자명</p>
+                </div>
+
+                <!-- 리뷰 사진 및 내용 -->
+                <div class="review-main">
+                  <!-- 리뷰 사진 -->
+                  <div style="width: 100px; height: 100px; background-color: black;"></div>
+
+                  <!-- 리뷰 내용 -->
+                  <div class="content-form">
+
+                    <!-- 별점 -->
+                    <div class="rating mb-1">
+                      <h4>맛</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                      <h4>가격</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!-- 리뷰 내용 -->
+                    <h4 class="review-content mt-3">생각보다 맛있어요. 가격도 나쁘지 않아요. 묶음팩으로 구매하면 가성비 좋음.</h4>
+
+                    <!-- 편의점 위치 -->
+                    <p class="review-location mt-3"><span style="color: #d9232d;">세븐일레븐 AA점</span>에서 구매했어요!</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="400" class="mt-3">
+              <div class="testimonial-item">
+
+                <!-- 작성자 프로필 -->
+                <div class="writer-profile">
+                  <div class="writer-image" style="width: 30px; height: 30px; background-color: gray; border-radius: 50%;"></div>
+                  <p class="writer-name">작성자명</p>
+                </div>
+
+                <!-- 리뷰 사진 및 내용 -->
+                <div class="review-main">
+                  <!-- 리뷰 사진 -->
+                  <div style="width: 100px; height: 100px; background-color: black;"></div>
+
+                  <!-- 리뷰 내용 -->
+                  <div class="content-form">
+
+                    <!-- 별점 -->
+                    <div class="rating mb-1">
+                      <h4>맛</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                      <h4>가격</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!-- 리뷰 내용 -->
+                    <h4 class="review-content mt-3">생각보다 맛있어요. 가격도 나쁘지 않아요. 묶음팩으로 구매하면 가성비 좋음.</h4>
+
+                    <!-- 편의점 위치 -->
+                    <p class="review-location mt-3"><span style="color: #d9232d;">세븐일레븐 AA점</span>에서 구매했어요!</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="500" class="mt-3">
+              <div class="testimonial-item">
+
+                <!-- 작성자 프로필 -->
+                <div class="writer-profile">
+                  <div class="writer-image" style="width: 30px; height: 30px; background-color: gray; border-radius: 50%;"></div>
+                  <p class="writer-name">작성자명</p>
+                </div>
+
+                <!-- 리뷰 사진 및 내용 -->
+                <div class="review-main">
+                  <!-- 리뷰 사진 -->
+                  <div style="width: 100px; height: 100px; background-color: black;"></div>
+
+                  <!-- 리뷰 내용 -->
+                  <div class="content-form">
+
+                    <!-- 별점 -->
+                    <div class="rating mb-1">
+                      <h4>맛</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                      <h4>가격</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!-- 리뷰 내용 -->
+                    <h4 class="review-content mt-3">생각보다 맛있어요. 가격도 나쁘지 않아요. 묶음팩으로 구매하면 가성비 좋음.</h4>
+
+                    <!-- 편의점 위치 -->
+                    <p class="review-location mt-3"><span style="color: #d9232d;">세븐일레븐 AA점</span>에서 구매했어요!</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="600" class="mt-3">
+              <div class="testimonial-item">
+
+                <!-- 작성자 프로필 -->
+                <div class="writer-profile">
+                  <div class="writer-image" style="width: 30px; height: 30px; background-color: gray; border-radius: 50%;"></div>
+                  <p class="writer-name">작성자명</p>
+                </div>
+
+                <!-- 리뷰 사진 및 내용 -->
+                <div class="review-main">
+                  <!-- 리뷰 사진 -->
+                  <div style="width: 100px; height: 100px; background-color: black;"></div>
+
+                  <!-- 리뷰 내용 -->
+                  <div class="content-form">
+
+                    <!-- 별점 -->
+                    <div class="rating mb-1">
+                      <h4>맛</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                      <h4>가격</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+
+                    <div class="line"></div>
+
+                    <!-- 리뷰 내용 -->
+                    <h4 class="review-content mt-3">생각보다 맛있어요. 가격도 나쁘지 않아요. 묶음팩으로 구매하면 가성비 좋음.</h4>
+
+                    <!-- 편의점 위치 -->
+                    <p class="review-location mt-3"><span style="color: #d9232d;">세븐일레븐 AA점</span>에서 구매했어요!</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <section id="blog-pagination" class="blog-pagination section">
+
+              <div class="container">
+                <div class="d-flex justify-content-center mt-5">
+                  <ul>
+                    <li><a href="#"><i class="bi bi-chevron-left"></i></a></li>
+                    <li><a href="#" class="active">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#"><i class="bi bi-chevron-right"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- footer 레이아웃 분리 -->
+<footer th:replace="~{layout/footer::footer}"></footer>
+
+<!-- 공통 script 분리 -->
+<div th:replace="~{scripts/scripts::scripts}"></div>
+
+<script src="/assets/js/product.js"></script>
+
+</body>
+</html>

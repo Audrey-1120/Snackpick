@@ -14,4 +14,11 @@ public class ProductViewController {
         return "product/product";
     }
 
+    // 상품 상세 페이지
+    @GetMapping("/productDetail.page")
+    public String productDetail() {
+        return "product/product-details";
+    }
+
+
 }
