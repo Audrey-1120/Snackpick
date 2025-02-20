@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
 
-    // 상품 검색
+    // 제품 검색
     List<ProductEntity> findByProductNameLike(String searchKeyword);
 
+    // 제품 상세 조회
+    ProductEntity findByProductId(int productId);
 }

@@ -1,5 +1,6 @@
 package com.project.snackpick.entity;
 
+import com.project.snackpick.dto.ProductDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,4 +44,14 @@ public class ProductEntity { // 제품
     // 리뷰와 1:N 관계
     @OneToMany(mappedBy = "productEntity")
     private List<ReviewEntity> reviewList = new ArrayList<>();
+
+    public ProductDTO toProductDTO() {
+        return ProductDTO.builder()
+                .productName(productName)
+                .productCat1Nm(productCat1Name)
+                .productCat2Nm(productCat2Name)
+                .ratingTasteAverage(ratingTasteAverage)
+                .ratingPriceAverage(ratingPriceAverage)
+                .build();
+    }
 }

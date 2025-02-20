@@ -5,7 +5,6 @@ import com.project.snackpick.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -16,11 +15,17 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
+    // 제품 검색
     @Override
-    public Map<String, Object> searchProduct(String searchKeyword) {
-        // 받은 검색어
+    public List<ProductEntity> searchProduct(String searchKeyword) {
         List<ProductEntity> productList = productRepository.findByProductNameLike("%" + searchKeyword + "%");
-        return Map.of("productList", productList);
+        return productList;
     }
 
+    // 제품 상세 조회
+    @Override
+    public ProductEntity getProductDetail(int productId) {
+        ProductEntity product = productRepository.findByProductId(productId);
+        return product;
+    }
 }

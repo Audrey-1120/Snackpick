@@ -10,7 +10,7 @@ public class ProductDTO {
 
     private int productId;
     private String productName, productCat1Nm, productCat2Nm;
-    private double RatingTasteAverage, RatingPriceAverage;
+    private double ratingTasteAverage, ratingPriceAverage;
 
     public ProductEntity toProductEntity(ProductDTO productDTO) {
         return ProductEntity.builder()

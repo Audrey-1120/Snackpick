@@ -51,7 +51,7 @@ const fnShowSearchResult = (productList) => {
         let str = '<div class="col-md-4" data-aos="fade-up" data-aos-delay="500">';
         str += '<div class="service-item d-flex position-relative h-100">';
         str += '<div>';
-        str += '<h4 class="title"><a href="#" class="stretched-link productName">' + item.productName + '</a></h4>';
+        str += '<h4 class="title"><a href="/product/productDetail.page?productId=' + item.productId + '" class="stretched-link productName">' + item.productName + '</a></h4>';
         str += '<p class="description productCategory">' + item.productCat1Name + '>' + item.productCat2Name + '</p>';
         str += '<p class="description">리뷰개수: ' + item.reviewList.length + '</p>';
         str += '</div></div></div>';
