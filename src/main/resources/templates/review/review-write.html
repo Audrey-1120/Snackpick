@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- <head> 태그 내 공통된 stylesheets 분리 -->
+<head th:replace="~{stylesheets/head :: head (title='리뷰 작성')}"></head>
+
+<style>
+  /* 메인화면 */
+  .main {
+    padding: 10vh 0;
+  }
+
+  /* 타이틀 + 검색폼 */
+  .main-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* 제목 */
+  .main-title {
+    font-size: 2rem;
+    font-weight: 900;
+  }
+
+  /* 검색폼 input*/
+  .main-searchform > input{
+    width: 40%;
+    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+    border-width: 0;
+    border: 1px solid #ADADAD;
+    border-radius: 0.5rem;
+    outline: none;
+  }
+
+  /* 검색버튼 */
+  .btn-search {
+    cursor: pointer;
+  }
+
+  /* 리뷰 작성 오른쪽 */
+  #review-write *{
+    text-align: justify;
+  }
+
+
+  /* 제품 검색 */
+  .select-product {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  /* 제품 검색 및 돋보기 버튼 */
+  .select-product > p, .select-product > i {
+    align-content: center;
+  }
+
+  /* 제품 검색란 */
+  .select-product > input {
+    width: 70%;
+  }
+
+  /* 리뷰 글자수 */
+  .review-content p {
+    text-align: end;
+    font-size: small;
+  }
+
+  /* 구매위치 제목 */
+  .location-title {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+
+  /* 편의점 위치 글자 */
+  .location-title p:last-child {
+    font-size: x-small;
+    color: #d9232d;
+    align-content: center;
+  }
+
+  /* 구글 맵 화면 */
+  .google-map {
+    width: 100%;
+    height: 250px;
+    background-color: gray;
+  }
+
+  /* 리뷰 사진 섹션*/
+  .review-images, .image-title {
+    display: flex;
+    gap: 1rem;
+  }
+
+  /* 리뷰 이미지들 */
+  .review-images div {
+    width: 100px;
+    height: 100px;
+    border: 1px solid yellow;
+    background-color: gray;
+  }
+
+  .review-images div:first-child {
+    border: 1px solid yellow;
+  }
+
+  .stars-taste, .stars-price {
+    display: flex;
+    gap: 0.7rem;
+  }
+
+  .rating > * {
+    align-content: center;
+  }
+
+  .stars i {
+    color: #ffc107;
+    margin-left: 0.1rem;
+    font-size: 1.2rem;
+  }
+
+  /* 모달 */
+  .btn-productname {
+    text-align: end;
+  }
+
+  /* 제품 결과 창 */
+  .product-item {
+    overflow-y: auto;
+    text-align: justify;
+  }
+
+</style>
+
+<body class="index-page">
+
+<!-- 헤더 레이아웃 분리 -->
+<header th:replace="~{layout/header::header}"></header>
+
+<!-- 메인 부분 -->
+<main class="main text-center">
+  <div class="main-section">
+
+      <div class="container">
+        <div class="row gy-4">
+
+          <!-- 리뷰 작성 왼쪽 -->
+          <div id="review-write" class="col-lg-6">
+            <h1 class="main-title">리뷰 작성</h1>
+
+            <!-- 제품선택 -->
+            <div class="select-product mt-4">
+              <p>제품 선택</p>
+              <input type="text" class="form-control" name="productName" placeholder="원하는 제품명을 입력해주세요.">
+              <i class="fa-solid fa-magnifying-glass btn-search" data-bs-toggle="modal" data-bs-target="#search-modal"></i>
+            </div>
+
+            <!-- 별점 -->
+            <div class="rating-average-section mt-4">
+              <!-- 맛 별점 -->
+              <div class="stars-taste">
+                <p>맛</p>
+                <div class="stars">
+                  <i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                </div>
+              </div>
+
+              <!-- 가격 별점 -->
+              <div class="stars-price">
+                <p>가격</p>
+                <div class="stars">
+                  <i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- 리뷰 작성란 -->
+            <div class="review-content mt-4">
+              <p><span class="text-num" style="color: #d9232d;">10</span>/100자</p>
+              <input type="text" class="form-control" name="subject" placeholder="리뷰를 입력해주세요." required="">
+            </div>
+
+            <!-- 구매위치 -->
+            <div class="review-location mt-4">
+              <div class="location-title">
+                <p>구매위치</p>
+                <p>GS25 여의도점</p>
+              </div>
+              <input type="text" class="form-control mt-2" name="subject" placeholder="편의점 위치를 입력해주세요." required="">
+              <div id="map" class="google-map mt-2"></div>
+            </div>
+          </div>
+
+          <!-- 리뷰 사진 첨부 -->
+          <div id="review-section" class="col-lg-6">
+            <div class="image-title">
+              <p>사진첨부</p>
+              <button type="button">첨부하기</button>
+            </div>
+            <div class="review-images mt-2">
+              <div class="image1">대표사진</div>
+              <div class="image2"></div>
+              <div class="image3"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+  </div>
+
+  <!-- 제품 검색 모달 -->
+  <div class="modal" id="search-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">제품 검색</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <p class="btn-productname">직접 입력하기</p>
+            <input type="text" class="form-control" id="product-name" placeholder="제품명을 입력하세요.">
+          </div>
+          <div class="mb-3 product-item">
+            <p>아몬드 브리즈1</p>
+            <p>아몬드 브리즈2</p>
+            <p>아몬드 브리즈3</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- footer 레이아웃 분리 -->
+<footer th:replace="~{layout/footer::footer}"></footer>
+
+<!-- 공통 script 분리 -->
+<div th:replace="~{scripts/scripts::scripts}"></div>
+
+<script src="/assets/js/product.js"></script>
+
+</body>
+</html>
