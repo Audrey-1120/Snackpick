@@ -162,6 +162,99 @@ function throttle(func, delay) {
     };
 }
 
+
+// 제품 검색하기
+const fnSearchProduct = () => {
+
+    // 제품명
+    let searchKeyword = $('.modal-body input').val();
+
+    if(searchKeyword === '') {
+        $('.modal-body input').focus();
+        return;
+    }
+    // /product/searchProduct 경로로 보내기
+    axios.get('/product/searchProduct', {
+        params: {
+            searchKeyword: searchKeyword
+        }
+    })
+        .then((response) => {
+            console.log("searchResult", response.data.productList);
+            fnShowSearchResult(response.data.productList);
+        })
+        .catch((error) => {
+            alert('검색 중 오류가 발생하였습니다.');
+        })
+
+}
+
+// 제품 검색 결과 보여주기
+const fnShowSearchResult = (productList) => {
+
+    let container = $('.product-search');
+    container.empty();
+
+    // 결과가 없을 경우, 직접 입력으로 변경한다.
+    if(productList.length === 0) {
+
+        let str = '<div class="product-item no-content">';
+        str += '<p>검색 결과가 없습니다. 직접 입력하기</p>';
+        str += '</div>';
+
+        container.append(str);
+        return;
+    }
+
+    // 결과가 있을 경우
+    $.each(productList, function (i, item) {
+
+        let str = '<div class="product-item">';
+        str += '<p>' + item.productName + '</p>';
+        str += '<input type="hidden" value="' +item.productId + '">';
+        str += '</div>';
+
+        container.append(str);
+    })
+
+}
+
+// 아이템 클릭 시 input에 추가되기
+function fnAddProductName() {
+
+    // 기존 input
+    let defaultInput = $('.select-product input');
+
+    // input hidden 요소가 있다면 삭제(productId)
+    $('#productId').remove();
+
+    if($(this).hasClass('no-content')) {
+
+        // 1. 직접 입력 아이템 클릭 시
+
+        // input 이름 가져오기
+        let productName = $('.modal-body input').val();
+
+        // input에 값 할당해주기 - 이때 새 제품이므로 제품 번호는 필요 없음.
+        defaultInput.val(productName);
+
+    } else {
+
+        // 2. 검색된 아이템 클릭 시
+        let productName = $(this).find('p').text();
+        let productId = $(this).find('input').val();
+
+        // input에 값 할당해주기 - 이때 새 제품이므로 제품 번호는 필요 없음.
+        defaultInput.val(productName);
+        defaultInput.after('<input type="hidden" id="productId" name="productId" value="' + productId + '">');
+    }
+
+    // 모달 닫기
+    $('#search-modal').modal('hide');
+
+}
+
+
 /******************** 이벤트 **********************/
 
 // 쓰로틀 적용 (50ms 간격)
@@ -170,3 +263,16 @@ let throttledUpdate = throttle(fnRating, 50); // 50ms 마다 실행된다.
 $(".stars i").on("mousemove", throttledUpdate);
 $(".stars i").on("click", setRating);
 $(".stars").on("mouseleave", resetStars);
+
+$('.btn-search').on('click', fnSearchProduct);
+
+$(document).on('click', '.product-item', fnAddProductName);
+
+$('#search-modal').on('show.bs.modal', () => {
+
+    // 모달 초기화
+    let container = $('.product-search');
+    container.empty();
+    $('#product-name').val('');
+
+})
