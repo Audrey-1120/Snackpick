@@ -34,7 +34,7 @@
   }
 
   /* 검색버튼 */
-  .btn-search {
+  .btn-ProductSearch, .btn-LocationSearch {
     align-content: center;
     cursor: pointer;
   }
@@ -80,7 +80,7 @@
 
   /* 편의점 위치 글자 */
   .location-title p:last-child {
-    font-size: x-small;
+    font-size: 0.8rem;
     color: #d9232d;
     align-content: center;
   }
@@ -130,11 +130,6 @@
     text-align: end;
   }
 
-  /* 모달 제품 검색 버튼 */
-  .modal-body i {
-
-  }
-
   /* 제품 결과 창 */
   .product-search {
     overflow-y: auto;
@@ -143,15 +138,23 @@
 
   /* 제품 결과 아이템 */
   .product-item {
+    cursor: pointer;
     border: 1px solid #ADADAD;
-    border-bottom: none;
+    border-radius: 0.3rem;
+    margin-bottom: 0.5rem;
     padding: 0.5rem;
+    transition: all 0.3s ease 0s;
+  }
+
+  .product-item:hover {
+    background-color: #d9232d;
+    border: none;
+    color: white;
   }
 
   .product-item:last-child {
     border-bottom: 1px solid #ADADAD;
   }
-
 
 
 </style>
@@ -209,17 +212,21 @@
             <!-- 리뷰 작성란 -->
             <div class="review-content mt-4">
               <p><span class="text-num" style="color: #d9232d;">10</span>/100자</p>
-              <textarea class="form-control" name="subject" placeholder="리뷰를 입력해주세요." maxlength="100"></textarea>
+              <textarea class="form-control" name="subject" placeholder="리뷰를 입력해주세요." maxlength="150"></textarea>
             </div>
 
             <!-- 구매위치 -->
             <div class="review-location mt-4">
               <div class="location-title">
                 <p>구매위치</p>
-                <p>GS25 여의도점</p>
+                <p class="location-final"></p>
               </div>
-              <input type="text" class="form-control mt-2" name="subject" placeholder="편의점 위치를 입력해주세요." required="">
+              <div class="location-input d-flex gap-2">
+                <input type="text" class="form-control mt-2" name="subject" placeholder="편의점 위치를 입력해주세요." required="">
+                <i class="fa-solid fa-magnifying-glass btn-LocationSearch"></i>
+              </div>
               <div id="map" class="kakao-map mt-2"></div>
+              <p>검색 예시) 상동 편의점, 쌍문동 GS25</p>
             </div>
           </div>
 
@@ -251,14 +258,10 @@
         <div class="modal-body">
           <div class="mb-3 d-flex gap-2">
             <input type="text" class="form-control" id="product-name" placeholder="제품명을 입력하세요.">
-            <i class="fa-solid fa-magnifying-glass btn-search"></i>
+            <i class="fa-solid fa-magnifying-glass btn-ProductSearch"></i>
           </div>
           <div class="mb-3 product-search">
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-          <button type="button" class="btn btn-primary">저장</button>
         </div>
       </div>
     </div>

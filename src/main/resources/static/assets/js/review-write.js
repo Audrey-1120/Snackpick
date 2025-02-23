@@ -16,33 +16,48 @@ var map = new kakao.maps.Map(container, options);
 // 장소 검색 객체 생성
 var ps = new kakao.maps.services.Places(map);
 
-// 카테고리로 편의점 검색
-ps.categorySearch('CS2', placesSearchCB, {
-    location: new kakao.maps.LatLng(37.50185785121449, 126.78766910206697),
-    radius: 1000,
-    sort: kakao.maps.services.SortBy.DISTANCE
-});
+// 키워드 주소 검색 함수
+function searchCon() {
+    let keyword = $('.location-input').find('input').val();
+    ps.keywordSearch(keyword, placesSearchCB);
+}
 
 // 키워드 검색 완료 시 호출되는 콜백 함수
 function placesSearchCB (data, status, pagination) {
     if (status === kakao.maps.services.Status.OK) {
+
+        // LatLngBounds 객체에 좌표 추가
+        var bounds = new kakao.maps.LatLngBounds();
+
         for (var i=0; i<data.length; i++) {
             displayMarker(data[i]);
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
         }
+
+        // 검색된 장소 위치 기준으로 지도 범위 재설정
+        map.setBounds(bounds);
     }
 }
 
 // 지도에 마커 표시하는 함수
-function displayMarker(place){
-    let marker = new kakao.maps.Marker({
+function displayMarker(place) {
+
+    // 마커를 생성하고 지도에 표시
+    var marker = new kakao.maps.Marker({
         map: map,
         position: new kakao.maps.LatLng(place.y, place.x)
     });
 
-    // 마커에 클릭 이벤트 등록
+    // 마커 클릭 이벤트 등록
     kakao.maps.event.addListener(marker, 'click', function() {
+
+        // 인포윈도우 보여줌
         infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
         infowindow.open(map, marker);
+
+        // 선택된 편의점 이름 변경
+        $('.location-final').text(place.place_name);
+
     });
 }
 
@@ -199,7 +214,7 @@ const fnShowSearchResult = (productList) => {
     if(productList.length === 0) {
 
         let str = '<div class="product-item no-content">';
-        str += '<p>검색 결과가 없습니다. 직접 입력하기</p>';
+        str += '<p>검색 결과가 없습니다. 직접 등록해주세요.</p>';
         str += '</div>';
 
         container.append(str);
@@ -264,7 +279,7 @@ $(".stars i").on("mousemove", throttledUpdate);
 $(".stars i").on("click", setRating);
 $(".stars").on("mouseleave", resetStars);
 
-$('.btn-search').on('click', fnSearchProduct);
+$('.btn-ProductSearch').on('click', fnSearchProduct);
 
 $(document).on('click', '.product-item', fnAddProductName);
 
@@ -275,4 +290,6 @@ $('#search-modal').on('show.bs.modal', () => {
     container.empty();
     $('#product-name').val('');
 
-})
+});
+
+$('.btn-LocationSearch').on('click', searchCon);
