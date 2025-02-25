@@ -21,20 +21,21 @@ public class ProductServiceImpl implements ProductService {
     // 제품 검색
     @Override
     public List<ProductDTO> searchProduct(String searchKeyword) {
-        List<Object[]> productList = productRepository.SearchProductByProductName(searchKeyword);
+
+        List<ProductDTO> productList = productRepository.SearchProductByProductName(searchKeyword).stream()
+                .map(product -> new ProductDTO((ProductEntity) product[0], (long) product[1]))
+                .collect(Collectors.toList());
 
         if(productList.isEmpty()) {
             return new ArrayList<>();
         }
-
-        return productList.stream()
-                .map(product -> new ProductDTO((ProductEntity) product[0], (long) product[1]))
-                .collect(Collectors.toList());
+        return productList;
     }
 
     // 제품 상세 조회
     @Override
     public ProductDTO getProductDetail(int productId) {
+
         ProductDTO product = new ProductDTO(productRepository.findProductByProductId(productId), 0);
         return product;
     }

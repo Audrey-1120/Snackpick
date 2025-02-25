@@ -207,6 +207,23 @@ const fnSearchProduct = () => {
 // 제품 검색 결과 보여주기
 const fnShowSearchResult = (productList) => {
 
+    /*
+        {
+        "productList": [
+            {
+                "productId": 1,
+                "reviewCount": 2,
+                "productName": "새우깡",
+                "subCategory": "과자",
+                "topCategory": "스낵/과자류",
+                "ratingTasteAverage": 4.5,
+                "ratingPriceAverage": 3.5
+                }
+            ]
+        }
+
+     */
+
     let container = $('.product-search');
     container.empty();
 
