@@ -1,6 +1,6 @@
 package com.project.snackpick.controller.product;
 
-import com.project.snackpick.entity.ProductEntity;
+import com.project.snackpick.dto.ProductDTO;
 import com.project.snackpick.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +28,7 @@ public class ProductController {
     @GetMapping("/searchProduct")
     @Operation(summary = "제품 검색", description = "제품을 이름으로 검색")
     public ResponseEntity<Map<String, Object>> searchProduct(@RequestParam String searchKeyword) {
-        List<ProductEntity> productList = productService.searchProduct(searchKeyword);
+        List<ProductDTO> productList = productService.searchProduct(searchKeyword);
         return ResponseEntity.ok(Map.of("productList", productList));
     }
 

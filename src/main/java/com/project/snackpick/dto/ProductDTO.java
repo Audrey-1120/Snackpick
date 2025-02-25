@@ -1,26 +1,28 @@
 package com.project.snackpick.dto;
 
 import com.project.snackpick.entity.ProductEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class ProductDTO {
 
     private int productId;
-    private String productName, productCat1Name, productCat2Name;
+    private long reviewCount;
+    private String productName, subCategory, topCategory;
     private double ratingTasteAverage, ratingPriceAverage;
 
-    public ProductEntity toProductEntity(ProductDTO productDTO) {
-        return ProductEntity.builder()
-                .productName(productDTO.getProductName())
-                .productCat1Name(productDTO.getProductCat1Name())
-                .productCat2Name(productDTO.getProductCat2Name())
-                .ratingTasteAverage(productDTO.getRatingTasteAverage())
-                .ratingPriceAverage(productDTO.getRatingPriceAverage())
-                .build();
+    public ProductDTO (ProductEntity product, long reviewCount) {
+        this.productId = product.getProductId();
+        this.productName = product.getProductName();
+        this.subCategory = product.getSubCategory().getCategoryName();
+        this.topCategory = product.getTopCategory().getCategoryName();
+        this.ratingTasteAverage = product.getRatingTasteAverage();
+        this.ratingPriceAverage= product.getRatingPriceAverage();
+        this.reviewCount = reviewCount;
     }
-
 
 }

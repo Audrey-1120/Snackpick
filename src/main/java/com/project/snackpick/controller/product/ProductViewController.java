@@ -27,7 +27,7 @@ public class ProductViewController {
     // 상품 상세 페이지
     @GetMapping("/productDetail.page")
     public String productDetail(@RequestParam(defaultValue = "0") int productId, Model model) {
-        ProductDTO product = productService.getProductDetail(productId).toProductDTO();
+        ProductDTO product = productService.getProductDetail(productId);
         model.addAttribute("product", product);
         return "product/product-details";
     }

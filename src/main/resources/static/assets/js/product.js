@@ -29,6 +29,22 @@ const fnSearch = () => {
 // 검색 결과 표시
 const fnShowSearchResult = (productList) => {
 
+    /*
+        {
+        "productList": [
+            {
+                "productId": 1,
+                "reviewCount": 2,
+                "productName": "새우깡",
+                "subCategory": "과자",
+                "topCategory": "스낵/과자류",
+                "ratingTasteAverage": 4.5,
+                "ratingPriceAverage": 3.5
+                }
+            ]
+        }
+     */
+
     let resultSection = $('.result-section');
     resultSection.empty();
 
@@ -52,8 +68,8 @@ const fnShowSearchResult = (productList) => {
         str += '<div class="service-item d-flex position-relative h-100">';
         str += '<div>';
         str += '<h4 class="title"><a href="/product/productDetail.page?productId=' + item.productId + '" class="stretched-link productName">' + item.productName + '</a></h4>';
-        str += '<p class="description productCategory">' + item.productCat1Name + '>' + item.productCat2Name + '</p>';
-        str += '<p class="description">리뷰개수: ' + item.reviewList.length + '</p>';
+        str += '<p class="description productCategory">' + item.topCategory + '>' + item.subCategory + '</p>';
+        str += '<p class="description">리뷰개수: ' + item.reviewCount + '</p>';
         str += '</div></div></div>';
 
         resultSection.append(str);

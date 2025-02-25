@@ -1,14 +1,18 @@
 package com.project.snackpick.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "MEMBER_T")
+@Entity
+@Table(name = "MEMBER_T")
 public class MemberEntity { // 회원
 
     @Id
@@ -32,4 +36,5 @@ public class MemberEntity { // 회원
 
     @Column(name = "role")
     private String role;
+
 }
