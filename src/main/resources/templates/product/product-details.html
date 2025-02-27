@@ -170,22 +170,22 @@
               <div class="stars-taste">
                 <p>맛</p>
                 <div th:each="num:${#numbers.sequence(1,5)}" class="stars">
-                  <i th:if="${product.ratingTasteAverage >= num}" class="bi bi-star-fill"></i>
-                  <i th:if="${product.ratingTasteAverage > num - 1 and product.ratingTasteAverage < num}" class="bi bi-star-half"></i>
-                  <i th:unless="${product.ratingTasteAverage >= num or product.ratingTasteAverage > num - 1}" class="bi bi-star"></i>
+                  <i th:if="${product.averageRatingTaste >= num}" class="bi bi-star-fill"></i>
+                  <i th:if="${product.averageRatingTaste > num - 1 and product.averageRatingTaste < num}" class="bi bi-star-half"></i>
+                  <i th:unless="${product.averageRatingTaste >= num or product.averageRatingTaste > num - 1}" class="bi bi-star"></i>
                 </div>
-                <p th:text="${product.ratingTasteAverage}">점</p>
+                <p th:text="${product.averageRatingTaste}">점</p>
               </div>
 
               <!-- 가격 별점 평균 -->
               <div class="stars-price">
                 <p>가격</p>
                 <div th:each="num:${#numbers.sequence(1,5)}" class="stars">
-                  <i th:if="${product.ratingPriceAverage >= num}" class="bi bi-star-fill"></i>
-                  <i th:if="${product.ratingPriceAverage > num - 1 and product.ratingPriceAverage < num}" class="bi bi-star-half"></i>
-                  <i th:unless="${product.ratingPriceAverage >= num or product.ratingPriceAverage > num - 1}" class="bi bi-star"></i>
+                  <i th:if="${product.averageRatingPrice >= num}" class="bi bi-star-fill"></i>
+                  <i th:if="${product.averageRatingPrice > num - 1 and product.averageRatingPrice < num}" class="bi bi-star-half"></i>
+                  <i th:unless="${product.averageRatingPrice >= num or product.averageRatingPrice > num - 1}" class="bi bi-star"></i>
                 </div>
-                <p th:text="${product.ratingPriceAverage}">점</p>
+                <p th:text="${product.averageRatingPrice}">점</p>
               </div>
 
             </div>
@@ -477,7 +477,7 @@
 <!-- 공통 script 분리 -->
 <div th:replace="~{scripts/scripts::scripts}"></div>
 
-<script src="/assets/js/product.js"></script>
+<script src="/assets/js/product-detail.js"></script>
 
 </body>
 </html>
