@@ -1,5 +1,6 @@
 package com.project.snackpick.entity;
 
+import com.project.snackpick.dto.ReviewDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,29 +33,34 @@ public class ReviewEntity {
     // 작성시간
     @CreationTimestamp
     @Column(name = "create_dt")
-    private Timestamp create_dt;
+    private LocalDateTime create_dt;
 
     // 수정시간
     @UpdateTimestamp
     @Column(name = "update_dt")
-    private Timestamp update_dt;
+    private LocalDateTime update_dt;
 
+    // 내용
     @Column(name = "content")
     private String content;
 
+    // 맛 별점
     @Column(name = "rating_taste")
-    private float ratingTaste;
+    private double ratingTaste;
 
+    // 가격 별점
     @Column(name = "rating_price")
-    private float ratingPrice;
+    private double ratingPrice;
 
+    // 구매 위치
     @Column(name = "location")
-    private String location; // 구매 위치
+    private String location;
 
-    // 0: 기존, 1: 삭제
-    @Column(name = "state")
-    private int state;
+    // 삭제 상태(0: 삭제 안됨, 1: 삭제됨)
+    @Column(name = "state", columnDefinition = "TINYINT(1)")
+    private boolean state;
 
+    // 제품과 리뷰는 1:N 관계
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity productEntity;
@@ -64,4 +70,16 @@ public class ReviewEntity {
     @OneToMany(mappedBy = "reviewEntity")
     private List<ReviewImageEntity> reviewImageEntityList = new ArrayList<>();
 
+    public static ReviewEntity toReviewEntity(ReviewDTO reviewDTO, MemberEntity memberEntity, ProductEntity productEntity) {
+        return ReviewEntity.builder()
+                .memberEntity(memberEntity)
+                .content(reviewDTO.getContent())
+                .ratingTaste(reviewDTO.getRatingTaste())
+                .ratingPrice(reviewDTO.getRatingPrice())
+                .location(reviewDTO.getLocation())
+                .state(reviewDTO.isState())
+                .productEntity(productEntity)
+                .build();
+
+    }
 }

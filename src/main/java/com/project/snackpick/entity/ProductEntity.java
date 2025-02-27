@@ -26,13 +26,17 @@ public class ProductEntity { // 제품
     @Column(name = "product_name", unique = true, nullable = false, length = 25)
     private String productName;
 
-    // 가격 평균 별점
-    @Column(name = "rating_taste_average")
-    private double ratingTasteAverage;
+    // 제품 평점 총합
+    @Column(name = "total_rating_taste")
+    private double totalRatingTaste;
 
-    // 맛 평균 별점
-    @Column(name = "rating_price_average")
-    private double ratingPriceAverage;
+    // 맛 평점 총합
+    @Column(name = "total_rating_price")
+    private double totalRatingPrice;
+
+    // 리뷰 개수
+    @Column(name = "review_count", nullable = false)
+    private long reviewCount;
 
     // 대분류 (음료, 떡류)
     @ManyToOne

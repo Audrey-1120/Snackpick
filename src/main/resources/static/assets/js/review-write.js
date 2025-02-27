@@ -57,6 +57,7 @@ function displayMarker(place) {
 
         // 선택된 편의점 이름 변경
         $('.location-final').text(place.place_name);
+        $('.location-input').val(place.place_name);
 
     });
 }
@@ -64,6 +65,10 @@ function displayMarker(place) {
 /******************** 전역 변수 **********************/
 let isFixed = {}; // 별점 그룹별로 고정 상태 저장
 let selectedRating = {}; // 별점 그룹별로 선택된 값 저장
+
+let addProduct = false; // 제품 직접 입력 여부
+let ratingTaste = 0;
+let ratingPrice = 0;
 
 /**
  * {
@@ -110,7 +115,7 @@ function fnRating(event) {
 }
 
 // 클릭 시 별점 고정시키는 함수
-function setRating(event) {
+function fnSetRating(event) {
     let starsGroup = $(event.currentTarget).closest(".stars"); // 선택한 게 맛 별점인지 가격 별점인지
     let index = $(event.currentTarget).data("index"); // 몇번째 별인가? (별의 인덱스)
     let halfPoint = $(event.currentTarget).offset().left + $(event.currentTarget).width() / 2; // 별의 왼쪽과 오른쪽 구분하는 기준!
@@ -131,7 +136,7 @@ function setRating(event) {
 }
 
 // 커서 뗄 경우 선택한 값 유지시키는 함수
-function resetStars(event) {
+function fnResetStars(event) {
     let starsGroup = $(event.currentTarget);
     let ratingData = selectedRating[starsGroup.attr("id")]; // "taste-rating": {scroe: 3, isHalf: true}
 
@@ -166,13 +171,26 @@ function resetStars(event) {
 
 function throttle(func, delay) {
     let lastCall = 0; // 마지막으로 실행된 시간 기록 (초기값은 0이다.)
+    let timeoutId = null;
 
     // 이제 내부에서 새로운 익명 함수를 반환한다.
     return function (...args) {
         let now = new Date().getTime(); // 현재 시간 (밀리초)
+
+        // 1. 첫 이벤트는 즉시 실행한다.
         if (now - lastCall >= delay) { // 마지막 실행 이후 delay ms 이상 지나야 실행된다.
             lastCall = now; // 현재 시간을 마지막 실행 시간으로 업데이트 한다.
             func.apply(this, args); // 원래 함수 실행한다.
+        } else {
+            // 2. 이후에는 delay만큼 기다렸다가 실행
+            // 빠르게 움직이면 중간에 남아 있는 setTimeout()을 취소하고 새로운 setTimeout()을 설정한다.
+            clearTimeout(timeoutId);
+            // 마우스를 빠르게 움직이면 마지막 이벤트를 기준으로 실행된다.
+            timeoutId = setTimeout(() => {
+                lastCall = new Date().getTime();
+                func.apply(this, args);
+            }, delay);
+
         }
     };
 }
@@ -231,7 +249,7 @@ const fnShowSearchResult = (productList) => {
     if(productList.length === 0) {
 
         let str = '<div class="product-item no-content">';
-        str += '<p>검색 결과가 없습니다. 직접 등록해주세요.</p>';
+        str += '<p>검색 결과가 없습니다. 직접 등록하기.</p>';
         str += '</div>';
 
         container.append(str);
@@ -244,11 +262,12 @@ const fnShowSearchResult = (productList) => {
         let str = '<div class="product-item">';
         str += '<p>' + item.productName + '</p>';
         str += '<input type="hidden" value="' +item.productId + '">';
+        str += '<input type="hidden" value="' +item.topCategory + '">';
+        str += '<input type="hidden" value="' +item.subCategory + '">';
         str += '</div>';
 
         container.append(str);
-    })
-
+    });
 }
 
 // 아이템 클릭 시 input에 추가되기
@@ -270,15 +289,27 @@ function fnAddProductName() {
         // input에 값 할당해주기 - 이때 새 제품이므로 제품 번호는 필요 없음.
         defaultInput.val(productName);
 
+        // 카테고리 섹션 안보이게
+        $('.review-category').css('display', 'block');
+
+        // 상품 직접 추가했는지 유무
+        addProduct = true;
+
     } else {
 
         // 2. 검색된 아이템 클릭 시
         let productName = $(this).find('p').text();
-        let productId = $(this).find('input').val();
+        let productId = $(this).find('input:eq(0)').val();
 
         // input에 값 할당해주기 - 이때 새 제품이므로 제품 번호는 필요 없음.
         defaultInput.val(productName);
         defaultInput.after('<input type="hidden" id="productId" name="productId" value="' + productId + '">');
+
+        // 카테고리 섹션 안보이게
+        $('.review-category').css('display', 'none');
+
+        // 상품 직접 추가했는지 유무
+        addProduct = false;
     }
 
     // 모달 닫기
@@ -286,15 +317,286 @@ function fnAddProductName() {
 
 }
 
+// 프로필 사이즈 제한
+const fnIsOverSize = (file) => {
+    const maxSize = 1024 * 1024 * 5; // 5MB 사이즈 제한
+    return file.size < maxSize;
+}
+
+// 이미지 파일 확장자 확인
+const fnIsImage = (file) => {
+    const contentType = file.type;
+    return contentType.startsWith('image');
+}
+
+// 이미지 미리보기
+const fnPreview = (fileInput) => {
+
+    let files = Array.from(fileInput[0].files); // Arrays.from()으로 진짜 배열로 변경
+
+    Promise.all(files.map(file => { // files.map() : 각 파일을 처리하는 Promise 배열 생성
+        // Promise all() : 모든 Promise가 완료될때까지 대기 후 한꺼번에 처리
+        return new Promise(resolve => {
+            let reader = new FileReader(); // 파일 읽기 위해서 FileReader 객체 생성
+            // reader.onload는 파일이 완전히 읽힌 후 실행되는 콜백 함수이다.
+            reader.onload = (e) => resolve(`<div class="image"><img src="${e.target.result}"></div>`);
+            // e.target.result에 Base64 형식의 파일 데이터가 담긴다.
+            // 다시 말해서 파일 하나를 다 읽고 나면 resolve()를 호출해서 해당 파일의 HTML 반환한다...
+            reader.readAsDataURL(file);
+        });
+    })).then(results => {
+        // results는 모든 Promise가 resolve()한 값들의 배열이 된다.
+        // join('')을 사용해서 문자열로 합친다.
+        $('.review-images').html(results.join(''));
+
+        // 첫번째 요소에 대표 이미지 추가
+        $('.image:first').addClass('is-represent');
+    });
+}
+
+// 프로필 이미지 체크
+const fnCheckProfileImage = (fileInput) => {
+
+    let checkFileLabel = $('#image-preview + p');
+    let files = Array.from(fileInput[0].files);
+
+    files.forEach((file) => {
+
+        // 사이즈 체크
+        if(!fnIsOverSize(file)) {
+            checkFileLabel.text('프로필 이미지는 5MB 이내로 업로드 해주세요.');
+            checkFileLabel.css('color', 'red');
+            $(fileInput).val('');
+            return;
+        }
+
+        // 이미지 확장자 체크
+        if(!fnIsImage(file)) {
+            checkFileLabel.text('이미지 파일만 첨부 가능합니다.');
+            checkFileLabel.css('color', 'red');
+            $(fileInput).val('');
+            return;
+        }
+
+        fnPreview(fileInput);
+    });
+}
+
+// 프로필 이미지 개수 제한
+const fnCheckImagecount = (evt) => {
+
+    let fileInput = $(evt.currentTarget);
+    let files = fileInput[0].files;
+
+    if(files.length > 5) {
+        alert('이미지는 최대 5장까지 첨부 가능합니다.');
+        fileInput.val('');
+    }
+    fnCheckProfileImage(fileInput);
+}
+
+// 대표 이미지 지정
+const fnSelectRepresentImage = (evt) => {
+
+    let imageDiv = $(evt.currentTarget).closest('.image');
+    let currentImage = $('.is-represent');
+
+    currentImage.removeClass('is-represent');
+    imageDiv.addClass('is-represent');
+
+}
+
+// 맛, 가격 별점 소수로 변환
+const fnCalculateRating = (list) => {
+
+    // 별점 아이콘 가져와서 점수로 변환(float)
+
+    let rating = 0;
+
+    // i 요소 리스트 전달받기
+    Array.from(list).forEach((stars) => {
+
+        if ($(stars).hasClass("bi-star-fill")) {
+            rating += 1;
+        } else if ($(stars).hasClass("bi-star-half")) {
+            rating += 0.5;
+        }
+    });
+    return rating;
+}
+
+// 빈값 검사
+const fnCheckEmpty = () => {
+
+    // 제품 추가 유무에 따라 카테고리 select 검사
+    if(addProduct) {
+        let topCategorySelect = $('#select-cat1 option:selected');
+        let subCategorySelect = $('#select-cat2 option:selected');
+
+        // 대분류/중분류 - 선택한 값의 val값이 0인 경우
+        if(topCategorySelect.val() === '0') {
+            alert('대분류를 선택해주세요.');
+            topCategorySelect.focus();
+            return false;
+        }
+
+        if(subCategorySelect.val() === '0') {
+            alert('중분류를 선택해주세요.');
+            subCategorySelect.focus();
+            return false;
+        }
+    }
+
+    let productInput = $('.productName-input');
+    let contentArea = $('.content-area');
+    let locationInput = $('.location-input');
+
+    // 제품 input 빈값인 경우
+    if(productInput.val() === '') {
+        alert('제품을 선택해주세요.');
+        productInput.focus();
+        return false;
+    }
+
+    if(contentArea.val() === '') {
+        alert('리뷰를 작성해주세요.');
+        contentArea.focus();
+        return false;
+    }
+
+    if(locationInput.val() === '') {
+        alert('편의점 위치를 등록해주세요.');
+        locationInput.focus();
+        return false;
+    }
+    return true;
+}
+
+// 작성 버튼 클릭 시 최종 점검
+const fnFinalCheck = () => {
+
+    // 1. 빈칸 검사
+    if(!fnCheckEmpty()) {
+        return;
+    }
+
+    let tasteStars = $('#taste-rating i');
+    let priceStars = $('#price-rating i');
+
+    // 2. 별점 점수로 변환(fnCalculateRating)
+    ratingTaste = fnCalculateRating(tasteStars);
+    ratingPrice = fnCalculateRating(priceStars);
+
+    if(ratingTaste === 0) {
+        alert('맛 별점을 선택해주세요.');
+        return;
+    }
+
+    if(ratingPrice === 0) {
+        alert('가격 별점을 선택해주세요.');
+        return;
+    }
+
+    // 3. 이미지 대표 이미지로 설정
+    // 대표 이미지가 설정된 div가 image 리스트에서 몇번째인지 찾는다.
+    // 해당 인덱스를 hidden index에 찾는다.
+    let files = $('#review-image')[0].files;
+    let imageDivs = $('.image');
+    let representIndex = -1;
+
+    imageDivs.each(function(index) {
+        if($(this).hasClass('is-represent')) {
+            representIndex = index;
+        }
+    });
+
+    $('#represent-index').val(representIndex);
+
+    // 데이터 보내기
+    fnWriteReview();
+
+}
+
+// 폼의 입력값 JSON으로 변환
+function formToJson(form) {
+    let obj = {};
+    let formData = new FormData(form);
+    formData.forEach((value, key) => {
+        obj[key] = value;
+    });
+    return obj;
+}
+
+// 서버로 작성 폼 데이터 전송
+const fnWriteReview = () => {
+
+    // form
+    // productDTO: productName, topCategory, subCategory
+    // reviewDTO: content, location, reviewImage, productId(기존 제품 선택시), memberId:1, ratingTaste, ratingPrice
+    // reviewRequestDTO: representIndex, addProduct
+
+    let form = $('#write-form')[0];
+    let formData = new FormData(form);
+
+    // 폼 데이터 -> DTO 구조.. JSON 변환
+    let reviewRequestDTO = {
+        productDTO: {
+            productName: $('.productName-input').val(),
+            topCategory: $('#select-cat1 option:selected').val(),
+            subCategory: $('#select-cat2 option:selected').val()
+
+        },
+        reviewDTO: {
+            ratingTaste: ratingTaste,
+            ratingPrice: ratingPrice,
+            productId: $('#productId').val(),
+            content: $('.content-area').val(),
+            location: $('.location-input').val()
+        },
+        representIndex: $('#represent-index').val(),
+        addProduct: addProduct
+    }
+
+    // JSON blob으로 변환 후 FormData에 추가
+    const jsonBlob = new Blob([JSON.stringify(reviewRequestDTO)], {
+        type: "application/json"
+    });
+    formData.append("reviewRequest", jsonBlob);
+
+    // 파일 input 처리하기
+    let fileInput = $('#review-image')[0];
+    if(fileInput.files.length > 0) {
+        Array.from(fileInput.files).forEach(file => {
+            formData.append('reviewImageList', file);
+            console.log('보내는 파일: ', file);
+        })
+    }
+
+    axios.post('/review/insertReview', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    .then((response) => {
+        if(response.data.success) {
+            alert(response.data.message);
+            window.location.href = response.data.redirectUrl;
+        } else {
+            alert(response.data.message);
+        }
+    }).catch((error) => {
+        alert('리뷰 작성에 실패하였습니다.');
+    });
+}
 
 /******************** 이벤트 **********************/
 
 // 쓰로틀 적용 (50ms 간격)
-let throttledUpdate = throttle(fnRating, 50); // 50ms 마다 실행된다.
+let throttledUpdate = throttle(fnRating, 25); // 50ms 마다 실행된다.
 
 $(".stars i").on("mousemove", throttledUpdate);
-$(".stars i").on("click", setRating);
-$(".stars").on("mouseleave", resetStars);
+$(".stars i").on("click", fnSetRating);
+$(".stars").on("mouseleave", fnResetStars);
 
 $('.btn-ProductSearch').on('click', fnSearchProduct);
 
@@ -310,3 +612,12 @@ $('#search-modal').on('show.bs.modal', () => {
 });
 
 $('.btn-LocationSearch').on('click', searchCon);
+
+$('#review-image').on('change', fnCheckImagecount);
+
+$(document).on('click', '.image img', fnSelectRepresentImage);
+
+$('#write-form').on('submit', function(evt) {
+    evt.preventDefault();
+    fnFinalCheck();
+});

@@ -33,6 +33,11 @@ public class CustomUserDetails implements UserDetails {
         return collection;
     }
 
+    //회원번호 반환
+    public int getMemberId() {
+        return memberEntity.getMemberId();
+    }
+
     // 비밀번호 반환
     @Override
     public String getPassword() {
