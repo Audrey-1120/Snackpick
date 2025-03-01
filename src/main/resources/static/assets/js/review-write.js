@@ -317,7 +317,7 @@ function fnAddProductName() {
 
 }
 
-// 프로필 사이즈 제한
+// 이미지 사이즈 제한
 const fnIsOverSize = (file) => {
     const maxSize = 1024 * 1024 * 5; // 5MB 사이즈 제한
     return file.size < maxSize;
@@ -347,14 +347,14 @@ const fnPreview = (fileInput) => {
     })).then(results => {
         // results는 모든 Promise가 resolve()한 값들의 배열이 된다.
         // join('')을 사용해서 문자열로 합친다.
-        $('.review-images').html(results.join(''));
+        $('.image-preview').html(results.join(''));
 
         // 첫번째 요소에 대표 이미지 추가
         $('.image:first').addClass('is-represent');
     });
 }
 
-// 프로필 이미지 체크
+// 이미지 체크
 const fnCheckProfileImage = (fileInput) => {
 
     let checkFileLabel = $('#image-preview + p');
@@ -382,7 +382,7 @@ const fnCheckProfileImage = (fileInput) => {
     });
 }
 
-// 프로필 이미지 개수 제한
+// 이미지 개수 제한
 const fnCheckImagecount = (evt) => {
 
     let fileInput = $(evt.currentTarget);
@@ -614,6 +614,11 @@ $('#search-modal').on('show.bs.modal', () => {
 $('.btn-LocationSearch').on('click', searchCon);
 
 $('#review-image').on('change', fnCheckImagecount);
+
+$('.btn-deleteAllImage').on('click', () => {
+    $('#review-image').val('');
+    $('.image-preview').empty();
+})
 
 $(document).on('click', '.image img', fnSelectRepresentImage);
 

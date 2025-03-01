@@ -110,12 +110,12 @@
   }
 
   /* 리뷰 사진 섹션*/
-  .review-images, .image-title {
+  .image-preview, .image-title {
     display: flex;
     gap: 1rem;
   }
 
-  .review-images img {
+  .image-preview img {
     width: 100px;
     height: 100px;
     cursor: pointer;
@@ -169,13 +169,14 @@
   }
 
   /* 사진 첨부 버튼 */
-  .btn-reviewImage {
+  .btn-reviewImage, .btn-deleteAllImage {
     background-color: #D9232D;
     border: none;
     border-radius: 0.4rem;
     padding: 0.2rem 0.6rem;
     font-size: 0.8rem;
     color: white;
+    cursor: pointer;
   }
 
   #review-section {
@@ -291,7 +292,7 @@
               <div class="review-location mt-4">
                 <div class="location-title">
                   <p>구매위치</p>
-                  <p class="location-final"></p>
+                  <p class="location-final">편의점 위치가 지정되지 않았습니다.</p>
                 </div>
                 <div class="location-input d-flex gap-2">
                   <input type="text" class="form-control mt-2 location-input" name="location" placeholder="편의점 위치를 입력해주세요.">
@@ -310,10 +311,11 @@
                   <label for="review-image">
                     <div class="btn-reviewImage">첨부하기</div>
                   </label>
+                  <div class="btn-deleteAllImage">초기화</div>
                   <input type="file" id="review-image" class="d-none" name="reviewImage" multiple>
                   <input type="hidden" id="represent-index" name="representIndex" value="-1">
                 </div>
-                <div class="review-images mt-2"></div>
+                <div class="image-preview mt-2"></div>
                 <p class="text-start text-primary">이미지는 최대 5장까지 첨부 가능합니다.</p>
               </div>
               <div class="btn-section">
