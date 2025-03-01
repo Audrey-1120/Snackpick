@@ -1,16 +1,19 @@
 package com.project.snackpick.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "MEMBER_T")
-public class MemberEntity {
+@Entity
+@Table(name = "MEMBER_T")
+public class MemberEntity { // 회원
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +36,5 @@ public class MemberEntity {
 
     @Column(name = "role")
     private String role;
+
 }

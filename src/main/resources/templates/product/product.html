@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <!-- <head> 태그 내 공통된 stylesheets 분리 -->
+  <head th:replace="~{stylesheets/head :: head (title='상품 검색')}"></head>
+
+  <style>
+    /* 메인화면 */
+    .main {
+      padding: 15vh 0 45vh 0;
+    }
+
+    /* 타이틀 + 검색폼 */
+    .main-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* 한눈에 보는 리뷰들 */
+    .main-title {
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    /* 검색폼 input*/
+    .main-searchform > input{
+        width: 40%;
+        padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+        border-width: 0;
+        border: 1px solid #ADADAD;
+        border-radius: 0.5rem;
+        outline: none;
+    }
+
+    /* 대분류, 소분류, 리뷰 개수 */
+    .description, .title{
+        text-align: justify;
+    }
+
+    /* 검색버튼 */
+    .btn-search {
+        cursor: pointer;
+    }
+
+  </style>
+
+  <body class="index-page">
+
+    <!-- 헤더 레이아웃 분리 -->
+    <header th:replace="~{layout/header::header}"></header>
+
+    <!-- 메인 부분 -->
+    <main class="main text-center">
+      <div class="main-section">
+        <p class="main-title">상품 검색</p>
+        <div class="newsletter-form main-searchform">
+          <input type="text" name="productName" placeholder="원하는 제품명을 입력해주세요.">
+          <i class="fa-solid fa-magnifying-glass btn-search"></i>
+        </div>
+
+        <section id="services" class="services section">
+          <div class="container">
+            <div class="row gy-4 result-section"></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- footer 레이아웃 분리 -->
+    <footer th:replace="~{layout/footer::footer}"></footer>
+
+    <!-- 공통 script 분리 -->
+    <div th:replace="~{scripts/scripts::scripts}"></div>
+
+    <script src="/assets/js/product.js"></script>
+
+  </body>
+</html>
