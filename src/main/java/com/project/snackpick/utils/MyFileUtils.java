@@ -16,10 +16,16 @@ public class MyFileUtils {
     // 현재 날짜
     public static final LocalDate TODAY = LocalDate.now();
 
-    // 이미지 경로 반환
+    // 이미지 업로드 경로 반환
     public String getUploadPath(String path) {
         String homeDir = System.getProperty("user.home");
         return homeDir + "/" + path + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
+    }
+
+    // 브라우저 접근 URL 반환
+    public String getImageUrl(String path) {
+        String imageUrl = "http://localhost:8080/images";
+        return imageUrl + "/" + path + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
     }
 
     // 저장 파일명 반환
@@ -42,6 +48,7 @@ public class MyFileUtils {
         if(profile != null && !profile.isEmpty() && profile.getSize() > 0) {
             StringBuilder builder = new StringBuilder();
             String uploadPath = getUploadPath("profile");
+            String imageUrl = getImageUrl("profile");
 
             File dir = new File(uploadPath);
 
@@ -52,7 +59,11 @@ public class MyFileUtils {
             String originalFilename = profile.getOriginalFilename();
             String fileSystemName = getFileSystemName(originalFilename);
 
-            profileImagePath = builder.append("<img src=\"").append(request.getContextPath()).append(uploadPath).append("/") .append(fileSystemName).append("\">").toString();
+            profileImagePath = builder.append("<img src=\"")
+                                        .append(request.getContextPath())
+                                        .append(imageUrl).append("/")
+                                        .append(fileSystemName)
+                                        .append("\">").toString();
             builder.setLength(0);
 
             File file = new File(dir, fileSystemName);
@@ -77,6 +88,7 @@ public class MyFileUtils {
 
                 StringBuilder builder = new StringBuilder();
                 String uploadPath = getUploadPath("review");
+                String imageUrl = getImageUrl("review");
 
                 File dir = new File(uploadPath);
 
@@ -88,7 +100,7 @@ public class MyFileUtils {
                 String fileSystemName = getFileSystemName(originalFilename);
 
                 reviewImagePath.add(builder.append("<img src=\"")
-                                            .append(uploadPath).append("/")
+                                            .append(imageUrl).append("/")
                                             .append(fileSystemName)
                                             .append("\">").toString());
                 builder.setLength(0);
