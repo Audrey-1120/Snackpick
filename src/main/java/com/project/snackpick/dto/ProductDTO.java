@@ -26,10 +26,10 @@ public class ProductDTO {
         this.topCategory = product.getTopCategory().getCategoryName();
         this.totalRatingTaste = product.getTotalRatingTaste();
         this.totalRatingPrice = product.getTotalRatingPrice();
-        this.averageRatingTaste = product.getTotalRatingTaste() /
-                product.getReviewCount();
-        this.averageRatingPrice = product.getTotalRatingPrice() /
-                product.getReviewCount();
+        this.averageRatingTaste = Math.round((product.getTotalRatingTaste() /
+                (double) product.getReviewCount()) * 2) / 2.0;
+        this.averageRatingPrice = Math.round((product.getTotalRatingPrice() /
+                (double) product.getReviewCount()) * 2) / 2.0;
         this.reviewCount = product.getReviewCount();
     }
 

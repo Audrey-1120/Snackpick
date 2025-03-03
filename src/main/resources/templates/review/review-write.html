@@ -224,7 +224,8 @@
               <!-- 제품선택 -->
               <div class="select-product mt-4">
                 <p>제품 선택</p>
-                <input type="text" th:if="${product != null}" th:data-productId="${product.productId}" th:value="${product.productName}" class="form-control productName-input" name="productName" disabled>
+                <input type="text" th:if="${product != null}" th:value="${product.productName}" class="form-control productName-input" name="productName" disabled>
+                <input type="hidden" id="productId" th:if="${product != null}" th:value="${product.productId}">
                 <input type="text" th:if="${product == null}" class="form-control productName-input" name="productName" data-bs-toggle="modal" data-bs-target="#search-modal" placeholder="원하는 제품명을 입력해주세요." readonly>
               </div>
 

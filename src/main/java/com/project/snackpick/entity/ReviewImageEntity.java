@@ -16,10 +16,10 @@ public class ReviewImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ReviewImageId;
+    private int reviewImageId;
 
     // 리뷰와 리뷰이미지는 1:N 관계
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
     private ReviewEntity reviewEntity;
 

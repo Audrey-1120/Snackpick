@@ -39,12 +39,12 @@ public class ProductEntity { // 제품
     private long reviewCount;
 
     // 대분류 (음료, 떡류)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "top_category_id", nullable = false)
     private CategoryEntity topCategory;
 
     // 중분류 (탄산음료, 과채음료)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_id", nullable = false)
     private CategoryEntity subCategory;
 
