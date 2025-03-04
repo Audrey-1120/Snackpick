@@ -4,32 +4,7 @@
   <!-- <head> 태그 내 공통된 stylesheets 분리 -->
   <head th:replace="~{stylesheets/head :: head (title='snackpick 사이트에 오신것을 환영합니다.')}"></head>
 
-  <!-- 임시 css -->
-  <style>
-    /* 메인화면 */
-    .main {
-      padding: 30vh 0;
-    }
-
-    /* 타이틀 + 검색폼 */
-    .main-section {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    /* 한눈에 보는 리뷰들 */
-    .main-title {
-      font-size: 2rem;
-      font-weight: 900;
-    }
-
-    /* 검색폼 input*/
-    .main-searchform > input{
-      width: 40%;
-      border-width: 0;
-    }
-  </style>
+  <link href="/assets/css/index.css" rel="stylesheet">
 
   <body class="index-page">
 

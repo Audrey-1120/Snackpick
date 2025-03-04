@@ -1,0 +1,25 @@
+/* 메인화면 */
+.main {
+    padding: 30vh 0;
+}
+
+/* 타이틀 + 검색폼 */
+.main-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* 한눈에 보는 리뷰들 */
+.main-title {
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+/* 검색폼 input*/
+.main-searchform > input{
+    width: 40%;
+    border: 1px solid #ADADAD;
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.4rem;
+}

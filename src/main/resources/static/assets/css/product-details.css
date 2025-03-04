@@ -1,0 +1,244 @@
+/* 메인화면 */
+.main {
+    padding: 10vh 10vh 20vh 10vh;
+}
+
+/* 타이틀 + 검색폼 */
+.main-section {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 제목 */
+.main-title {
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+/* 검색폼 input*/
+.main-searchform > input{
+    width: 40%;
+    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+    border-width: 0;
+    border: 1px solid #ADADAD;
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+/* 검색버튼 */
+.btn-search {
+    cursor: pointer;
+}
+
+/* 제품 상세 */
+#product-detail *{
+    text-align: justify;
+}
+
+/* 제품 제목(분류, 별점평균) */
+.product-title {
+    font-size: 1.2rem;
+}
+
+/* 분류 */
+.category-section > div, .rating-average-section > div:first-child {
+    border-left: 2px solid #ADADAD;
+    padding-left: 0.5rem;
+}
+
+.stars-taste, .stars-price {
+    display: flex;
+    gap: 0.7rem;
+}
+
+.title-taste, .title-price {
+    width: 10%;
+}
+
+.score-taste, .score-price {
+    margin-left: 1rem;
+}
+
+/* 제품 평점 별 아이콘 */
+.rating-average-section i {
+    font-size: 1.4rem;
+}
+
+/* 제품 평점 글자 */
+.rating-average-section p {
+    align-content: center;
+}
+
+.rating-average-section .stars-taste
+, .rating-average-section .stars-price {
+    gap: 0.2rem;
+}
+
+/*.stars-taste p, .stars-price p {*/
+/*  align-content: center;*/
+/*}*/
+
+/* 리뷰 정렬 선택 */
+#review-sort {
+    padding: 0.2rem 0.3rem;
+    outline: none;
+    border: 1px solid #ADADAD;
+    border-radius: 0.5rem;
+    color: #5E5E5E;
+}
+
+/* 리뷰 아이템 */
+.testimonial-item {
+    text-align: justify;
+}
+
+/* 리뷰 아이템 p */
+.testimonials .testimonial-item p {
+    font-size: 0.7rem;
+    font-style: normal;
+}
+
+/* 별 아이콘 */
+.testimonials .testimonial-item .stars {
+    margin: 0;
+}
+
+/* 리뷰 작성자 프로필 */
+.writer-profile {
+    display: flex;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* 리뷰 작성자명 */
+.writer-name {
+    align-content: center;
+    padding-bottom: 0.5rem;
+    margin: 0 !important;
+}
+
+/* 리뷰 작성자 프로필 사진 */
+.writer-image img {
+    width: 30px;
+    height: 30px;
+    background-color: gray;
+    border-radius: 50%;
+}
+
+/* 리뷰 사진 및 내용 */
+.review-main {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.review-image {
+    width: 100px;
+    height: 100px;
+}
+
+.review-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+/* 리뷰 내용 폼 */
+.content-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 별점 */
+.rating {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.rating > * {
+    align-content: center;
+}
+
+/* 구분선 */
+.line {
+    border-bottom: 1px solid #ADADAD;
+}
+
+/* 편의점 위치 */
+.review-location > span {
+    color: #d9232d;
+}
+
+.stars i {
+    color: #ffc107;
+}
+
+.category-section > p, .stars-taste, .stars-price {
+    margin-left: 1rem;
+}
+
+/* 리뷰 작성 버튼 */
+.btn-write {
+    margin-left: auto;
+    border: none;
+    padding: 0.5rem 0.7rem;
+    border-radius: 0.5rem;
+    background-color: #d9232d;
+    color: white;
+}
+
+/* 리뷰 상세 모달 - 이미지 */
+.reviewImage-modal {
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.image {
+    background-color: #ADADAD;
+    flex-shrink: 0;
+    /*flex-basis: 150px;*/
+    /*min-width: 150px;*/
+}
+
+.image img {
+    width: 200px;
+    height: 100px;
+}
+
+/* 맛, 가격, 프로필 컨테이너 */
+.rating-modal {
+    width: 80%;
+}
+
+/* 리뷰 상세 모달 - 작성자 프로필 사진 */
+.writerImage-modal {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: gray;
+}
+
+/* 리뷰 상세 모달 - 작성자 이름 */
+.writerProfile-modal p {
+    align-content: center;
+    font-size: 0.7rem;
+}
+
+.writerProfile-modal img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.location-modal {
+    font-size: 0.8rem;
+}
+
+.location-modal span {
+    color: red;
+}
+
+
+
