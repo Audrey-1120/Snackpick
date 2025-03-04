@@ -25,4 +25,11 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
             "AND (ri IS NULL OR ri.isRepresent = true)")
     List<ReviewEntity> findReviewListWithImage(@Param("reviewIdList") List<ReviewEntity> reviewIdList);
 
+    // 리뷰 상세 조회
+    @Query("SELECT r FROM ReviewEntity r " +
+            "LEFT JOIN FETCH r.memberEntity m " +
+            "LEFT JOIN FETCH r.reviewImageEntityList ri " +
+            "WHERE r.reviewId = :reviewId")
+    ReviewEntity findReviewByReviewId(@Param("reviewId") int reviewId);
+
 }

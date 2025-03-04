@@ -48,4 +48,11 @@ public class ReviewController {
         return ResponseEntity.ok(Map.of("reviewList", reviewList));
     }
 
+    // 리뷰 상세 조회
+    @GetMapping("/getReviewDetail")
+    public ResponseEntity<Map<String, Object>> getReviewDetail(@RequestParam int reviewId) {
+        ReviewDTO review = reviewService.getReviewDetail(reviewId);
+        return ResponseEntity.ok(Map.of("review", review));
+    }
+
 }

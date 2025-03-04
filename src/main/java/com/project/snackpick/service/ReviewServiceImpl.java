@@ -135,4 +135,11 @@ public class ReviewServiceImpl implements ReviewService {
         return myPageUtils.toPageDTO(finalPage);
 
     }
+
+    // 리뷰 상세 조회
+    @Override
+    public ReviewDTO getReviewDetail(int reviewId) {
+        ReviewDTO review = new ReviewDTO(reviewRepository.findReviewByReviewId(reviewId));
+        return review;
+    }
 }

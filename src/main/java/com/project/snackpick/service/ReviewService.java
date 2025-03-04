@@ -21,4 +21,7 @@ public interface ReviewService {
     // 리뷰 리스트 조회
     PageDTO<ReviewDTO> getReviewList(Pageable pageable, int productNo);
 
+    // 리뷰 상세 조회
+    ReviewDTO getReviewDetail(int reviewId);
+
 }

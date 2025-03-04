@@ -2,6 +2,7 @@
 let productId = 0;
 let globalSort = 'createDt,DESC';
 
+const list = document.querySelector('.reviewImage-modal');
 
 /******************** 함수 **********************/
 // 리뷰 리스트 조회 데이터 받아서 정렬
@@ -99,7 +100,7 @@ const fnShowResult = (reviewList) => {
     let str = '';
 
     reviewList.forEach((review) => {
-        str += '<div class="review-item mt-3">';
+        str += '<div class="review-item mt-3" data-review-id="' + review.reviewId + '">';
         str += '<div class="testimonial-item">';
         str += '<div class="writer-profile">';
         str += '<div class="writer-image">' + review.member.profileImage + '</div>';
@@ -153,15 +154,81 @@ const fnShowResult = (reviewList) => {
 
 }
 
+// 리뷰 상세 조회
+const fnGetReviewDetail = (evt) => {
+
+    let reviewId = $(evt.currentTarget).data('review-id');
+
+    // 서버로 보내기
+    axios.get('/review/getReviewDetail', {
+        params: {
+            reviewId: reviewId
+        }
+    })
+    .then((response) => {
+
+        let review = response.data.review;
+        let imageContainer = $('.reviewImage-modal');
+
+        // 리뷰 이미지
+        let imageStr = '';
+        review.reviewImageList.forEach((reviewImage) => {
+            imageStr += '<div class="image">';
+            imageStr += reviewImage.reviewImagePath;
+            imageStr += '</div>'
+        });
+        imageContainer.html(imageStr);
+
+        // 별점
+        let str = '<p>맛</p>';
+        str += '<div class="stars">';
+        for(let i = 1; i <= 5; i++) {
+            if(review.ratingTaste >= i) {
+                str += '<i class="bi bi-star-fill"></i>';
+            } else if((review.ratingTaste >= i - 1) && (review.ratingTaste < i)) {
+                str += '<i class="bi bi-star-half"></i>';
+            } else {
+                str += '<i class="bi bi-star"></i>';
+            }
+        }
+        str += '</div>';
+        str += '<p>가격</p>';
+        str += '<div class="stars">';
+        for(let i = 1; i <= 5; i++) {
+            if(review.ratingPrice >= i) {
+                str += '<i class="bi bi-star-fill"></i>';
+            } else if((review.ratingPrice >= i - 1) && (review.ratingPrice < i)) {
+                str += '<i class="bi bi-star-half"></i>';
+            } else {
+                str += '<i class="bi bi-star"></i>';
+            }
+        }
+        str += '</div>';
+        $('.rating-modal').html(str);
+
+        // 프로필
+        $('.writerImage-modal').html(review.member.profileImage);
+        $('.writerProfile-modal p').html(review.member.nickname);
+
+        // 리뷰 내용
+        $('.content-2 p:eq(0)').text(review.content);
+        $('.location-modal span').text(review.location);
+
+        $('#review-detail').modal('show');
+
+    })
+    .catch((error) => {
+        alert('리뷰를 로드하던 중 오류가 발생하였습니다.');
+    })
+}
+
 /******************** 이벤트 **********************/
 $(document).ready(() => {
 
-    // 파라미터에서 productId값 가져오기
     const urlParams = new URL(location.href).searchParams;
     productId = urlParams.get('productId');
 
     fnGetReviewList(1, 'createDt,DESC');
-
 });
 
 // 정렬 선택
@@ -174,6 +241,8 @@ $('#review-sort').on('change', () => {
 $('.btn-write').on('click', () => {
     let productId = $('.productId').val();
     location.href = '/review/reviewWrite.page?productId=' + productId;
-})
+});
 
-
+$(document).on('click', '.review-item', (evt) => {
+    fnGetReviewDetail(evt);
+});
