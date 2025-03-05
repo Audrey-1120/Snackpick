@@ -5,6 +5,8 @@ import com.project.snackpick.entity.MemberEntity;
 import com.project.snackpick.entity.ProductEntity;
 import com.project.snackpick.entity.ReviewEntity;
 import com.project.snackpick.entity.ReviewImageEntity;
+import com.project.snackpick.exception.CustomException;
+import com.project.snackpick.exception.ErrorCode;
 import com.project.snackpick.repository.MemberRepository;
 import com.project.snackpick.repository.ProductRepository;
 import com.project.snackpick.repository.ReviewImageRepository;
@@ -54,15 +56,17 @@ public class ReviewServiceImpl implements ReviewService {
         if(reviewRequestDTO.isAddProduct()) {
             productEntity = productService.insertProduct(productDTO); // 제품 추가
         } else {
-            productEntity = productRepository.findProductByProductId(reviewDTO.getProductId()); // 기존 제품 조회
+            productEntity = productRepository.findProductByProductId(reviewDTO.getProductId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT)); // 기존 제품 조회
         }
 
         // 리뷰 저장
         MemberEntity memberEntity = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("ID에 해당하는 회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
         reviewDTO.setMember(new MemberDTO(memberEntity));
         ReviewEntity reviewEntity = ReviewEntity.toReviewEntity(reviewDTO, memberEntity, productEntity);
+
         reviewRepository.save(reviewEntity);
 
         // 제품 평점 합, 리뷰 개수 업데이트
@@ -138,8 +142,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 상세 조회
     @Override
+    @Transactional(readOnly = true)
     public ReviewDTO getReviewDetail(int reviewId) {
-        ReviewDTO review = new ReviewDTO(reviewRepository.findReviewByReviewId(reviewId));
+
+        ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+
+        ReviewDTO review = new ReviewDTO(reviewEntity);
         return review;
     }
 }

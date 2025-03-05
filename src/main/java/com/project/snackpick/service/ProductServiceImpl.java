@@ -3,14 +3,16 @@ package com.project.snackpick.service;
 import com.project.snackpick.dto.ProductDTO;
 import com.project.snackpick.entity.CategoryEntity;
 import com.project.snackpick.entity.ProductEntity;
+import com.project.snackpick.exception.CustomException;
+import com.project.snackpick.exception.ErrorCode;
 import com.project.snackpick.repository.CategoryRepository;
 import com.project.snackpick.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -27,13 +29,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> searchProduct(String searchKeyword) {
 
-        List<ProductDTO> productList = productRepository.SearchProductByProductName(searchKeyword).stream()
-                .map(ProductDTO::new)
-                .collect(Collectors.toList());
+        // 제품 찾기
+        List<ProductEntity> productEntityList = productRepository.SearchProductByProductName(searchKeyword);
 
-        if(productList.isEmpty()) {
-            return new ArrayList<>();
+        // 제품 없을 경우 빈 리스트 반환
+        if(productEntityList.isEmpty()) {
+            return Collections.emptyList();
         }
+
+        List<ProductDTO> productList = productEntityList.stream()
+                .map(ProductDTO::new)
+                .toList();
+
         return productList;
     }
 
@@ -41,13 +48,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO getProductDetail(int productId) {
 
-        ProductDTO product = new ProductDTO(productRepository.findProductByProductId(productId));
+        ProductDTO product = new ProductDTO(productRepository.findProductByProductId(productId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT)));
+
         return product;
     }
 
     // 제품 추가
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public ProductEntity insertProduct(ProductDTO productDTO) {
 
         CategoryEntity topCategory = categoryRepository.findById(Integer.parseInt(productDTO.getTopCategory()))
@@ -70,7 +79,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void updateProductRating(int productId, double ratingTaste, double ratingPrice) {
 
-        ProductEntity productEntity = productRepository.findProductByProductId(productId);
+        ProductEntity productEntity = productRepository.findProductByProductId(productId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
+
         productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() + ratingTaste);
         productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() + ratingPrice);
         productEntity.setReviewCount(productEntity.getReviewCount() + 1);
