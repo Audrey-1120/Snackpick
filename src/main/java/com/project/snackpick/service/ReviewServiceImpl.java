@@ -151,4 +151,32 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewDTO review = new ReviewDTO(reviewEntity);
         return review;
     }
+
+    // 리뷰 삭제
+    @Override
+    @Transactional
+    public Map<String, Object> deleteReview(int reviewId, CustomUserDetails user) {
+
+        // 리뷰 데이터 찾기
+        ReviewEntity review = reviewRepository.findReviewByReviewId(reviewId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+
+        // 리뷰 작성자 memberId와 현재 로그인한 유저의 id가 같아야 함.
+        if(review.getMemberEntity().getMemberId() != user.getMemberId()) {
+            throw new CustomException(ErrorCode.NOT_PERMISSION,
+                    ErrorCode.NOT_PERMISSION.formatMessage("리뷰 삭제"));
+        }
+
+        // 이미 삭제된 리뷰일 시
+        if(review.isState()) {
+            throw new CustomException(ErrorCode.ALREADY_DELETE_REVIEW);
+        }
+
+        review.setState(true);
+
+        return Map.of("success", true
+                , "message", "리뷰가 삭제되었습니다."
+                , "redirectUrl", "/product/productDetail.page?productId=");
+
+    }
 }

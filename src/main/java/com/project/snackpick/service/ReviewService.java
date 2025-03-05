@@ -24,4 +24,7 @@ public interface ReviewService {
     // 리뷰 상세 조회
     ReviewDTO getReviewDetail(int reviewId);
 
+    // 리뷰 삭제
+    Map<String, Object> deleteReview(int reviewId, CustomUserDetails user);
+
 }

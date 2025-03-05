@@ -57,4 +57,14 @@ public class ReviewController {
         return ResponseEntity.ok(Map.of("review", review));
     }
 
+    // 리뷰 삭제
+    @PutMapping("/deleteReview")
+    public ResponseEntity<Map<String, Object>> deleteReview(@RequestBody Map<String, String> param,
+                                                            @AuthenticationPrincipal CustomUserDetails user) {
+
+        int reviewId = Integer.parseInt(param.get("reviewId"));
+        Map<String, Object> response = reviewService.deleteReview(reviewId, user);
+        return ResponseEntity.ok(response);
+    }
+
 }

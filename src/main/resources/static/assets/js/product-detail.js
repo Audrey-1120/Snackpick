@@ -110,7 +110,7 @@ const fnShowResult = (reviewList) => {
         if(review.reviewImageList.length !== 0) {
             str += '<div class="review-image">' + review.reviewImageList[0].reviewImagePath + '</div>';
         } else {
-            str += '<div class="review-image" style="background-color: lightgray"></div>';
+            str += '<div class="review-image"><div class="default-image"></div></div>';
         }
         str += '<div class="content-form">';
         str += '<div class="rating mb-1">';
@@ -140,8 +140,16 @@ const fnShowResult = (reviewList) => {
         str += '</div>';
         str += '</div>';
         str += '<div class="line"></div>';
-        str += '<h4 class="review-content mt-3">' + review.content + '</h4>'
+        str += '<h4 class="review-content mt-3">' + review.content + '</h4>';
+        str += '<div class="review-bottom d-flex justify-content-between">';
         str += '<p class="review-location mt-3"><span>' + review.location + '</span>에서 구매했어요!</p>';
+
+        if(Number($('.login-id').val()) === review.member.memberId) {
+            str += '<div class="d-flex gap-2">';
+            str += '<div class="btn-update"><i class="bi bi-pencil-square"></i></div>';
+            str += '<div class="btn-delete"><i class="bi bi-trash3"></i></div>';
+            str += '</div>';
+        }
         str += '</div>';
         str += '</div>';
         str += '</div>';
@@ -222,6 +230,26 @@ const fnGetReviewDetail = (evt) => {
     })
 }
 
+// 리뷰 삭제
+const fnDeleteReview = (evt) => {
+
+    let reviewId = $(evt.currentTarget).closest('.review-item').data('review-id');
+
+    axios.put('/review/deleteReview', {
+        reviewId: reviewId
+    })
+    .then((response) => {
+        if(response.data.success) {
+            // 리뷰 삭제 성공시
+            alert(response.data.message);
+            window.location.reload();
+        }
+    })
+    .catch((error) => {
+        alert('리뷰 삭제에 실패하였습니다.');
+    })
+}
+
 /******************** 이벤트 **********************/
 $(document).ready(() => {
 
@@ -243,6 +271,15 @@ $('.btn-write').on('click', () => {
     location.href = '/review/reviewWrite.page?productId=' + productId;
 });
 
+// 리뷰 상세 조회
 $(document).on('click', '.review-item', (evt) => {
     fnGetReviewDetail(evt);
+});
+
+// 리뷰 삭제
+$(document).on('click', '.btn-delete', (evt) => {
+    evt.stopPropagation();
+    if(confirm("리뷰를 삭제하시겠습니까?")) {
+        fnDeleteReview(evt);
+    }
 });
