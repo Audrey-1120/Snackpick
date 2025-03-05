@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
@@ -23,6 +24,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     // 제품 상세 조회
     @EntityGraph(attributePaths = {"reviewList", "topCategory", "subCategory"})
     @Query("SELECT p FROM ProductEntity p WHERE p.productId = :productId")
-    ProductEntity findProductByProductId(@Param("productId") int productId);
+    Optional<ProductEntity> findProductByProductId(@Param("productId") int productId);
 
 }

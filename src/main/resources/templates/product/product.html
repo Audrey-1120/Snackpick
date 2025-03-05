@@ -4,46 +4,7 @@
   <!-- <head> 태그 내 공통된 stylesheets 분리 -->
   <head th:replace="~{stylesheets/head :: head (title='상품 검색')}"></head>
 
-  <style>
-    /* 메인화면 */
-    .main {
-      padding: 15vh 0 45vh 0;
-    }
-
-    /* 타이틀 + 검색폼 */
-    .main-section {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    /* 한눈에 보는 리뷰들 */
-    .main-title {
-      font-size: 2rem;
-      font-weight: 900;
-    }
-
-    /* 검색폼 input*/
-    .main-searchform > input{
-        width: 40%;
-        padding: 0.3rem 0.5rem 0.3rem 0.5rem;
-        border-width: 0;
-        border: 1px solid #ADADAD;
-        border-radius: 0.5rem;
-        outline: none;
-    }
-
-    /* 대분류, 소분류, 리뷰 개수 */
-    .description, .title{
-        text-align: justify;
-    }
-
-    /* 검색버튼 */
-    .btn-search {
-        cursor: pointer;
-    }
-
-  </style>
+  <link href="/assets/css/product.css" rel="stylesheet">
 
   <body class="index-page">
 

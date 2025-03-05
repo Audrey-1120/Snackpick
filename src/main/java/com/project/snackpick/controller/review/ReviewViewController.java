@@ -4,6 +4,7 @@ import com.project.snackpick.dto.CategoryDTO;
 import com.project.snackpick.dto.ProductDTO;
 import com.project.snackpick.service.CategoryService;
 import com.project.snackpick.service.ProductService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +27,12 @@ public class ReviewViewController {
 
     // 리뷰 작성 페이지 이동
     @GetMapping("/reviewWrite.page")
-    public String reviewWrite(@RequestParam(required = false, defaultValue = "0") int productNo, Model model) {
+    @PreAuthorize("isAuthenticated()")
+    public String reviewWrite(@RequestParam(required = false, defaultValue = "0") int productId, Model model) {
 
         // productNo 존재할 경우 product 조회
-        if(productNo != 0) {
-            ProductDTO product = productService.getProductDetail(productNo);
+        if(productId != 0) {
+            ProductDTO product = productService.getProductDetail(productId);
             model.addAttribute("product", product);
         }
 

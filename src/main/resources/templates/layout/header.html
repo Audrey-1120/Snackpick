@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 
   <!--
   ********************************
@@ -16,26 +16,26 @@
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-      <a href="/index.page" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
+      <a th:href="@{/index.page}" class="logo d-flex align-items-center me-auto">
         <h1 class="sitename">Snackpick</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="/member/index.page" class="active">홈</a></li>
-          <li><a href="services.html">스낵픽이란?</a></li>
-          <li><a href="/review/reviewWrite.page">리뷰 작성</a></li>
-          <li><a href="/product/product.page">리뷰 조회</a></li>
-          <li th:if="${nickname != null}"><a href="/member/logout">로그아웃</a></li>
-          <li th:if="${nickname != null}"><p th:text="${nickname}"></p>님 환영합니다.</li>
+          <li><a th:href="@{/member/index.page}" class="active">홈</a></li>
+<!--          <li><a href="services.html">스낵픽이란?</a></li>-->
+          <li><a th:href="@{/review/reviewWrite.page}">리뷰 작성</a></li>
+          <li><a th:href="@{/product/product.page}">리뷰 조회</a></li>
+          <li th:if="${#authorization.expression('isAuthenticated()')}" class="d-flex" style="font-size: 15px; color: #556270;">
+            <p th:text="${#authentication.principal.nickname}"></p>님 환영합니다.
+            <input type="hidden" class="login-id" th:value="${#authentication.principal.memberId}">
+          </li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a th:if="${session == null}" class="btn-getstarted" href="/member/login.page">로그인</a>
-      <a th:if="${session != null}" class="btn-getstarted" href="/member/profile.page"><i class="fa-solid fa-user"></i></a>
+      <a th:if="${#authorization.expression('isAnonymous()')}" class="btn-getstarted" th:href="@{/member/login.page}">로그인</a>
+      <a th:if="${#authorization.expression('isAuthenticated()')}" class="btn-getstarted" th:href="@{/member/logout}">로그아웃</a>
 
     </div>
   </header>

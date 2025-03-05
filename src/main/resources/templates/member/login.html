@@ -4,54 +4,7 @@
   <!-- <head> 태그 내 공통된 stylesheets 분리 -->
   <head th:replace="~{stylesheets/head :: head (title='로그인')}"></head>
 
-  <!-- 임시 css -->
-  <style>
-
-    /* 메인화면 */
-    .main {
-      padding: 20vh 0 25vh 0;
-    }
-
-    .main-section {
-      display: flex;
-      justify-content: center;
-    }
-
-    .detail-section {
-      width: 25%;
-    }
-
-    /* 로그인 폼 */
-    .login-section {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    /* 회원가입 & 비밀번호 찾기 */
-    .login-submenu {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.7rem;
-    }
-
-    /* 로그인 버튼 */
-    .btn-login {
-      padding: 8px 25px;
-      border: none;
-      border-radius: 4px;
-      background: #d9232d;
-      color: white;
-      font-size: 14px;
-    }
-
-    /* 로그인 안내 문구 */
-    .login-label {
-      font-size: 0.8rem;
-      color: red;
-    }
-
-  </style>
+  <link href="/assets/css/login.css" rel="stylesheet">
 
   <body class="index-page">
 

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,19 +27,19 @@ public class ReviewEntity {
     private int reviewId;
 
     // 작성자
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id") // 회원 ID FK
     private MemberEntity memberEntity;
 
     // 작성시간
     @CreationTimestamp
-    @Column(name = "create_dt")
-    private LocalDateTime create_dt;
+    @Column(name = "create_dt", updatable = false)
+    private LocalDateTime createDt;
 
     // 수정시간
     @UpdateTimestamp
     @Column(name = "update_dt")
-    private LocalDateTime update_dt;
+    private LocalDateTime updateDt;
 
     // 내용
     @Column(name = "content")
@@ -61,13 +62,14 @@ public class ReviewEntity {
     private boolean state;
 
     // 제품과 리뷰는 1:N 관계
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity productEntity;
 
     // 리뷰 사진과 1:N 관계
     // 리뷰 사진은 조회할 때 JOIN FETCH 사용하기
     @OneToMany(mappedBy = "reviewEntity")
+    @BatchSize(size = 10)
     private List<ReviewImageEntity> reviewImageEntityList = new ArrayList<>();
 
     public static ReviewEntity toReviewEntity(ReviewDTO reviewDTO, MemberEntity memberEntity, ProductEntity productEntity) {

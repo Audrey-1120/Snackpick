@@ -28,7 +28,7 @@ public class CategoryEntity {
     private String categoryName;
 
     // 대분류 (NULL 이면 대분류, 값이 존재하는 경우 중분류)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "top_category_id")
     @JsonIgnore
     private CategoryEntity topCategory;
