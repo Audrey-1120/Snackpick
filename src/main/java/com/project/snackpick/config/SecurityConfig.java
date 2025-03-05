@@ -4,6 +4,7 @@ import com.project.snackpick.handler.LoginFailureHandler;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // Security를 위한 Config 클래스입니다.
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     // 비밀번호 암호화
@@ -34,7 +36,7 @@ public class SecurityConfig {
         http
                 .formLogin((auth) -> auth.loginPage("/member/login.page")
                         .usernameParameter("id")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/", false)
                         .failureHandler(authenticationFailureHandler)
                         .loginProcessingUrl("/member/login").permitAll());
 

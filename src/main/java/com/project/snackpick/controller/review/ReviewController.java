@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class ReviewController {
 
     // 리뷰 작성
     @PostMapping(value = "/insertReview", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> insertReview(@RequestPart("reviewRequest") ReviewRequestDTO reviewRequestDTO,
                                                             @RequestPart(value = "reviewImageList", required = false) MultipartFile[] reviewImageList,
                                                             @AuthenticationPrincipal CustomUserDetails user) {
