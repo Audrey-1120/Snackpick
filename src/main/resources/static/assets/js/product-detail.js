@@ -103,12 +103,16 @@ const fnShowResult = (reviewList) => {
         str += '<div class="review-item mt-3" data-review-id="' + review.reviewId + '">';
         str += '<div class="testimonial-item">';
         str += '<div class="writer-profile">';
-        str += '<div class="writer-image">' + review.member.profileImage + '</div>';
+        str += '<div class="writer-image">';
+        str += '<img src="' + review.member.profileImage + '">';
+        str += '</div>';
         str += '<p class="writer-name">' + review.member.nickname + '</p>';
         str += '</div>';
         str += '<div class="review-main">';
         if(review.reviewImageList.length !== 0) {
-            str += '<div class="review-image">' + review.reviewImageList[0].reviewImagePath + '</div>';
+            str += '<div class="review-image">'
+            str += '<img src="' + review.reviewImageList[0].reviewImagePath + '">';
+            str += '</div>';
         } else {
             str += '<div class="review-image"><div class="default-image"></div></div>';
         }
@@ -182,8 +186,7 @@ const fnGetReviewDetail = (evt) => {
         let imageStr = '';
         review.reviewImageList.forEach((reviewImage) => {
             imageStr += '<div class="image">';
-            imageStr += reviewImage.reviewImagePath;
-            imageStr += '</div>'
+            imageStr += '<img src="' + reviewImage.reviewImagePath + '"></div>';
         });
         imageContainer.html(imageStr);
 

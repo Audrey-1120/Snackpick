@@ -8,10 +8,14 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
 public class MyFileUtils {
+
+    private static final String BASE_URL = "http://localhost:8080/images";
+    private static final String FILE_STORAGE_PATH = "/home/audrey";
 
     // 현재 날짜
     public static final LocalDate TODAY = LocalDate.now();
@@ -59,11 +63,9 @@ public class MyFileUtils {
             String originalFilename = profile.getOriginalFilename();
             String fileSystemName = getFileSystemName(originalFilename);
 
-            profileImagePath = builder.append("<img src=\"")
-                                        .append(request.getContextPath())
-                                        .append(imageUrl).append("/")
-                                        .append(fileSystemName)
-                                        .append("\">").toString();
+            profileImagePath = builder.append(imageUrl)
+                                        .append("/")
+                                        .append(fileSystemName).toString();
             builder.setLength(0);
 
             File file = new File(dir, fileSystemName);
@@ -99,10 +101,9 @@ public class MyFileUtils {
                 String originalFilename = reviewImage.getOriginalFilename();
                 String fileSystemName = getFileSystemName(originalFilename);
 
-                reviewImagePath.add(builder.append("<img src=\"")
-                                            .append(imageUrl).append("/")
-                                            .append(fileSystemName)
-                                            .append("\">").toString());
+                reviewImagePath.add(builder.append(imageUrl)
+                                            .append("/")
+                                            .append(fileSystemName).toString());
                 builder.setLength(0);
 
                 File file = new File(dir, fileSystemName);
@@ -115,5 +116,13 @@ public class MyFileUtils {
             }
         }
         return reviewImagePath;
+    }
+
+    // 파일 경로 브라우저 -> WSL2 내부 경로로 변환
+    public static List<String> convertUrlToPath(List<String> imageUrlList) {
+        return imageUrlList.stream()
+                .filter(url -> url.startsWith(BASE_URL)) // BASE_URL로 시작하는 것만 처리한다.
+                .map(url -> FILE_STORAGE_PATH + url.substring(BASE_URL.length())) // 파일 경로로 변환한다...
+                .toList();
     }
 }
