@@ -118,6 +118,28 @@ public class MyFileUtils {
         return reviewImagePath;
     }
 
+    // 리뷰 사진 삭제
+    public boolean deleteExistImage(List<String> imageURlList) {
+
+        // 경로 변환
+        List<String> imagePathList = convertUrlToPath(imageURlList);
+        boolean result = true;
+
+        for (String imagePath : imagePathList) {
+            File file = new File(imagePath);
+            if(file.exists()) {
+                if(file.delete()) {
+                    result = true;
+                } else {
+                    result = false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return result;
+    }
+
     // 파일 경로 브라우저 -> WSL2 내부 경로로 변환
     public static List<String> convertUrlToPath(List<String> imageUrlList) {
         return imageUrlList.stream()

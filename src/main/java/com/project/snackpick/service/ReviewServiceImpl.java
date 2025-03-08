@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -178,5 +179,55 @@ public class ReviewServiceImpl implements ReviewService {
                 , "message", "리뷰가 삭제되었습니다."
                 , "redirectUrl", "/product/productDetail.page?productId=");
 
+    }
+
+    // 리뷰 수정
+    @Override
+    @Transactional
+    public Map<String, Object> updateReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] reviewImageList, CustomUserDetails user) {
+
+        ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
+
+        MemberEntity memberEntity = memberRepository.findById(user.getUsername())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+
+        ProductEntity productEntity = productRepository.findProductByProductId(reviewDTO.getProductId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
+
+        ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+
+        reviewEntity.setRatingTaste(reviewDTO.getRatingTaste());
+        reviewEntity.setRatingPrice(reviewDTO.getRatingPrice());
+        reviewEntity.setContent(reviewDTO.getContent());
+        reviewEntity.setLocation(reviewDTO.getLocation());
+        reviewEntity.setUpdateDt(LocalDateTime.now());
+
+        // reviewImage 삭제 후 다시 업로드
+        deleteReviewImage(reviewEntity);
+
+        // 리뷰 이미지 path 리스트 추출
+        insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
+
+        return Map.of("success", true
+                , "message", "리뷰가 수정되었습니다."
+                , "redirectUrl", "/product/productDetail.page?productId=" + productEntity.getProductId());
+
+    }
+
+    // 리뷰 이미지 삭제
+    @Override
+    public void deleteReviewImage(ReviewEntity reviewEntity) {
+
+        if(reviewEntity.getReviewImageEntityList().isEmpty()) {
+            return;
+        }
+
+        List<String> imageURlList = reviewEntity.getReviewImageEntityList().stream()
+                .map(ReviewImageEntity::getReviewImagePath)
+                .toList();
+
+        myFileUtils.deleteExistImage(imageURlList);
+        reviewEntity.getReviewImageEntityList().forEach(reviewImageRepository::delete);
     }
 }

@@ -67,4 +67,13 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
+    // 리뷰 수정
+    @PutMapping("/updateReview")
+    public ResponseEntity<Map<String, Object>> updateReview(@RequestPart("reviewRequest") ReviewRequestDTO reviewRequestDTO,
+                                                            @RequestPart(value = "reviewImageList", required = false) MultipartFile[] reviewImageList,
+                                                            @AuthenticationPrincipal CustomUserDetails user) {
+        Map<String, Object> response = reviewService.updateReview(reviewRequestDTO, reviewImageList, user);
+        return ResponseEntity.ok(response);
+    }
+
 }
