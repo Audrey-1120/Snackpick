@@ -517,16 +517,6 @@ const fnFinalCheck = () => {
 
 }
 
-// 폼의 입력값 JSON으로 변환
-function formToJson(form) {
-    let obj = {};
-    let formData = new FormData(form);
-    formData.forEach((value, key) => {
-        obj[key] = value;
-    });
-    return obj;
-}
-
 // 서버로 작성 폼 데이터 전송
 const fnWriteReview = () => {
 
@@ -568,7 +558,6 @@ const fnWriteReview = () => {
     if(fileInput.files.length > 0) {
         Array.from(fileInput.files).forEach(file => {
             formData.append('reviewImageList', file);
-            console.log('보내는 파일: ', file);
         })
     }
 
@@ -618,11 +607,11 @@ $('#review-image').on('change', fnCheckImagecount);
 $('.btn-deleteAllImage').on('click', () => {
     $('#review-image').val('');
     $('.image-preview').empty();
-})
+});
 
 $(document).on('click', '.image img', fnSelectRepresentImage);
 
-$('#write-form').on('submit', function(evt) {
+$('#write-form').on('submit', (evt) => {
     evt.preventDefault();
     fnFinalCheck();
 });

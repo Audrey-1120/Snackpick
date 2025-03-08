@@ -218,7 +218,7 @@ const fnGetReviewDetail = (evt) => {
         $('.rating-modal').html(str);
 
         // 프로필
-        $('.writerImage-modal').html(review.member.profileImage);
+        $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
         $('.writerProfile-modal p').html(review.member.nickname);
 
         // 리뷰 내용
@@ -285,4 +285,13 @@ $(document).on('click', '.btn-delete', (evt) => {
     if(confirm("리뷰를 삭제하시겠습니까?")) {
         fnDeleteReview(evt);
     }
+});
+
+// 리뷰 수정
+$(document).on('click', '.btn-update', (evt) => {
+    evt.stopPropagation();
+    let reviewId = $(evt.currentTarget).closest('.review-item').data('review-id');
+
+    // 리뷰 수정 페이지로 이동
+    location.href = "/review/reviewUpdate.page?reviewId=" + reviewId + '&productId=' + productId;
 });

@@ -184,7 +184,8 @@
 }
 
 /* 저장 버튼 */
-.btn-write {
+.btn-write,
+.btn-update {
     padding: 0.5rem 0.9rem;
     border: none;
     border-radius: 10%;
