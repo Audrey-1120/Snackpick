@@ -67,100 +67,51 @@ let reviewId = 0;
 let initForm;
 let fileChanged = false;
 
-let isFixed = {}; // 별점 그룹별로 고정 상태 저장
 let selectedRating = {}; // 별점 그룹별로 선택된 값 저장
 
 let ratingTaste = $('#taste-rating').data('ratingTaste');
 let ratingPrice = $('#price-rating').data('ratingPrice');
 
 
-// 별점 기능
-function fnRating(event) {
 
-    console.log('별점 기능');
+/******************** 함수 **********************/
 
-    let starsGroup = $(event.currentTarget).closest(".stars"); // 현재 별점 그룹
-    let index = $(event.currentTarget).data("index"); // 몇 번째 별인지
-    let halfPoint = $(event.currentTarget).offset().left + $(event.currentTarget).width() / 2; // 별의 중간 지점
-    let isHalf = event.pageX < halfPoint; // 마우스가 왼쪽에 있으면 반별
-
-    // 별점 업데이트
-    starsGroup.find("i").each(function () {
-        let starIndex = $(this).data("index");
-
-        if (starIndex < index) {
-            $(this).removeClass("bi-star bi-star-half").addClass("bi-star-fill"); // 완별
-        } else if (starIndex === index) {
-            $(this).removeClass("bi-star bi-star-fill").addClass(isHalf ? "bi-star-half" : "bi-star-fill"); // 반별 or 완별
-        } else {
-            $(this).removeClass("bi-star-fill bi-star-half").addClass("bi-star"); // 빈별
-        }
-    });
-
-}
-
-// 클릭 시 별점 고정시키는 함수
+// 클릭 시 별점 고정시키기
 function fnSetRating(event) {
 
-    let starsGroup = $(event.currentTarget).closest(".stars");
-    let index = $(event.currentTarget).data("index");
+    let starsGroup = $(event.currentTarget).closest('.stars');
+    let index = $(event.currentTarget).data('index');
     let halfPoint = $(event.currentTarget).offset().left + $(event.currentTarget).width() / 2;
     let isHalf = event.pageX < halfPoint;
 
-    // 선택된 별점 저장
-    selectedRating[starsGroup.attr("id")] = { score: index, isHalf: isHalf };
+    // 선택한 별점 저장
+    selectedRating[starsGroup.attr('id')] = { score: index, isHalf: isHalf };
 
-    fnRating(event); // 별점 업데이트
+    // 별점 업데이트 하기
+    fnUpdateStars(starsGroup, index, isHalf);
 }
 
-// 커서 뗄 경우 선택한 값 유지시키는 함수
-function fnResetStars(event) {
-    let starsGroup = $(event.currentTarget);
-    let ratingData = selectedRating[starsGroup.attr("id")];
+// 별점 업데이트 함수 (클릭한 값만 적용된다.)
+function fnUpdateStars(starsGroup, score, isHalf) {
+    starsGroup.find('i').each(function () {
+        let starIndex = $(this).data('index');
 
-    if (ratingData) {
-        let { score, isHalf } = ratingData;
-
-        starsGroup.find("i").each(function () {
-            let starIndex = $(this).data("index");
-
-            if (starIndex < score) {
-                $(this).removeClass("bi-star bi-star-half").addClass("bi-star-fill"); // 완별
-            } else if (starIndex === score) {
-                $(this).removeClass("bi-star bi-star-fill").addClass(isHalf ? "bi-star-half" : "bi-star-fill"); // 반별 유지
+        if (starIndex < score) {
+            $(this).removeClass("bi-star bi-star-half").addClass("bi-star-fill"); // 완별
+        } else if (starIndex === score) {
+            if (isHalf) {
+                $(this).removeClass("bi-star bi-star-fill").addClass("bi-star-half"); // 반별 유지
             } else {
-                $(this).removeClass("bi-star-fill bi-star-half").addClass("bi-star"); // 빈별
+                $(this).removeClass("bi-star bi-star-half").addClass("bi-star-fill"); // 완별 유지
             }
-        });
-    } else {
-        // 초기 별점 값 유지
-        fnInitializeStars(starsGroup);
-    }
-}
-
-function throttle(func, delay) {
-    let lastCall = 0;
-    let timeoutId = null;
-
-    return function (...args) {
-        let now = new Date().getTime();
-
-        if (now - lastCall >= delay) {
-            lastCall = now;
-            func.apply(this, args);
         } else {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                lastCall = new Date().getTime();
-                func.apply(this, args);
-            }, delay);
-
+            $(this).removeClass("bi-star-fill bi-star-half").addClass("bi-star"); // 빈별
         }
-    };
+
+    });
 }
 
 
-/******************** 함수 **********************/
 // 이미지 사이즈 제한
 const fnIsOverSize = (file) => {
     const maxSize = 1024 * 1024 * 5; // 5MB 사이즈 제한
@@ -343,15 +294,6 @@ const fnFinalCheck = () => {
 
 }
 
-// 폼의 입력값 JSON으로 변환
-const formToJson = (form) => {
-    let obj = {};
-    let formData = new FormData(form);
-    formData.forEach((value, key) => {
-        obj[key] = value;
-    });
-    return obj;
-}
 
 // 서버로 작성할 폼 데이터 전송
 const fnUpdateReview = () => {
@@ -431,11 +373,7 @@ $(document).ready(() => { // 지도에 해당 편의점 위치 띄우기
 
 });
 
-let throttledUpdate = throttle(fnRating, 25); // 50ms 마다 실행된다.
-
-$(".stars i").on("mousemove", throttledUpdate);
-$(".stars i").on("click", fnSetRating);
-$(".stars").on("mouseleave", fnResetStars);
+$('.stars').on('click', 'i', fnSetRating);
 
 $('#review-image').on('change', fnCheckImagecount);
 

@@ -82,119 +82,40 @@ let ratingPrice = 0;
 
 /******************** 함수 **********************/
 
-// 별점 기능
-function fnRating(event) {
+// 클릭 시 별점 고정시키기..
+function fnSetRating(event) {
 
-    console.log('별점 기능');
+    let starsGroup = $(event.currentTarget).closest('.stars');
+    let index = $(event.currentTarget).data('index'); // 클릭한 별의 인덱스!
+    let halfPoint = $(event.currentTarget).offset().left + $(event.currentTarget).width() / 2;
+    let isHalf = event.pageX < halfPoint; // 클릭 위치가 왼쪽이면 반별
 
-    let starsGroup = $(event.currentTarget).closest(".stars"); // 선택한 게 맛 별점인지 가격 별점인지
-    // event.currentTarget = 현재 커서가 올라간 별
+    // 선택한 별점 저장
+    selectedRating[starsGroup.attr('id')] = { score: index, isHalf: isHalf };
 
-    let halfPoint = $(event.currentTarget).offset().left + $(event.currentTarget).width() / 2; // 별의 왼쪽과 오른쪽 구분하는 기준!
-    let index = $(event.currentTarget).data("index"); // 몇번째 별인가? (별의 인덱스)
-    let isHalf = event.pageX < halfPoint; // 클릭한 부분의 좌표
-    // event.pageX < halfPoint -> 마우스 위치가 왼쪽일 경우 반별, 오른쪽일 경우 완별.
+    // 별점 업데이트..
+    fnUpdateStars(starsGroup, index, isHalf);
+}
 
-    starsGroup.find("i").each(function () {
-        // each()로 별 순회
-        // 선택한 별보다 왼쪽 -> 완별(이미 선택한 별이므로)
-        // 선택한 별인 경우 -> 반별 or 완별
-        // 선택한 별보다 오른쪽인 경우 -> 빈별
+// 별점 업데이트 함수
+function fnUpdateStars(starsGroup, score, isHalf) {
+    starsGroup.find('i').each(function () {
+        let starIndex = $(this).data('index');
 
-        let starIndex = $(this).data("index");
-        if (starIndex < index) {
+        if (starIndex < score) {
             $(this).removeClass("bi-star bi-star-half").addClass("bi-star-fill"); // 완별
-        } else if (starIndex === index) {
-            $(this).removeClass("bi-star bi-star-fill");
-            $(this).addClass(isHalf ? "bi-star-half" : "bi-star-fill"); // 반별 or 완별 적용
+        } else if (starIndex === score) {
+            if (isHalf) {
+                $(this).removeClass("bi-star bi-star-fill").addClass("bi-star-half"); // 반별 유지
+            } else {
+                $(this).removeClass("bi-star bi-star-half").addClass("bi-star-fill"); // 완별 유지
+            }
         } else {
             $(this).removeClass("bi-star-fill bi-star-half").addClass("bi-star"); // 빈별
         }
+
     });
-
 }
-
-// 클릭 시 별점 고정시키는 함수
-function fnSetRating(event) {
-    let starsGroup = $(event.currentTarget).closest(".stars"); // 선택한 게 맛 별점인지 가격 별점인지
-    let index = $(event.currentTarget).data("index"); // 몇번째 별인가? (별의 인덱스)
-    let halfPoint = $(event.currentTarget).offset().left + $(event.currentTarget).width() / 2; // 별의 왼쪽과 오른쪽 구분하는 기준!
-    let isHalf = event.pageX < halfPoint; // 클릭한 부분의 좌표 (왼쪽이면 반별, 오른쪽이면 완별)
-
-    // 선택된 별점과 반별 여부 저장
-    selectedRating[starsGroup.attr("id")] = { score: index, isHalf: isHalf }; // score는 지금 선택한 index, isHalf는 왼쪽 혹은 오른쪽
-
-    /**
-     * {
-     *     "taste-rating": {score: 3, isHalf: true},  // 맛 별 별점 선택한다면..
-     *     "price-rating": {score: 4, isHalf: false}, // 가격 별 맛점 선택한다면..
-     * }
-     *  여기서 이제 score는 몇번째 별까지 선택되었는가?
-     *  isHalf: true -> 반별이 선택되었다.(0.5점!)
-     */
-    fnRating(event); // 별점 업데이트
-}
-
-// 커서 뗄 경우 선택한 값 유지시키는 함수
-function fnResetStars(event) {
-    let starsGroup = $(event.currentTarget);
-    let ratingData = selectedRating[starsGroup.attr("id")]; // "taste-rating": {scroe: 3, isHalf: true}
-
-    if (ratingData) {
-        let {score, isHalf} = ratingData; // 저장된 값 불러오기
-
-        starsGroup.find("i").each(function () { // 선택한 별점의 별 5개를 가져와서 each문 돌린다.
-            let starIndex = $(this).data("index");
-            if (starIndex < score) {
-                $(this).removeClass("bi-star bi-star-half").addClass("bi-star-fill"); // 완별
-            } else if (starIndex === score) {
-                $(this).removeClass("bi-star bi-star-fill");
-                $(this).addClass(isHalf ? "bi-star-half" : "bi-star-fill"); // 반별 유지
-            } else {
-                $(this).removeClass("bi-star-fill bi-star-half").addClass("bi-star"); // 빈별
-            }
-        });
-    }
-}
-
-// debouce와 throttle의 차이점
-// debounce : 여러 번 발생하는 이벤트에서 가장 마지막 이벤트 만을 실행되도록 한다. (입력창 자동완성 등에 많이 사용된다.) - (keyup, input, search)
-// throttle : 여러 번 발생하는 이벤트를 일정 시간 동안, 한번만 실행되도록 만든다. (스크롤 이벤트 등에 많이 사용됨.) (mousemove, scroll, resize)
-// moutmove이벤트는 마우스를 조금만 움직여도 계속 실행되기 때문에 성능에 부담이 갈 수 있다. 이 경우에는 throttle을 사용하는게 더 적당하다.
-    // 50ms마다 이벤트 실행하도록 제한을 둔다.
-
-
-// throttle에 대한 설명
-// throttle은 특정 시간 간격 마다 한 번씩만 실행되도록 제한하는 함수이다.
-    // 이를 통해 이벤트가 너무 자주 발생하는 것을 방지하고 성능을 최적화할 수 있다.
-
-
-function throttle(func, delay) {
-    let lastCall = 0; // 마지막으로 실행된 시간 기록 (초기값은 0이다.)
-    let timeoutId = null;
-
-    // 이제 내부에서 새로운 익명 함수를 반환한다.
-    return function (...args) {
-        let now = new Date().getTime(); // 현재 시간 (밀리초)
-
-        // 1. 첫 이벤트는 즉시 실행한다.
-        if (now - lastCall >= delay) { // 마지막 실행 이후 delay ms 이상 지나야 실행된다.
-            lastCall = now; // 현재 시간을 마지막 실행 시간으로 업데이트 한다.
-            func.apply(this, args); // 원래 함수 실행한다.
-        } else {
-            // 2. 이후에는 delay만큼 기다렸다가 실행
-            // 빠르게 움직이면 중간에 남아 있는 setTimeout()을 취소하고 새로운 setTimeout()을 설정한다.
-            clearTimeout(timeoutId);
-            // 마우스를 빠르게 움직이면 마지막 이벤트를 기준으로 실행된다.
-            timeoutId = setTimeout(() => {
-                lastCall = new Date().getTime();
-                func.apply(this, args);
-            }, delay);
-
-        }
-    };
-}
-
 
 // 제품 검색하기
 const fnSearchProduct = () => {
@@ -580,12 +501,7 @@ const fnWriteReview = () => {
 
 /******************** 이벤트 **********************/
 
-// 쓰로틀 적용 (50ms 간격)
-let throttledUpdate = throttle(fnRating, 25); // 50ms 마다 실행된다.
-
-$(".stars i").on("mousemove", throttledUpdate);
-$(".stars i").on("click", fnSetRating);
-$(".stars").on("mouseleave", fnResetStars);
+$('.stars').on('click', 'i', fnSetRating);
 
 $('.btn-ProductSearch').on('click', fnSearchProduct);
 

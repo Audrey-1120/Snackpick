@@ -38,20 +38,24 @@
               <!-- 맛 별점 -->
               <div class="stars-taste">
                 <p>맛</p>
-                <div th:each="num:${#numbers.sequence(1,5)}" id="taste-rating" class="stars" data-rating-taste="${review.ratingTaste}">
-                  <i th:if="${review.ratingTaste >= num}" class="bi bi-star-fill" th:data-index="${num}"></i>
-                  <i th:if="${review.ratingTaste > num - 1 and review.ratingTaste < num}" class="bi bi-star-half" th:data-index="${num}"></i>
-                  <i th:unless="${review.ratingTaste >= num or review.ratingTaste > num - 1}" class="bi bi-star" th:data-index="${num}"></i>
+                <div  id="taste-rating" class="stars" th:data-rating-taste="${review.ratingTaste}">
+                  <th:block th:each="num:${#numbers.sequence(1,5)}">
+                    <i th:if="${review.ratingTaste >= num}" class="bi bi-star-fill" th:data-index="${num}"></i>
+                    <i th:if="${review.ratingTaste > num - 1 and review.ratingTaste < num}" class="bi bi-star-half" th:data-index="${num}"></i>
+                    <i th:unless="${review.ratingTaste >= num or review.ratingTaste > num - 1}" class="bi bi-star" th:data-index="${num}"></i>
+                  </th:block>
                 </div>
               </div>
 
               <!-- 가격 별점 -->
               <div class="stars-price">
                 <p>가격</p>
-                <div th:each="num:${#numbers.sequence(1,5)}" id="price-rating" class="stars" data-rating-price="${review.ratingPrice}">
-                  <i th:if="${review.ratingPrice >= num}" class="bi bi-star-fill" th:data-index="${num}"></i>
-                  <i th:if="${review.ratingPrice > num - 1 and review.ratingPrice < num}" class="bi bi-star-half" th:data-index="${num}"></i>
-                  <i th:unless="${review.ratingPrice >= num or review.ratingPrice > num - 1}" class="bi bi-star" th:data-index="${num}"></i>
+                <div id="price-rating" class="stars" th:data-rating-price="${review.ratingPrice}">
+                  <th:block th:each="num:${#numbers.sequence(1,5)}">
+                    <i th:if="${review.ratingPrice >= num}" class="bi bi-star-fill" th:data-index="${num}"></i>
+                    <i th:if="${review.ratingPrice > num - 1 and review.ratingPrice < num}" class="bi bi-star-half" th:data-index="${num}"></i>
+                    <i th:unless="${review.ratingPrice >= num or review.ratingPrice > num - 1}" class="bi bi-star" th:data-index="${num}"></i>
+                  </th:block>
                 </div>
               </div>
             </div>
