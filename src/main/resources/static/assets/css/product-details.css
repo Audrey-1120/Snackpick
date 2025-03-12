@@ -90,7 +90,7 @@
 /* 리뷰 아이템 */
 .testimonial-item {
     text-align: justify;
-    padding: 1rem 1.3rem 0.7rem 1.3rem !important;
+    padding: 1rem 0.8rem 0.7rem 1.3rem !important;
 }
 
 /* 리뷰 아이템 p */
@@ -223,13 +223,12 @@
 .image {
     background-color: #ADADAD;
     flex-shrink: 0;
-    /*flex-basis: 150px;*/
-    /*min-width: 150px;*/
+    flex-basis: 40%;
 }
 
 .image img {
-    width: 200px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
 }
 
 /* 맛, 가격, 프로필 컨테이너 */

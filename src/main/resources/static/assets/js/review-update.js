@@ -1,4 +1,3 @@
-
 /******************** Kakao Maps API **********************/
 // 지도 띄우기
 var infowindow = new kakao.maps.InfoWindow({zIndex:1});
@@ -63,41 +62,36 @@ function displayMarker(place) {
 }
 
 /******************** 전역 변수 **********************/
-let isFixed = {}; // 별점 그룹별로 고정 상태 저장
+let productId = 0;
+let reviewId = 0;
+let initForm;
+let fileChanged = false;
+
 let selectedRating = {}; // 별점 그룹별로 선택된 값 저장
 
-let addProduct = false; // 제품 직접 입력 여부
-let ratingTaste = 0;
-let ratingPrice = 0;
+let ratingTaste = $('#taste-rating').data('ratingTaste');
+let ratingPrice = $('#price-rating').data('ratingPrice');
 
-/**
- * {
- *     "taste-rating": {score: 3, isHalf: true},
- *     "price-rating": {score: 4, isHalf: false},
- * }
- *  여기서 이제 score는 몇번째 별까지 선택되었는가?
- *  isHalf: true -> 반별이 선택되었다.(0.5점!)
- */
 
 
 /******************** 함수 **********************/
 
-// 클릭 시 별점 고정시키기..
+// 클릭 시 별점 고정시키기
 function fnSetRating(event) {
 
     let starsGroup = $(event.currentTarget).closest('.stars');
-    let index = $(event.currentTarget).data('index'); // 클릭한 별의 인덱스!
+    let index = $(event.currentTarget).data('index');
     let halfPoint = $(event.currentTarget).offset().left + $(event.currentTarget).width() / 2;
-    let isHalf = event.pageX < halfPoint; // 클릭 위치가 왼쪽이면 반별
+    let isHalf = event.pageX < halfPoint;
 
     // 선택한 별점 저장
     selectedRating[starsGroup.attr('id')] = { score: index, isHalf: isHalf };
 
-    // 별점 업데이트..
+    // 별점 업데이트 하기
     fnUpdateStars(starsGroup, index, isHalf);
 }
 
-// 별점 업데이트 함수
+// 별점 업데이트 함수 (클릭한 값만 적용된다.)
 function fnUpdateStars(starsGroup, score, isHalf) {
     starsGroup.find('i').each(function () {
         let starIndex = $(this).data('index');
@@ -117,126 +111,6 @@ function fnUpdateStars(starsGroup, score, isHalf) {
     });
 }
 
-// 제품 검색하기
-const fnSearchProduct = () => {
-
-    // 제품명
-    let searchKeyword = $('.modal-body input').val();
-
-    if(searchKeyword === '') {
-        $('.modal-body input').focus();
-        return;
-    }
-    // /product/searchProduct 경로로 보내기
-    axios.get('/product/searchProduct', {
-        params: {
-            searchKeyword: searchKeyword
-        }
-    })
-        .then((response) => {
-            console.log("searchResult", response.data.productList);
-            fnShowSearchResult(response.data.productList);
-        })
-        .catch((error) => {
-            alert('검색 중 오류가 발생하였습니다.');
-        })
-
-}
-
-// 제품 검색 결과 보여주기
-const fnShowSearchResult = (productList) => {
-
-    /*
-        {
-        "productList": [
-            {
-                "productId": 1,
-                "reviewCount": 2,
-                "productName": "새우깡",
-                "subCategory": "과자",
-                "topCategory": "스낵/과자류",
-                "ratingTasteAverage": 4.5,
-                "ratingPriceAverage": 3.5
-                }
-            ]
-        }
-
-     */
-
-    let container = $('.product-search');
-    container.empty();
-
-    // 결과가 없을 경우, 직접 입력으로 변경한다.
-    if(productList.length === 0) {
-
-        let str = '<div class="product-item no-content">';
-        str += '<p>검색 결과가 없습니다. 직접 등록하기.</p>';
-        str += '</div>';
-
-        container.append(str);
-        return;
-    }
-
-    // 결과가 있을 경우
-    $.each(productList, function (i, item) {
-
-        let str = '<div class="product-item">';
-        str += '<p>' + item.productName + '</p>';
-        str += '<input type="hidden" value="' +item.productId + '">';
-        str += '<input type="hidden" value="' +item.topCategory + '">';
-        str += '<input type="hidden" value="' +item.subCategory + '">';
-        str += '</div>';
-
-        container.append(str);
-    });
-}
-
-// 아이템 클릭 시 input에 추가되기
-function fnAddProductName() {
-
-    // 기존 input
-    let defaultInput = $('.select-product input');
-
-    // input hidden 요소가 있다면 삭제(productId)
-    $('#productId').remove();
-
-    if($(this).hasClass('no-content')) {
-
-        // 1. 직접 입력 아이템 클릭 시
-
-        // input 이름 가져오기
-        let productName = $('.modal-body input').val();
-
-        // input에 값 할당해주기 - 이때 새 제품이므로 제품 번호는 필요 없음.
-        defaultInput.val(productName);
-
-        // 카테고리 섹션 안보이게
-        $('.review-category').css('display', 'block');
-
-        // 상품 직접 추가했는지 유무
-        addProduct = true;
-
-    } else {
-
-        // 2. 검색된 아이템 클릭 시
-        let productName = $(this).find('p').text();
-        let productId = $(this).find('input:eq(0)').val();
-
-        // input에 값 할당해주기 - 이때 새 제품이므로 제품 번호는 필요 없음.
-        defaultInput.val(productName);
-        defaultInput.after('<input type="hidden" id="productId" name="productId" value="' + productId + '">');
-
-        // 카테고리 섹션 안보이게
-        $('.review-category').css('display', 'none');
-
-        // 상품 직접 추가했는지 유무
-        addProduct = false;
-    }
-
-    // 모달 닫기
-    $('#search-modal').modal('hide');
-
-}
 
 // 이미지 사이즈 제한
 const fnIsOverSize = (file) => {
@@ -349,25 +223,6 @@ const fnCalculateRating = (list) => {
 // 빈값 검사
 const fnCheckEmpty = () => {
 
-    // 제품 추가 유무에 따라 카테고리 select 검사
-    if(addProduct) {
-        let topCategorySelect = $('#select-cat1 option:selected');
-        let subCategorySelect = $('#select-cat2 option:selected');
-
-        // 대분류/중분류 - 선택한 값의 val값이 0인 경우
-        if(topCategorySelect.val() === '0') {
-            alert('대분류를 선택해주세요.');
-            topCategorySelect.focus();
-            return false;
-        }
-
-        if(subCategorySelect.val() === '0') {
-            alert('중분류를 선택해주세요.');
-            subCategorySelect.focus();
-            return false;
-        }
-    }
-
     let productInput = $('.productName-input');
     let contentArea = $('.content-area');
     let locationInput = $('.location-input');
@@ -393,7 +248,7 @@ const fnCheckEmpty = () => {
     return true;
 }
 
-// 작성 버튼 클릭 시 최종 점검
+// 저장 버튼 클릭 시 최종 점검
 const fnFinalCheck = () => {
 
     // 1. 빈칸 검사
@@ -434,38 +289,39 @@ const fnFinalCheck = () => {
     $('#represent-index').val(representIndex);
 
     // 데이터 보내기
-    fnWriteReview();
+    fnUpdateReview();
+
 
 }
 
-// 서버로 작성 폼 데이터 전송
-const fnWriteReview = () => {
 
-    // form
-    // productDTO: productName, topCategory, subCategory
-    // reviewDTO: content, location, reviewImage, productId(기존 제품 선택시), memberId:1, ratingTaste, ratingPrice
-    // reviewRequestDTO: representIndex, addProduct
+// 서버로 작성할 폼 데이터 전송
+const fnUpdateReview = () => {
 
-    let form = $('#write-form')[0];
+    /*
+        reviewId
+        productId
+        rating_taste
+        rating_price
+        content
+        location
+        update_dt
+     */
+
+    let form = $('#update-form')[0];
     let formData = new FormData(form);
 
-    // 폼 데이터 -> DTO 구조.. JSON 변환
+    // 폼 데이터 -> DTO 구조
     let reviewRequestDTO = {
-        productDTO: {
-            productName: $('.productName-input').val(),
-            topCategory: $('#select-cat1 option:selected').val(),
-            subCategory: $('#select-cat2 option:selected').val()
-
-        },
         reviewDTO: {
+            reviewId: reviewId,
+            productId: productId,
             ratingTaste: ratingTaste,
             ratingPrice: ratingPrice,
-            productId: $('#productId').val(),
             content: $('.content-area').val(),
             location: $('.location-input').val()
         },
-        representIndex: $('#represent-index').val(),
-        addProduct: addProduct
+        representIndex: $('#represent-index').val()
     }
 
     // JSON blob으로 변환 후 FormData에 추가
@@ -482,7 +338,7 @@ const fnWriteReview = () => {
         })
     }
 
-    axios.post('/review/insertReview', formData, {
+    axios.put('/review/updateReview', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -495,30 +351,51 @@ const fnWriteReview = () => {
             alert(response.data.message);
         }
     }).catch((error) => {
-        alert('리뷰 작성에 실패하였습니다.');
+        alert('리뷰 수정에 실패하였습니다.');
     });
+
 }
 
+
 /******************** 이벤트 **********************/
+$(document).ready(() => { // 지도에 해당 편의점 위치 띄우기
+
+    const urlParams = new URL(location.href).searchParams;
+    productId = urlParams.get('productId');
+    reviewId = urlParams.get('reviewId');
+
+    searchCon();
+
+    $('.location-input').val($('.location-final').text());
+
+    initForm = $('#update-form').serializeArray();
+
+
+});
 
 $('.stars').on('click', 'i', fnSetRating);
 
-$('.btn-ProductSearch').on('click', fnSearchProduct);
+$('#review-image').on('change', fnCheckImagecount);
 
-$(document).on('click', '.product-item', fnAddProductName);
-
-$('#search-modal').on('show.bs.modal', () => {
-
-    // 모달 초기화
-    let container = $('.product-search');
-    container.empty();
-    $('#product-name').val('');
-
+$('input[type="file"]').on('change', () => {
+    fileChanged = true;
 });
 
 $('.btn-LocationSearch').on('click', searchCon);
 
-$('#review-image').on('change', fnCheckImagecount);
+$('#update-form input, #update-form textarea').on('keyup change', () => {
+
+    // 현재 폼
+    let currentForm = $('#update-form').serializeArray();
+
+    // 현재 폼과 초기 폼 데이터 비교
+    if(!_.isEqual(currentForm, initForm) || fileChanged) {
+        $('.btn-update').prop('disabled', false);
+    } else {
+        $('.btn-update').prop('disabled', true);
+    }
+
+});
 
 $('.btn-deleteAllImage').on('click', () => {
     $('#review-image').val('');
@@ -527,7 +404,7 @@ $('.btn-deleteAllImage').on('click', () => {
 
 $(document).on('click', '.image img', fnSelectRepresentImage);
 
-$('#write-form').on('submit', (evt) => {
+$('#update-form').on('submit', (evt) => {
     evt.preventDefault();
     fnFinalCheck();
-});
+})

@@ -18,6 +18,9 @@ public interface ReviewService {
     // 리뷰 이미지 저장
     void insertReviewImage(MultipartFile[] reviewImageList, ReviewEntity reviewEntity, int representIndex);
 
+    // 리뷰 이미지 삭제
+    void deleteReviewImage(ReviewEntity reviewEntity);
+
     // 리뷰 리스트 조회
     PageDTO<ReviewDTO> getReviewList(Pageable pageable, int productNo);
 
@@ -26,5 +29,8 @@ public interface ReviewService {
 
     // 리뷰 삭제
     Map<String, Object> deleteReview(int reviewId, CustomUserDetails user);
+
+    // 리뷰 수정
+    Map<String, Object> updateReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] reviewImageList, CustomUserDetails user);
 
 }
