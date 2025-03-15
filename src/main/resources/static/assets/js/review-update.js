@@ -72,8 +72,6 @@ let selectedRating = {}; // 별점 그룹별로 선택된 값 저장
 let ratingTaste = $('#taste-rating').data('ratingTaste');
 let ratingPrice = $('#price-rating').data('ratingPrice');
 
-
-
 /******************** 함수 **********************/
 
 // 클릭 시 별점 고정시키기
