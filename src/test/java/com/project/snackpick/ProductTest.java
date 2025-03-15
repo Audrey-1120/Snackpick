@@ -16,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional // 각각의 테스트 메소드에 대해서 트랜잭션 시작한 후 테스트가 종료되면 롤백한다.
-public class ProductInquiryTest {
+public class ProductTest {
 
     private final ProductService productService;
 
     @Autowired
-    public ProductInquiryTest(ProductService productService) {
+    public ProductTest(ProductService productService) {
         this.productService = productService;
     }
 
