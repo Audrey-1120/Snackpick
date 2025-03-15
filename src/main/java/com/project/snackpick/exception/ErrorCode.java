@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "%s 처리 중 오류가 발생하였습니다."),
-    NOT_PERMISSION(HttpStatus.UNAUTHORIZED, "%s 권한이 없습니다."),
+    NOT_PERMISSION(HttpStatus.FORBIDDEN, "%s 권한이 없습니다."),
 
     NOT_FOUND_CATEGORY(HttpStatus.NOT_FOUND, "해당 카테고리 정보를 찾을 수 없습니다."),
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "해당 회원 정보를 찾을 수 없습니다."),
