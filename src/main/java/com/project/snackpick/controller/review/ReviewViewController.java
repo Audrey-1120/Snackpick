@@ -6,6 +6,7 @@ import com.project.snackpick.dto.ReviewDTO;
 import com.project.snackpick.service.CategoryService;
 import com.project.snackpick.service.ProductService;
 import com.project.snackpick.service.ReviewService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,7 @@ public class ReviewViewController {
 
     // 리뷰 작성 페이지 이동
     @GetMapping("/reviewWrite.page")
+    @Operation(summary = "리뷰 작성 페이지 이동", description = "리뷰 작성 페이지로 이동")
     @PreAuthorize("isAuthenticated()")
     public String reviewWrite(@RequestParam(required = false, defaultValue = "0") int productId, Model model) {
 
@@ -48,6 +50,8 @@ public class ReviewViewController {
 
     // 리뷰 수정 페이지로 이동
     @GetMapping("/reviewUpdate.page")
+    @Operation(summary = "리뷰 수정 페이지 이동", description = "리뷰 수정 페이지로 이동")
+    @PreAuthorize("isAuthenticated()")
     public String reviewUpdate(@RequestParam int reviewId,
                                @RequestParam int productId,
                                Model model) {

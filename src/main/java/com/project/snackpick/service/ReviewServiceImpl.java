@@ -188,14 +188,17 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
 
-        MemberEntity memberEntity = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+        ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+
+        // 리뷰 작성자 memberId와 현재 로그인한 유저의 id가 같아야 함.
+        if(reviewEntity.getMemberEntity().getMemberId() != user.getMemberId()) {
+            throw new CustomException(ErrorCode.NOT_PERMISSION,
+                    ErrorCode.NOT_PERMISSION.formatMessage("리뷰 수정"));
+        }
 
         ProductEntity productEntity = productRepository.findProductByProductId(reviewDTO.getProductId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
-
-        ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
         reviewEntity.setRatingTaste(reviewDTO.getRatingTaste());
         reviewEntity.setRatingPrice(reviewDTO.getRatingPrice());
