@@ -3,6 +3,10 @@ $('.btn-search').on('click', () => {
     fnSearch();
 });
 
+$(document).on('click', '.none-item', () => {
+    location.href='/review/reviewWrite.page'
+})
+
 /******************** 함수 **********************/
 
 // 검색 버튼
@@ -51,7 +55,7 @@ const fnShowSearchResult = (productList) => {
     // 결과가 없을 경우
     if(productList.length === 0) {
         let str = '<div class="col-md-6" data-aos="fade-up" data-aos-delay="500">';
-        str += '<div class="service-item d-flex position-relative h-100">';
+        str += '<div class="service-item none-item d-flex position-relative h-100">';
         str += '<div class="d-flex gap-2">';
         str += '<p class="description">등록된 제품이 없습니다. 상품을 직접 등록하고 리뷰를 작성해보세요!</p>';
         str += '<a href="#" class="stretched-link"><i class="fa-solid fa-plus"></i></a>';
