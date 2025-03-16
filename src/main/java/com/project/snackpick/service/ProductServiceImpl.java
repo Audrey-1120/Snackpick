@@ -1,6 +1,7 @@
 package com.project.snackpick.service;
 
 import com.project.snackpick.dto.ProductDTO;
+import com.project.snackpick.dto.UpdateRatingDTO;
 import com.project.snackpick.entity.CategoryEntity;
 import com.project.snackpick.entity.ProductEntity;
 import com.project.snackpick.exception.CustomException;
@@ -77,14 +78,34 @@ public class ProductServiceImpl implements ProductService {
     // 제품 평점 총합 및 리뷰 개수 업데이트
     @Override
     @Transactional
-    public void updateProductRating(int productId, double ratingTaste, double ratingPrice) {
+    public void updateProductRating(UpdateRatingDTO rating) {
 
-        ProductEntity productEntity = productRepository.findProductByProductId(productId)
+        ProductEntity productEntity = productRepository.findProductByProductId(rating.getProductId())
                         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
 
-        productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() + ratingTaste);
-        productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() + ratingPrice);
-        productEntity.setReviewCount(productEntity.getReviewCount() + 1);
+        switch (rating.getAction()) {
+            case INSERT:
+                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() + rating.getNewRatingTaste());
+                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() + rating.getNewRatingPrice());
+                productEntity.setReviewCount(productEntity.getReviewCount() + 1);
+                break;
+
+            case UPDATE:
+                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() - rating.getOldRatingTaste() + rating.getNewRatingTaste());
+                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() - rating.getOldRatingPrice() + rating.getNewRatingPrice());
+                break;
+
+            case DELETE:
+                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() - rating.getOldRatingTaste());
+                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() - rating.getOldRatingPrice());
+                productEntity.setReviewCount(productEntity.getReviewCount() - 1);
+                break;
+
+            default:
+                throw new CustomException(ErrorCode.SERVER_ERROR,
+                        ErrorCode.SERVER_ERROR.formatMessage("제품의 평점 업데이트"));
+        }
+
     }
 
 }

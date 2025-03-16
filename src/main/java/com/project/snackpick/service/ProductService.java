@@ -1,6 +1,7 @@
 package com.project.snackpick.service;
 
 import com.project.snackpick.dto.ProductDTO;
+import com.project.snackpick.dto.UpdateRatingDTO;
 import com.project.snackpick.entity.ProductEntity;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface ProductService {
     ProductEntity insertProduct(ProductDTO productDTO);
 
     // 제품 평점 총합, 리뷰 개수 업데이트
-    void updateProductRating(int productId, double ratingTaste, double ratingPrice);
+    void updateProductRating(UpdateRatingDTO updateRatingDTO);
 
 
 }

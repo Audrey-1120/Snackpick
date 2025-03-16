@@ -71,7 +71,16 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(reviewEntity);
 
         // 제품 평점 합, 리뷰 개수 업데이트
-        productService.updateProductRating(productEntity.getProductId(), reviewEntity.getRatingTaste(), reviewEntity.getRatingPrice());
+        UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
+                productEntity.getProductId(),
+                0,
+                0,
+                reviewEntity.getRatingTaste(),
+                reviewEntity.getRatingPrice(),
+                ReviewAction.INSERT
+        );
+
+        productService.updateProductRating(updateRatingDTO);
 
         // 첨부한 리뷰 이미지 있을 시 저장
         if(reviewImageList != null) {
@@ -175,9 +184,20 @@ public class ReviewServiceImpl implements ReviewService {
 
         review.setState(true);
 
+        // 제품 평점 합, 리뷰 개수 업데이트
+        UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
+                review.getProductEntity().getProductId(),
+                review.getRatingTaste(),
+                review.getRatingPrice(),
+                0,
+                0,
+                ReviewAction.DELETE
+        );
+
+        productService.updateProductRating(updateRatingDTO);
+
         return Map.of("success", true
-                , "message", "리뷰가 삭제되었습니다."
-                , "redirectUrl", "/product/productDetail.page?productId=");
+                , "message", "리뷰가 삭제되었습니다.");
 
     }
 
@@ -190,6 +210,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+
+        double oldRatingTaste = reviewEntity.getRatingTaste();
+        double oldRatingPrice = reviewEntity.getRatingPrice();
 
         // 리뷰 작성자 memberId와 현재 로그인한 유저의 id가 같아야 함.
         if(reviewEntity.getMemberEntity().getMemberId() != user.getMemberId()) {
@@ -205,6 +228,18 @@ public class ReviewServiceImpl implements ReviewService {
         reviewEntity.setContent(reviewDTO.getContent());
         reviewEntity.setLocation(reviewDTO.getLocation());
         reviewEntity.setUpdateDt(LocalDateTime.now());
+
+        // 제품 평점 합, 리뷰 개수 업데이트
+        UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
+                productEntity.getProductId(),
+                oldRatingTaste,
+                oldRatingPrice,
+                reviewDTO.getRatingTaste(),
+                reviewDTO.getRatingPrice(),
+                ReviewAction.UPDATE
+        );
+
+        productService.updateProductRating(updateRatingDTO);
 
         // reviewImage 삭제 후 다시 업로드
         deleteReviewImage(reviewEntity);
