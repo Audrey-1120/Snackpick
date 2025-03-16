@@ -13,7 +13,9 @@ import lombok.NoArgsConstructor;
 public class ReviewRequestDTO {
 
     private boolean addProduct;
+    private boolean deleteAllImageList;
     private int representIndex;
+    private int representImageId;
     private ReviewDTO reviewDTO;
     private ProductDTO productDTO;
 

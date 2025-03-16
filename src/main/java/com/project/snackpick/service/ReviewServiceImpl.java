@@ -241,11 +241,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         productService.updateProductRating(updateRatingDTO);
 
-        // reviewImage 삭제 후 다시 업로드
-        deleteReviewImage(reviewEntity);
-
-        // 리뷰 이미지 path 리스트 추출
-        insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
+        if (reviewRequestDTO.isDeleteAllImageList()) { // case 1: 리뷰 이미지 모두 삭제한 경우
+            deleteReviewImage(reviewEntity);
+        } else if (reviewImageList != null) { // case 2: 리뷰 이미지 새로 추가한 경우
+            deleteReviewImage(reviewEntity);
+            insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
+        } else if (reviewRequestDTO.getRepresentImageId() != 0) { // case 3: 기존 이미지는 유지하되, 대표 이미지만 변경하는 경우
+            updateRepresentImage(reviewRequestDTO.getRepresentImageId(), reviewEntity);
+        }
 
         return Map.of("success", true
                 , "message", "리뷰가 수정되었습니다."
@@ -267,5 +270,20 @@ public class ReviewServiceImpl implements ReviewService {
 
         myFileUtils.deleteExistImage(imageURlList);
         reviewEntity.getReviewImageEntityList().forEach(reviewImageRepository::delete);
+    }
+
+    // 리뷰 이미지 대표 여부 설정
+    @Override
+    public void updateRepresentImage(int reviewImageId, ReviewEntity reviewEntity) {
+
+        List<ReviewImageEntity> reviewImageList = reviewEntity.getReviewImageEntityList();
+
+        for(ReviewImageEntity reviewImage : reviewImageList) {
+            if(reviewImage.getReviewImageId() == reviewImageId) {
+                reviewImage.setRepresent(true);
+            } else {
+                reviewImage.setRepresent(false);
+            }
+        }
     }
 }

@@ -64,8 +64,15 @@ function displayMarker(place) {
 /******************** 전역 변수 **********************/
 let productId = 0;
 let reviewId = 0;
+
 let initForm;
+let initRepresentIndex = 0;
+let initRatingTaste = 0;
+let initRatingPrice = 0;
+
 let fileChanged = false;
+let representImageId = 0;
+let deleteAllImageList = false;
 
 let selectedRating = {}; // 별점 그룹별로 선택된 값 저장
 
@@ -193,9 +200,33 @@ const fnSelectRepresentImage = (evt) => {
 
     let imageDiv = $(evt.currentTarget).closest('.image');
     let currentImage = $('.is-represent');
+    representImageId = $(evt.currentTarget).data('reviewImage');
 
     currentImage.removeClass('is-represent');
     imageDiv.addClass('is-represent');
+
+    fnRepresentIndex();
+
+}
+
+// 대표 이미지 인덱스 지정
+const fnRepresentIndex = () => {
+
+    let imageDivs = $('.image');
+    let representIndex = -1;
+
+    imageDivs.each(function(index) {
+        if($(this).hasClass('is-represent')) {
+            representIndex = index;
+        }
+    });
+
+    // 이미지가 한장일 경우
+    if(imageDivs.length === 1) {
+        representIndex = 0;
+    }
+
+    $('#represent-index').val(representIndex);
 
 }
 
@@ -216,6 +247,23 @@ const fnCalculateRating = (list) => {
         }
     });
     return rating;
+}
+
+// 저장 버튼 활성화 여부
+const fnActivateUpdateBtn = () => {
+
+    // 현재 폼 데이터 가져오기
+    let currentForm = $('#update-form').serializeArray();
+    let formChange = !_.isEqual(currentForm, initForm) || fileChanged;
+
+    // 현재 별점 가져오기
+    let currentTasteRating = fnCalculateRating($('#taste-rating i'));
+    let currentPriceRating = fnCalculateRating($('#price-rating i'));
+    let ratingChange = initRatingTaste !== currentTasteRating || initRatingPrice !== currentPriceRating;
+
+    // 폼 데이터나 별점 중 하나라도 변경되었으면 버튼 활성화
+    $('.btn-update').prop('disabled', !(formChange || ratingChange || deleteAllImageList));
+
 }
 
 // 빈값 검사
@@ -271,24 +319,8 @@ const fnFinalCheck = () => {
         return;
     }
 
-    // 3. 이미지 대표 이미지로 설정
-    // 대표 이미지가 설정된 div가 image 리스트에서 몇번째인지 찾는다.
-    // 해당 인덱스를 hidden index에 찾는다.
-    let files = $('#review-image')[0].files;
-    let imageDivs = $('.image');
-    let representIndex = -1;
-
-    imageDivs.each(function(index) {
-        if($(this).hasClass('is-represent')) {
-            representIndex = index;
-        }
-    });
-
-    $('#represent-index').val(representIndex);
-
     // 데이터 보내기
     fnUpdateReview();
-
 
 }
 
@@ -319,8 +351,10 @@ const fnUpdateReview = () => {
             content: $('.content-area').val(),
             location: $('.location-input').val()
         },
-        representIndex: $('#represent-index').val()
-    }
+        representIndex: $('#represent-index').val(),
+        representImageId: representImageId, // 대표 이미지 ID 추가
+        deleteAllImageList: deleteAllImageList // 이미지 모두 삭제 후 추가여부
+    };
 
     // JSON blob으로 변환 후 FormData에 추가
     const jsonBlob = new Blob([JSON.stringify(reviewRequestDTO)], {
@@ -329,11 +363,15 @@ const fnUpdateReview = () => {
     formData.append("reviewRequest", jsonBlob);
 
     // 파일 input 처리하기
-    let fileInput = $('#review-image')[0];
-    if(fileInput.files.length > 0) {
-        Array.from(fileInput.files).forEach(file => {
-            formData.append('reviewImageList', file);
-        })
+    if(fileChanged) { // 새로 추가된 이미지가 있는지
+
+        let fileInput = $('#review-image')[0];
+        if(fileInput.files.length > 0) {
+            Array.from(fileInput.files).forEach(file => {
+                formData.append('reviewImageList', file);
+            })
+        }
+
     }
 
     axios.put('/review/updateReview', formData, {
@@ -366,41 +404,51 @@ $(document).ready(() => { // 지도에 해당 편의점 위치 띄우기
 
     $('.location-input').val($('.location-final').text());
 
-    initForm = $('#update-form').serializeArray();
+    fnRepresentIndex();
 
+    // 초기값 저장
+    initForm = $('#update-form').serializeArray();
+    initRatingTaste = $('#taste-rating').data('ratingTaste');
+    initRatingPrice = $('#price-rating').data('ratingPrice');
+    initRepresentIndex = $('#represent-index').val();
 
 });
 
-$('.stars').on('click', 'i', fnSetRating);
+$('.stars').on('click', 'i', (evt) => {
+    fnSetRating(evt);
+    fnActivateUpdateBtn();
+});
 
 $('#review-image').on('change', fnCheckImagecount);
 
 $('input[type="file"]').on('change', () => {
     fileChanged = true;
+    deleteAllImageList = false; // 이미지 추가했으므로 false;
+    fnRepresentIndex(); // 대표이미지 설정
 });
 
 $('.btn-LocationSearch').on('click', searchCon);
 
 $('#update-form input, #update-form textarea').on('keyup change', () => {
-
-    // 현재 폼
-    let currentForm = $('#update-form').serializeArray();
-
-    // 현재 폼과 초기 폼 데이터 비교
-    if(!_.isEqual(currentForm, initForm) || fileChanged) {
-        $('.btn-update').prop('disabled', false);
-    } else {
-        $('.btn-update').prop('disabled', true);
-    }
-
+    fnActivateUpdateBtn();
 });
 
 $('.btn-deleteAllImage').on('click', () => {
     $('#review-image').val('');
     $('.image-preview').empty();
+    representImageId = 0; // 대표 이미지 변수 초기화
+    deleteAllImageList = true; // 이미지 모두 삭제한 경우에만
+
+    fnActivateUpdateBtn(); // 버튼 활성화
 });
 
-$(document).on('click', '.image img', fnSelectRepresentImage);
+$(document).on('click', '.image img', (evt) => {
+    fnSelectRepresentImage(evt);
+    if(initRepresentIndex !== $('#represent-index').val()) {
+        $('.btn-update').prop('disabled', false);
+    }
+
+});
 
 $('#update-form').on('submit', (evt) => {
     evt.preventDefault();
