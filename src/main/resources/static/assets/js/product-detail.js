@@ -104,7 +104,11 @@ const fnShowResult = (reviewList) => {
         str += '<div class="testimonial-item">';
         str += '<div class="writer-profile">';
         str += '<div class="writer-image">';
-        str += '<img src="' + review.member.profileImage + '">';
+        if(review.member.profileImage !== '') {
+            str += '<img src="' + review.member.profileImage + '">';
+        } else {
+            str += '<img src="/assets/img/default-profile.jpg">';
+        }
         str += '</div>';
         str += '<p class="writer-name">' + review.member.nickname + '</p>';
         str += '</div>';
@@ -123,7 +127,7 @@ const fnShowResult = (reviewList) => {
         for(let i = 1; i <= 5; i++) {
             if(review.ratingTaste >= i) {
                 str += '<i class="bi bi-star-fill"></i>';
-            } else if((review.ratingTaste >= i - 1) && (review.ratingTaste < i)) {
+            } else if((review.ratingTaste > i - 1) && (review.ratingTaste < i)) {
                 str += '<i class="bi bi-star-half"></i>';
             } else {
                 str += '<i class="bi bi-star"></i>';
@@ -135,7 +139,7 @@ const fnShowResult = (reviewList) => {
         for(let i = 1; i <= 5; i++) {
             if(review.ratingPrice >= i) {
                 str += '<i class="bi bi-star-fill"></i>';
-            } else if((review.ratingPrice >= i - 1) && (review.ratingPrice < i)) {
+            } else if((review.ratingPrice > i - 1) && (review.ratingPrice < i)) {
                 str += '<i class="bi bi-star-half"></i>';
             } else {
                 str += '<i class="bi bi-star"></i>';

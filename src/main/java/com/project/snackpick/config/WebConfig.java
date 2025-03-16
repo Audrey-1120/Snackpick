@@ -12,10 +12,10 @@ public class WebConfig implements WebMvcConfigurer {
 
         // 리뷰 이미지
         registry.addResourceHandler("/images/review/**")
-                .addResourceLocations("file:/home/audrey/review/");
+                .addResourceLocations("file:/home/snackpickImage/review/");
 
         // 프로필 이미지
         registry.addResourceHandler("/images/profile/**")
-                .addResourceLocations("file:/home/audrey/profile/");
+                .addResourceLocations("file:/home/snackpickImage/profile/");
     }
 }
