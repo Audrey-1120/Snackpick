@@ -26,7 +26,7 @@ const fnSearch = () => {
         fnShowSearchResult(response.data.productList);
     })
     .catch((error) => {
-        alert('검색 중 오류가 발생하였습니다.');
+        alert(error.response.data.message);
     })
 }
 

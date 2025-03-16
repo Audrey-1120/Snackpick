@@ -138,7 +138,7 @@ const fnSearchProduct = () => {
             fnShowSearchResult(response.data.productList);
         })
         .catch((error) => {
-            alert('검색 중 오류가 발생하였습니다.');
+            alert(error.response.data.message);
         })
 
 }
@@ -292,7 +292,7 @@ const fnCheckProfileImage = (fileInput) => {
 
         // 이미지 확장자 체크
         if(fnIsImage(file) === false) {
-            alert('이미지 파일만 첨부 가능합니다.')
+            alert('이미지 파일만 첨부 가능합니다.');
             $(fileInput).val('');
             return;
         }
@@ -493,7 +493,7 @@ const fnWriteReview = () => {
             alert(response.data.message);
         }
     }).catch((error) => {
-        alert('리뷰 작성에 실패하였습니다.');
+        alert(error.response.data.message);
     });
 }
 

@@ -52,7 +52,7 @@ const fnGetReviewList = (page, sort) => {
         }
     })
     .catch((error) => {
-        alert('리뷰를 로드하던 중 오류가 발생하였습니다.');
+        alert(error.response.data.message);
     })
 }
 
@@ -237,7 +237,7 @@ const fnGetReviewDetail = (evt) => {
 
     })
     .catch((error) => {
-        alert('리뷰를 로드하던 중 오류가 발생하였습니다.');
+        alert(error.response.data.message);
     })
 }
 
@@ -257,7 +257,7 @@ const fnDeleteReview = (evt) => {
         }
     })
     .catch((error) => {
-        alert('리뷰 삭제에 실패하였습니다.');
+        alert(error.response.data.message);
     })
 }
 

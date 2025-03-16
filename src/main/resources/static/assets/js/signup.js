@@ -168,7 +168,7 @@ const fnCheckDuplicate = (id) => {
             }
         })
         .catch((error) => {
-            console.log(error);
+            alert(error.response.data.message);
         });
 
     } else {
@@ -288,6 +288,6 @@ const fnSignup = () => {
                 alert(response.data.message);
             }
         }).catch((error) => {
-        alert("회원가입 중 오류가 발생했습니다.");
+        alert(error.response.data.message);
     })
 }
