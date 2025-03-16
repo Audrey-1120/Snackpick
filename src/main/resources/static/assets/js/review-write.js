@@ -278,23 +278,21 @@ const fnPreview = (fileInput) => {
 // 이미지 체크
 const fnCheckProfileImage = (fileInput) => {
 
-    let checkFileLabel = $('#image-preview + p');
+    let checkFileLabel = $('.image-preview + p');
     let files = Array.from(fileInput[0].files);
 
     files.forEach((file) => {
 
         // 사이즈 체크
-        if(!fnIsOverSize(file)) {
-            checkFileLabel.text('프로필 이미지는 5MB 이내로 업로드 해주세요.');
-            checkFileLabel.css('color', 'red');
+        if(fnIsOverSize(file) === false) {
+            alert('프로필 이미지는 5MB 이내로 업로드 해주세요.');
             $(fileInput).val('');
             return;
         }
 
         // 이미지 확장자 체크
-        if(!fnIsImage(file)) {
-            checkFileLabel.text('이미지 파일만 첨부 가능합니다.');
-            checkFileLabel.css('color', 'red');
+        if(fnIsImage(file) === false) {
+            alert('이미지 파일만 첨부 가능합니다.')
             $(fileInput).val('');
             return;
         }
