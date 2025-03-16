@@ -55,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
             memberRepository.save(member);
             return Map.of("success", true
                     , "message", "회원가입이 완료되었습니다."
-                    , "redirectUrl", "/login.page");
+                    , "redirectUrl", "/member/login.page");
 
         } catch(DataIntegrityViolationException e) {
             throw new CustomException(ErrorCode.MEMBER_DUPLICATE);

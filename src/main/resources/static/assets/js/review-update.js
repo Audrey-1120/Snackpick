@@ -164,16 +164,14 @@ const fnCheckProfileImage = (fileInput) => {
 
         // 사이즈 체크
         if(!fnIsOverSize(file)) {
-            checkFileLabel.text('프로필 이미지는 5MB 이내로 업로드 해주세요.');
-            checkFileLabel.css('color', 'red');
+            alert('프로필 이미지는 5MB 이내로 업로드 해주세요.');
             $(fileInput).val('');
             return;
         }
 
         // 이미지 확장자 체크
         if(!fnIsImage(file)) {
-            checkFileLabel.text('이미지 파일만 첨부 가능합니다.');
-            checkFileLabel.css('color', 'red');
+            alert('이미지 파일만 첨부 가능합니다.');
             $(fileInput).val('');
             return;
         }
@@ -387,7 +385,7 @@ const fnUpdateReview = () => {
             alert(response.data.message);
         }
     }).catch((error) => {
-        alert('리뷰 수정에 실패하였습니다.');
+        alert(error.response.data.message);
     });
 
 }
