@@ -222,7 +222,11 @@ const fnGetReviewDetail = (evt) => {
         $('.rating-modal').html(str);
 
         // 프로필
-        $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
+        if(review.member.profileImage !== '') {
+            $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
+        } else {
+            $('.writerImage-modal').html('<img src="/assets/img/default-profile.jpg">');
+        }
         $('.writerProfile-modal p').html(review.member.nickname);
 
         // 리뷰 내용
@@ -279,7 +283,8 @@ $('.btn-write').on('click', () => {
 });
 
 // 리뷰 상세 조회
-$(document).on('click', '.review-item', (evt) => {
+$(document).off('click', '.review-item').on('click', '.review-item', (evt) => {
+    evt.stopPropagation();
     fnGetReviewDetail(evt);
 });
 
