@@ -192,3 +192,7 @@
     background-color: #D9232D;
     color: white;
 }
+
+.btn-update:disabled {
+    background-color: gray;
+}

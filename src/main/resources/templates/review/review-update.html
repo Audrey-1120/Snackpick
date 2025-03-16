@@ -38,7 +38,7 @@
               <!-- 맛 별점 -->
               <div class="stars-taste">
                 <p>맛</p>
-                <div  id="taste-rating" class="stars" th:data-rating-taste="${review.ratingTaste}">
+                <div id="taste-rating" class="stars" th:data-rating-taste="${review.ratingTaste}">
                   <th:block th:each="num:${#numbers.sequence(1,5)}">
                     <i th:if="${review.ratingTaste >= num}" class="bi bi-star-fill" th:data-index="${num}"></i>
                     <i th:if="${review.ratingTaste > num - 1 and review.ratingTaste < num}" class="bi bi-star-half" th:data-index="${num}"></i>
@@ -72,7 +72,7 @@
                 <p class="location-final" th:text="${review.location}"></p>
               </div>
               <div class="location-input d-flex gap-2">
-                <input type="text" class="form-control mt-2 location-input" th:value="${review.location}">
+                <input type="text" class="form-control mt-2 location-input" th:value="${review.location}" name="location">
                 <i class="fa-solid fa-magnifying-glass btn-LocationSearch"></i>
               </div>
               <div id="map" class="kakao-map mt-2"></div>
@@ -95,7 +95,7 @@
               <div class="image-preview mt-2">
                 <th:block th:each="reviewImage : ${review.reviewImageList}">
                   <div class="image" th:classappend="${reviewImage.represent} ? 'is-represent'">
-                    <img th:src="${reviewImage.reviewImagePath}">
+                    <img th:src="${reviewImage.reviewImagePath}" th:data-review-image="${reviewImage.reviewImageId}">
                   </div>
                 </th:block>
               </div>

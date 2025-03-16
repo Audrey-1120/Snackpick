@@ -224,6 +224,7 @@
     background-color: #ADADAD;
     flex-shrink: 0;
     flex-basis: 40%;
+    height: 15vh;
 }
 
 .image img {
@@ -233,7 +234,7 @@
 
 /* 맛, 가격, 프로필 컨테이너 */
 .rating-modal {
-    width: 80%;
+    width: 70%;
 }
 
 /* 리뷰 상세 모달 - 작성자 프로필 사진 */
