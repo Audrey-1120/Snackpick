@@ -1,45 +1,14 @@
 /******************** 전역변수 **********************/
-let isValidId = false; // 아이디 유효성 검사 결과
-let isDuplicateChecked = false; // 중복 체크 여부
-let lastCheckedId = ""; // 마지막으로 중복 체크한 아이디
+let isValidId = false;
+let isDuplicateChecked = false;
+let lastCheckedId = "";
 
-let isValidPw = false; // 비밀번호 유효성 검사 결과
-let isValidName = false; // 이름 유효성 검사 결과
-let isValidNickname = false; // 닉네임 유효성 검사 결과
-
-
-/******************** 이벤트 **********************/
-$('#id').on('keyup', () => {
-    fnValidateId($('#id').val());
-});
-
-$('#password').on('keyup', () => {
-    fnValidatePw($('#password').val());
-});
-
-$('#name').on('keyup', () => {
-    fnValidateName($('#name').val());
-});
-
-$('#nickname').on('keyup', () => {
-    fnValidateNickname($('#nickname').val());
-});
-
-$('.btn-signup').on('click', (evt) => {
-    fnSignupFinalCheck(evt);
-})
-
-$('.btn-checkId').on('click', () => {
-    fnCheckDuplicate($('#id').val());
-});
-
-// 프로필 사진 미리보기
-$('#profileImage').on('change', (evt) => {
-    fnCheckProfileImage(evt);
-})
-
+let isValidPw = false;
+let isValidName = false;
+let isValidNickname = false;
 
 /******************** 함수 **********************/
+
 // 아이디 유효성 검사
 const fnValidateId = (id) => {
 
@@ -53,7 +22,6 @@ const fnValidateId = (id) => {
 
     const idRegex = /^(?=.*[a-zA-Z])(?=.*\d)[^\s]{6,12}$/;
 
-    // 정규식 검사
     isValidId = idRegex.test(id);
 
     if(isValidId === false) {
@@ -63,7 +31,6 @@ const fnValidateId = (id) => {
         checkIdLabel.text('');
     }
 
-    // 아이디 중복 체크 여부 초기화
     isDuplicateChecked = false;
 }
 
@@ -159,8 +126,8 @@ const fnCheckDuplicate = (id) => {
                 checkIdLabel.text("사용가능한 아이디입니다.");
                 checkIdLabel.css("color", "blue");
 
-                isDuplicateChecked = true; // 중복체크 여부 갱신
-                lastCheckedId = id; // 마지막으로 중복검사한 아이디 갱신
+                isDuplicateChecked = true;
+                lastCheckedId = id;
 
             } else {
                 checkIdLabel.text("중복된 아이디입니다.");
@@ -178,7 +145,7 @@ const fnCheckDuplicate = (id) => {
 
 // 프로필 사이즈 제한
 const fnIsOverSize = (file) => {
-    const maxSize = 1024 * 1024 * 5; // 5MB 사이즈 제한
+    const maxSize = 1024 * 1024 * 5;
     return file.size < maxSize;
 }
 
@@ -206,7 +173,6 @@ const fnCheckProfileImage = (fileInput) => {
     let checkFileLabel = $('#image-preview + p');
     let input = fileInput.target;
 
-    // 사이즈 체크
     if(!fnIsOverSize(input.files[0])) {
         checkFileLabel.text('프로필 이미지는 5MB 이내로 업로드 해주세요.');
         checkFileLabel.css('color', 'red');
@@ -214,7 +180,6 @@ const fnCheckProfileImage = (fileInput) => {
         return;
     }
 
-    // 이미지 확장자 체크
     if(!fnIsImage(input.files[0])) {
         checkFileLabel.text('이미지 파일만 첨부 가능합니다.');
         checkFileLabel.css('color', 'red');
@@ -228,13 +193,11 @@ const fnCheckProfileImage = (fileInput) => {
 const fnSignupFinalCheck = () => {
 
     let currentId = $('#id').val();
-
     let checkIdLabel = $("label[for='id']");
     let checkPwLabel = $("label[for='password']");
     let checkNicknameLabel = $("label[for='nickname']");
     let checkNameLabel = $("label[for='name']");
 
-    // 유효성 검사 통과했는가?
     if(!isValidId) {
         checkIdLabel.text('아이디가 유효하지 않습니다.');
         checkIdLabel.css('color', 'red');
@@ -242,7 +205,6 @@ const fnSignupFinalCheck = () => {
         return;
     }
 
-    // 아이디 중복 검사 통과하고 현재 아이디가 마지막으로 중복검사한 아이디와 같은가?
     if(!isDuplicateChecked || lastCheckedId !== currentId) {
         checkIdLabel.text('아이디 중복 확인을 해주세요.');
         checkIdLabel.css('color', 'red');
@@ -279,15 +241,49 @@ const fnSignup = () => {
     let signupForm = $('#signup-form')[0];
     let formData = new FormData(signupForm);
 
-    axios.post('/member/signup', formData)
-        .then((response) => {
-            if(response.data.success) {
-                alert(response.data.message);
-                window.location.href = response.data.redirectUrl;
-            } else {
-                alert(response.data.message);
-            }
-        }).catch((error) => {
+    axios.post('/member/signup', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    .then((response) => {
+        if(response.data.success) {
+            alert(response.data.message);
+            window.location.href = response.data.redirectUrl;
+        } else {
+            alert(response.data.message);
+        }
+    })
+    .catch((error) => {
         alert(error.response.data.message);
     })
 }
+
+/******************** 이벤트 **********************/
+$('#id').on('keyup', () => {
+    fnValidateId($('#id').val());
+});
+
+$('#password').on('keyup', () => {
+    fnValidatePw($('#password').val());
+});
+
+$('#name').on('keyup', () => {
+    fnValidateName($('#name').val());
+});
+
+$('#nickname').on('keyup', () => {
+    fnValidateNickname($('#nickname').val());
+});
+
+$('.btn-signup').on('click', (evt) => {
+    fnSignupFinalCheck(evt);
+});
+
+$('.btn-checkId').on('click', () => {
+    fnCheckDuplicate($('#id').val());
+});
+
+$('#profileImage').on('change', (evt) => {
+    fnCheckProfileImage(evt);
+});

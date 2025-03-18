@@ -68,9 +68,7 @@ public class ReviewTest {
         // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
-                .id("haha1212")
-                .name("하동훈")
-                .nickname("하하")
+                .id("testuser1")
                 .build();
 
         // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)
@@ -288,12 +286,4 @@ public class ReviewTest {
         assertTrue((Boolean)map.get("success"));
 
     }
-
-
-
-
-
-
-
-
 }

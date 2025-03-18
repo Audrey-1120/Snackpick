@@ -12,7 +12,6 @@ const fnSortReviewList = (reviewList, sortBy, order = 'DESC') => {
         let review1 = a[sortBy];
         let review2 = b[sortBy];
 
-        // 값이 날짜라면 Date 객체로 변환
         if (sortBy === 'createDt') {
             review1 = new Date(review1);
             review2 = new Date(review2);
@@ -29,7 +28,6 @@ const fnSortReviewList = (reviewList, sortBy, order = 'DESC') => {
 // 리뷰 리스트 조회
 const fnGetReviewList = (page, sort) => {
 
-    // 서버로 보내기
     axios.get('/review/getReviewList', {
         params: {
             page: page,
@@ -43,9 +41,9 @@ const fnGetReviewList = (page, sort) => {
         let reviewList = response.data.reviewList;
 
         if(reviewList.contents.length !== 0) {
-            fnSortReviewList(reviewList.contents, finalSort[0], finalSort[1]); // 정렬
-            fnShowResult(reviewList.contents); // 리뷰 결과 보여주기
-            fnSetPaging(reviewList.currentPage, reviewList.totalPage, reviewList.beginPage, reviewList.endPage); // 페이지네이션
+            fnSortReviewList(reviewList.contents, finalSort[0], finalSort[1]);
+            fnShowResult(reviewList.contents);
+            fnSetPaging(reviewList.currentPage, reviewList.totalPage, reviewList.beginPage, reviewList.endPage);
         } else {
             let str = '<div><p>리뷰가 없어요. 첫번째 리뷰 작성자가 되어 주세요!</p></div>';
             $('.pagination-container').append(str);
@@ -59,7 +57,6 @@ const fnGetReviewList = (page, sort) => {
 // 페이징 설정 함수
 const fnSetPaging = (currentPage, totalPage, beginPage, endPage) => {
 
-    // 페이징 추가할 부분
     let pagingContainer = $('.pagination-container');
     let paging = '<ul>';
 
@@ -85,10 +82,7 @@ const fnSetPaging = (currentPage, totalPage, beginPage, endPage) => {
 
     paging += '</ul>';
 
-    // 페이징 초기화
     pagingContainer.empty();
-
-    // 페이징 설정
     pagingContainer.append(paging);
 
 }
@@ -175,7 +169,6 @@ const fnGetReviewDetail = (evt) => {
 
     let reviewId = $(evt.currentTarget).data('review-id');
 
-    // 서버로 보내기
     axios.get('/review/getReviewDetail', {
         params: {
             reviewId: reviewId
@@ -186,7 +179,6 @@ const fnGetReviewDetail = (evt) => {
         let review = response.data.review;
         let imageContainer = $('.reviewImage-modal');
 
-        // 리뷰 이미지
         let imageStr = '';
         review.reviewImageList.forEach((reviewImage) => {
             imageStr += '<div class="image">';
@@ -194,13 +186,12 @@ const fnGetReviewDetail = (evt) => {
         });
         imageContainer.html(imageStr);
 
-        // 별점
         let str = '<p>맛</p>';
         str += '<div class="stars">';
         for(let i = 1; i <= 5; i++) {
             if(review.ratingTaste >= i) {
                 str += '<i class="bi bi-star-fill"></i>';
-            } else if((review.ratingTaste >= i - 1) && (review.ratingTaste < i)) {
+            } else if((review.ratingTaste > i - 1) && (review.ratingTaste < i)) {
                 str += '<i class="bi bi-star-half"></i>';
             } else {
                 str += '<i class="bi bi-star"></i>';
@@ -212,7 +203,7 @@ const fnGetReviewDetail = (evt) => {
         for(let i = 1; i <= 5; i++) {
             if(review.ratingPrice >= i) {
                 str += '<i class="bi bi-star-fill"></i>';
-            } else if((review.ratingPrice >= i - 1) && (review.ratingPrice < i)) {
+            } else if((review.ratingPrice > i - 1) && (review.ratingPrice < i)) {
                 str += '<i class="bi bi-star-half"></i>';
             } else {
                 str += '<i class="bi bi-star"></i>';
@@ -221,7 +212,6 @@ const fnGetReviewDetail = (evt) => {
         str += '</div>';
         $('.rating-modal').html(str);
 
-        // 프로필
         if(review.member.profileImage !== '') {
             $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
         } else {
@@ -229,7 +219,6 @@ const fnGetReviewDetail = (evt) => {
         }
         $('.writerProfile-modal p').html(review.member.nickname);
 
-        // 리뷰 내용
         $('.content-2 p:eq(0)').text(review.content);
         $('.location-modal span').text(review.location);
 
@@ -251,7 +240,6 @@ const fnDeleteReview = (evt) => {
     })
     .then((response) => {
         if(response.data.success) {
-            // 리뷰 삭제 성공시
             alert(response.data.message);
             window.location.reload();
         }
@@ -263,10 +251,8 @@ const fnDeleteReview = (evt) => {
 
 /******************** 이벤트 **********************/
 $(document).ready(() => {
-
     const urlParams = new URL(location.href).searchParams;
     productId = urlParams.get('productId');
-
     fnGetReviewList(1, 'createDt,DESC');
 });
 
@@ -300,7 +286,5 @@ $(document).on('click', '.btn-delete', (evt) => {
 $(document).on('click', '.btn-update', (evt) => {
     evt.stopPropagation();
     let reviewId = $(evt.currentTarget).closest('.review-item').data('review-id');
-
-    // 리뷰 수정 페이지로 이동
     location.href = "/review/reviewUpdate.page?reviewId=" + reviewId + '&productId=' + productId;
 });

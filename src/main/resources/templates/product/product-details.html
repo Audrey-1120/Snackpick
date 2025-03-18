@@ -14,33 +14,22 @@
 <!-- 메인 부분 -->
 <main class="main text-center">
   <div class="main-section">
-
     <section id="testimonials" class="testimonials section">
-
       <div class="container">
-
         <div class="row gy-4">
-
-          <!-- 상품 상세 -->
           <div id="product-detail" class="col-lg-5">
             <h1 th:text="${product.productName}" class="main-title"></h1>
             <input type="hidden" class="productId" th:value="${product.productId}">
-
-            <!-- 분류 -->
             <div class="category-section mt-4">
               <div>
                 <p class="product-title">분류</p>
               </div>
-              <p th:text="${product.topCategory} + '>' + ${product.subCategory}"></p>
+              <p th:text="${product.topCategory} + ' > ' + ${product.subCategory}"></p>
             </div>
-
-            <!-- 별점 -->
             <div class="rating-average-section mt-4">
               <div>
                 <p class="product-title">별점 평균</p>
               </div>
-
-              <!-- 맛 별점 평균 -->
               <div class="stars-taste">
                 <p class="title-taste">맛</p>
                 <div th:each="num:${#numbers.sequence(1,5)}" class="stars">
@@ -50,8 +39,6 @@
                 </div>
                 <p class="score-taste" th:text="${product.averageRatingTaste}">점</p>
               </div>
-
-              <!-- 가격 별점 평균 -->
               <div class="stars-price">
                 <p class="title-price">가격</p>
                 <div th:each="num:${#numbers.sequence(1,5)}" class="stars">
@@ -61,28 +48,19 @@
                 </div>
                 <p class="score-price" th:text="${product.averageRatingPrice}">점</p>
               </div>
-
             </div>
           </div>
-
-          <!-- 리뷰 -->
           <div id="review-section" class="col-lg-7">
-
             <div class="review-select d-flex justify-content-between">
-
               <select id="review-sort">
                 <option value="createDt,DESC">최신순</option>
                 <option value="ratingTaste,DESC">맛 별점 높은순</option>
                 <option value="ratingPrice,DESC">가격 별점 높은순</option>
               </select>
-              <!-- 리뷰 작성 버튼 -->
               <div>
                 <button type="button" class="btn-write">리뷰작성</button>
               </div>
-
             </div>
-
-              <!-- 페이지네이션 -->
               <section id="blog-pagination" class="blog-pagination section">
                 <div class="container">
                   <div class="d-flex justify-content-center mt-5 pagination-container">
@@ -90,14 +68,12 @@
                 </div>
               </section>
           </div>
-
         </div>
       </div>
     </section>
 
   </div>
 
-  <!-- 리뷰 상세 모달 -->
   <div class="modal" id="review-detail" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -106,34 +82,24 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- 리뷰 이미지 -->
           <div class="reviewImage-modal d-flex gap-2"></div>
-          <!-- 리뷰 상세 내용 -->
           <div class="reviewContent-modal">
-
-            <!-- 맛, 가격, 프로필 -->
             <div class="content-1 d-flex justify-content-between mt-2">
               <div class="rating-modal d-flex gap-2">
                 <p>맛</p>
                 <div class="stars"></div>
-
                 <p>가격</p>
                 <div class="stars"></div>
               </div>
-
               <div class="writerProfile-modal d-flex gap-2">
                 <div class="writerImage-modal"></div>
                 <p>작성자1</p>
               </div>
-
             </div>
-
-            <!-- 리뷰 내용, 편의점 위치 -->
             <div class="content-2 text-start mt-3">
               <p>리뷰 내용입니다.</p>
               <p class="location-modal mt-2"><span>세븐일레븐 혜화역점</span>에서 구매했어요!</p>
             </div>
-
           </div>
           <div class="mb-3 product-search">
           </div>
@@ -141,7 +107,6 @@
       </div>
     </div>
   </div>
-
 </main>
 
 <!-- footer 레이아웃 분리 -->
@@ -150,7 +115,7 @@
 <!-- 공통 script 분리 -->
 <div th:replace="~{scripts/scripts::scripts}"></div>
 
-<script src="/assets/js/product-detail.js"></script>
+<script src="/assets/js/product-detail.js" type="module"></script>
 
 </body>
 </html>

@@ -36,6 +36,7 @@ public class MemberController {
     @Operation(summary = "아이디 중복 확인", description = "아이디 중복 확인")
     @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<Map<String, Object>> checkId(String id) {
+
         Boolean isExist =  memberService.checkId(id);
         return ResponseEntity.ok(Map.of("isExist", isExist));
     }
@@ -46,13 +47,16 @@ public class MemberController {
     @ApiResponse(responseCode = "200", description = "성공")
     @ApiResponse(responseCode = "400", description = "중복된 회원이 가입함")
     public ResponseEntity<Map<String, Object>> signup(MultipartHttpServletRequest multipartHttpServletRequest) {
+
         Map<String, Object> response = memberService.signup(multipartHttpServletRequest);
         return ResponseEntity.ok(response);
     }
 
     // 로그아웃
     @GetMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃")
     public String logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);

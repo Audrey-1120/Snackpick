@@ -33,5 +33,4 @@ public class MemberDTO {
         this.profileImage = memberEntity.getProfileImage();
         this.role = memberEntity.getRole();
     }
-
 }

@@ -36,7 +36,6 @@ public class ReviewViewController {
     @PreAuthorize("isAuthenticated()")
     public String reviewWrite(@RequestParam(required = false, defaultValue = "0") int productId, Model model) {
 
-        // productNo 존재할 경우 product 조회
         if(productId != 0) {
             ProductDTO product = productService.getProductDetail(productId);
             model.addAttribute("product", product);
@@ -44,7 +43,6 @@ public class ReviewViewController {
 
         List<CategoryDTO> categoryList = categoryService.getAllCategoryList();
         model.addAttribute("categoryList", categoryList);
-
         return "review/review-write";
     }
 
@@ -60,7 +58,6 @@ public class ReviewViewController {
         ReviewDTO review = reviewService.getReviewDetail(reviewId);
         model.addAttribute("review", review);
         model.addAttribute("product", product);
-
         return "review/review-update";
 
     }

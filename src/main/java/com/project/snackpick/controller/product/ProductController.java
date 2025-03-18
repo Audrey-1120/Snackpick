@@ -30,6 +30,7 @@ public class ProductController {
     @Operation(summary = "제품 검색", description = "제품을 이름으로 검색")
     @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<Map<String, Object>> searchProduct(@RequestParam String searchKeyword) {
+
         List<ProductDTO> productList = productService.searchProduct(searchKeyword);
         return ResponseEntity.ok(Map.of("productList", productList));
     }

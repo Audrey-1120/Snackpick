@@ -22,5 +22,4 @@ public class ReviewImageDTO {
         this.reviewImagePath = reviewImageEntity.getReviewImagePath();
         this.isRepresent = reviewImageEntity.isRepresent();
     }
-
 }

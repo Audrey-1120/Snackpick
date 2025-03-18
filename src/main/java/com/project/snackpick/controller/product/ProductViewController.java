@@ -30,6 +30,7 @@ public class ProductViewController {
     @GetMapping("/productDetail.page")
     @Operation(summary = "제품 상세 페이지 이동", description = "제품 상세 페이지로 이동")
     public String productDetail(@RequestParam(defaultValue = "0") int productId, Model model) {
+
         ProductDTO product = productService.getProductDetail(productId);
         model.addAttribute("product", product);
         return "product/product-details";

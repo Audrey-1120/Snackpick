@@ -15,9 +15,7 @@ public class ProductDTO {
     private int productId;
     private long reviewCount;
     private String productName, subCategory, topCategory;
-    private double totalRatingTaste, totalRatingPrice, rating;
-
-    private double averageRatingTaste, averageRatingPrice;
+    private double totalRatingTaste, totalRatingPrice, rating, averageRatingTaste, averageRatingPrice;
 
     public ProductDTO (ProductEntity product) {
         this.productId = product.getProductId();
@@ -32,5 +30,4 @@ public class ProductDTO {
                 (double) product.getReviewCount()) * 2) / 2.0;
         this.reviewCount = product.getReviewCount();
     }
-
 }

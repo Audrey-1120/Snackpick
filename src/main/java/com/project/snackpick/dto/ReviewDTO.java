@@ -42,5 +42,4 @@ public class ReviewDTO {
         this.member = new MemberDTO(reviewEntity.getMemberEntity());
 
     }
-
 }

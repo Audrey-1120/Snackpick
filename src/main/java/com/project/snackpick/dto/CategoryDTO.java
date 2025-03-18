@@ -15,7 +15,7 @@ public class CategoryDTO {
 
     private int categoryId, topCategoryId;
     private String categoryName;
-    private List<CategoryDTO> subCategoryList; // 중분류 리스트
+    private List<CategoryDTO> subCategoryList;
 
     public CategoryDTO(CategoryEntity categoryEntity) {
         this.categoryId = categoryEntity.getCategoryId();
@@ -24,10 +24,8 @@ public class CategoryDTO {
                                 ? categoryEntity.getTopCategory().getCategoryId()
                                 : 0;
 
-        // 중분류 리스트도 DTO로 변환한다.
         this.subCategoryList = categoryEntity.getSubCategoryList().stream()
                 .map(CategoryDTO::new)
                 .collect(Collectors.toList());
     }
-
 }

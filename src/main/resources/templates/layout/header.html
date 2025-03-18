@@ -15,15 +15,12 @@
 
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
-
       <a th:href="@{/index.page}" class="logo d-flex align-items-center me-auto">
         <img src="/assets/img/Snackpick-logo.png" alt="">
       </a>
-
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a th:href="@{/index.page}" class="active">홈</a></li>
-<!--          <li><a href="services.html">스낵픽이란?</a></li>-->
           <li><a th:href="@{/review/reviewWrite.page}">리뷰 작성</a></li>
           <li><a th:href="@{/product/product.page}">리뷰 조회</a></li>
           <li th:if="${#authorization.expression('isAuthenticated()')}" class="d-flex" style="font-size: 15px; color: #556270;">
@@ -33,10 +30,8 @@
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
-
       <a th:if="${#authorization.expression('isAnonymous()')}" class="btn-getstarted" th:href="@{/member/login.page}">로그인</a>
       <a th:if="${#authorization.expression('isAuthenticated()')}" class="btn-getstarted" th:href="@{/member/logout}">로그아웃</a>
-
     </div>
   </header>
 </html>

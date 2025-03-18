@@ -52,7 +52,7 @@ public class ReviewController {
     @ApiResponse(responseCode = "200", description = "성공")
     public ResponseEntity<Map<String, Object>> getReviewList(@PageableDefault(size = 6, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable,
                                                              @RequestParam int productId) {
-        // @PageableDefault를 사용해서 page와 size, sort를 정할 수 있다.
+
         PageDTO<ReviewDTO> reviewList = reviewService.getReviewList(pageable, productId);
         return ResponseEntity.ok(Map.of("reviewList", reviewList));
     }
@@ -63,6 +63,7 @@ public class ReviewController {
     @ApiResponse(responseCode = "200", description = "성공")
     @ApiResponse(responseCode = "404", description = "리뷰 ID에 해당하는 제품 정보가 없음.")
     public ResponseEntity<Map<String, Object>> getReviewDetail(@RequestParam int reviewId) {
+
         ReviewDTO review = reviewService.getReviewDetail(reviewId);
         return ResponseEntity.ok(Map.of("review", review));
     }
@@ -90,8 +91,8 @@ public class ReviewController {
     public ResponseEntity<Map<String, Object>> updateReview(@RequestPart("reviewRequest") ReviewRequestDTO reviewRequestDTO,
                                                             @RequestPart(value = "reviewImageList", required = false) MultipartFile[] reviewImageList,
                                                             @AuthenticationPrincipal CustomUserDetails user) {
+
         Map<String, Object> response = reviewService.updateReview(reviewRequestDTO, reviewImageList, user);
         return ResponseEntity.ok(response);
     }
-
 }

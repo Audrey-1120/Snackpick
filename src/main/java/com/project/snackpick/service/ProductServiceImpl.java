@@ -30,10 +30,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> searchProduct(String searchKeyword) {
 
-        // 제품 찾기
         List<ProductEntity> productEntityList = productRepository.SearchProductByProductName(searchKeyword);
 
-        // 제품 없을 경우 빈 리스트 반환
         if(productEntityList.isEmpty()) {
             return Collections.emptyList();
         }
@@ -105,7 +103,5 @@ public class ProductServiceImpl implements ProductService {
                 throw new CustomException(ErrorCode.SERVER_ERROR,
                         ErrorCode.SERVER_ERROR.formatMessage("제품의 평점 업데이트"));
         }
-
     }
-
 }

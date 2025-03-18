@@ -123,7 +123,6 @@ public class MyFileUtils {
     // 리뷰 사진 삭제
     public boolean deleteExistImage(List<String> imageURlList) {
 
-        // 경로 변환
         List<String> imagePathList = convertUrlToPath(imageURlList);
         boolean result = true;
 
