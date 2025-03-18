@@ -23,7 +23,7 @@
 
           <div class="main-section">
             <div class="detail-section">
-              <form action="/member/login" method="post" class="pb-5 pt-3">
+              <form th:action="@{/member/login}" method="post" class="pb-5 pt-3" th:csrf>
                 <div>
                   <div class="login-section">
                     <div class="w-100">

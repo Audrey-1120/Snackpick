@@ -1,7 +1,7 @@
 package com.project.snackpick.config;
 
+import com.project.snackpick.handler.CustomCsrfTokenRequestHandler;
 import com.project.snackpick.handler.LoginFailureHandler;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -9,13 +9,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
 
 @Configuration
-@EnableWebSecurity // Security를 위한 Config 클래스입니다.
+@EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    // 비밀번호 암호화
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -24,15 +25,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, LoginFailureHandler authenticationFailureHandler) throws Exception {
 
-        // 경로별 인가 작업
+        // 커스텀 CSRF 토큰 핸들러 사용
+        CsrfTokenRequestHandler requestHandler = new CustomCsrfTokenRequestHandler();
+
+        http
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // CSRF 토큰 쿠키에 저장
+                        .csrfTokenRequestHandler(requestHandler)); // 커스텀 핸들러 적용
+
+        // 경로 인가
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/member/**", "/product/**", "/review/**", "/", "/index.page").permitAll()
                         .requestMatchers("/assets/**", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated()); // 그외 나머지 요청에서는 로그인한 사용자만 접근 가능
+                        .anyRequest().authenticated());
 
+        // 로그인
         http
                 .formLogin((auth) -> auth.loginPage("/member/login.page")
                         .usernameParameter("id")
@@ -40,23 +49,13 @@ public class SecurityConfig {
                         .failureHandler(authenticationFailureHandler)
                         .loginProcessingUrl("/member/login").permitAll());
 
+        // 로그아웃
         http
                 .logout(logout -> logout
                         .logoutUrl("/member/logout")
-                        .logoutSuccessUrl("/")
-                        .addLogoutHandler((request, response, authentication) -> {
-                            HttpSession session = request.getSession();
-                            session.invalidate();
-                        })
-                        .logoutSuccessHandler((request, response, authentication) ->
-                                response.sendRedirect("/"))
-                        .deleteCookies("JSESSIONID", "access_token"));
+                        .logoutSuccessUrl("/"));
 
-        // 개발환경에서는 토큰을 보내지 않으면 로그인이 진행이 안되므로 개발환경에서만 csrf 환경을 disabled한다.
-        http
-                .csrf((auth) -> auth.disable());
-
-
+        // 세션
         http
                 .sessionManagement((auth) -> auth
                 .maximumSessions(1) // 1개의 아이디에서 최대 몇개까지 중복 로그인 허용할 수 있는가?
