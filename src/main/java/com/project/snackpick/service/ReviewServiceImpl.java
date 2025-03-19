@@ -192,6 +192,9 @@ public class ReviewServiceImpl implements ReviewService {
                     ErrorCode.NOT_PERMISSION.formatMessage("리뷰 수정"));
         }
 
+        double oldRatingTaste = reviewEntity.getRatingTaste();
+        double oldRatingPrice = reviewEntity.getRatingPrice();
+
         ProductEntity productEntity = productRepository.findProductByProductId(reviewDTO.getProductId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
 
@@ -200,9 +203,6 @@ public class ReviewServiceImpl implements ReviewService {
         reviewEntity.setContent(reviewDTO.getContent());
         reviewEntity.setLocation(reviewDTO.getLocation());
         reviewEntity.setUpdateDt(LocalDateTime.now());
-
-        double oldRatingTaste = reviewEntity.getRatingTaste();
-        double oldRatingPrice = reviewEntity.getRatingPrice();
 
         UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
                 productEntity.getProductId(),

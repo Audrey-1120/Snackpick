@@ -2,7 +2,7 @@
 <html lang="en">
 
   <!-- <head> 태그 내 공통된 stylesheets 분리 -->
-  <head th:replace="~{stylesheets/head :: head (title='상품 검색')}"></head>
+  <head th:replace="~{stylesheets/head :: head (title='제품 검색')}"></head>
 
   <link href="/assets/css/product.css" rel="stylesheet">
 
@@ -10,7 +10,7 @@
     <header th:replace="~{layout/header::header}"></header>
     <main class="main text-center">
       <div class="main-section">
-        <p class="main-title">상품 검색</p>
+        <p class="main-title">제품 검색</p>
         <div class="newsletter-form main-searchform">
           <input type="text" name="productName" placeholder="원하는 제품명을 입력해주세요.">
           <i class="fa-solid fa-magnifying-glass btn-search"></i>

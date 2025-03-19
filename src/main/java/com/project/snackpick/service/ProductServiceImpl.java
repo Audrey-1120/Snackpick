@@ -59,10 +59,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductEntity insertProduct(ProductDTO productDTO) {
 
         CategoryEntity topCategory = categoryRepository.findById(Integer.parseInt(productDTO.getTopCategory()))
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 대분류 카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CATEGORY));
 
         CategoryEntity subCategory = categoryRepository.findById(Integer.parseInt(productDTO.getSubCategory()))
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 중분류 카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CATEGORY));
 
         ProductEntity productEntity = ProductEntity.builder()
                 .productName(productDTO.getProductName())
