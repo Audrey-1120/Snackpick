@@ -346,6 +346,11 @@ const fnFinalCheck = () => {
 
 }
 
+// csrf 토큰 가져오기
+const fnGetCsrfToken = () => {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
 // 서버로 작성 폼 데이터 전송
 const fnWriteReview = () => {
 
@@ -384,7 +389,8 @@ const fnWriteReview = () => {
 
     axios.post('/review/insertReview', formData, {
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'X-XSRF-TOKEN': fnGetCsrfToken()
         }
     })
     .then((response) => {

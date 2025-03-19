@@ -236,6 +236,11 @@ const fnSignupFinalCheck = () => {
     fnSignup();
 }
 
+// csrf 토큰 가져오기
+const fnGetCsrfToken = () => {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
 const fnSignup = () => {
 
     let signupForm = $('#signup-form')[0];
@@ -243,7 +248,8 @@ const fnSignup = () => {
 
     axios.post('/member/signup', formData, {
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'X-XSRF-TOKEN': fnGetCsrfToken()
         }
     })
     .then((response) => {

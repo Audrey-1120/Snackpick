@@ -230,13 +230,23 @@ const fnGetReviewDetail = (evt) => {
     })
 }
 
+// csrf 토큰 가져오기
+const fnGetCsrfToken = () => {
+    return $('meta[name="csrf-token"]').attr('content');
+}
+
 // 리뷰 삭제
 const fnDeleteReview = (evt) => {
 
     let reviewId = $(evt.currentTarget).closest('.review-item').data('review-id');
 
-    axios.put('/review/deleteReview', {
-        reviewId: reviewId
+    axios.put('/review/deleteReview',
+        { reviewId: reviewId },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': fnGetCsrfToken()
+            }
     })
     .then((response) => {
         if(response.data.success) {
