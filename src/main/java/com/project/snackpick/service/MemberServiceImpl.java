@@ -49,13 +49,11 @@ public class MemberServiceImpl implements MemberService {
 
         MemberEntity member = memberDTO.toMemberEntity();
 
-        // 회원 중복 예외 발생 시 처리
         try {
-            // 성공할 경우 success: true, message, redirectUrl
             memberRepository.save(member);
             return Map.of("success", true
                     , "message", "회원가입이 완료되었습니다."
-                    , "redirectUrl", "/login.page");
+                    , "redirectUrl", "/member/login.page");
 
         } catch(DataIntegrityViolationException e) {
             throw new CustomException(ErrorCode.MEMBER_DUPLICATE);

@@ -1,6 +1,7 @@
 package com.project.snackpick.service;
 
 import com.project.snackpick.dto.ProductDTO;
+import com.project.snackpick.dto.UpdateRatingDTO;
 import com.project.snackpick.entity.CategoryEntity;
 import com.project.snackpick.entity.ProductEntity;
 import com.project.snackpick.exception.CustomException;
@@ -29,10 +30,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> searchProduct(String searchKeyword) {
 
-        // 제품 찾기
         List<ProductEntity> productEntityList = productRepository.SearchProductByProductName(searchKeyword);
 
-        // 제품 없을 경우 빈 리스트 반환
         if(productEntityList.isEmpty()) {
             return Collections.emptyList();
         }
@@ -60,10 +59,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductEntity insertProduct(ProductDTO productDTO) {
 
         CategoryEntity topCategory = categoryRepository.findById(Integer.parseInt(productDTO.getTopCategory()))
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 대분류 카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CATEGORY));
 
         CategoryEntity subCategory = categoryRepository.findById(Integer.parseInt(productDTO.getSubCategory()))
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 중분류 카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CATEGORY));
 
         ProductEntity productEntity = ProductEntity.builder()
                 .productName(productDTO.getProductName())
@@ -77,14 +76,32 @@ public class ProductServiceImpl implements ProductService {
     // 제품 평점 총합 및 리뷰 개수 업데이트
     @Override
     @Transactional
-    public void updateProductRating(int productId, double ratingTaste, double ratingPrice) {
+    public void updateProductRating(UpdateRatingDTO rating) {
 
-        ProductEntity productEntity = productRepository.findProductByProductId(productId)
+        ProductEntity productEntity = productRepository.findProductByProductId(rating.getProductId())
                         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
 
-        productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() + ratingTaste);
-        productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() + ratingPrice);
-        productEntity.setReviewCount(productEntity.getReviewCount() + 1);
-    }
+        switch (rating.getAction()) {
+            case INSERT:
+                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() + rating.getNewRatingTaste());
+                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() + rating.getNewRatingPrice());
+                productEntity.setReviewCount(productEntity.getReviewCount() + 1);
+                break;
 
+            case UPDATE:
+                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() - rating.getOldRatingTaste() + rating.getNewRatingTaste());
+                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() - rating.getOldRatingPrice() + rating.getNewRatingPrice());
+                break;
+
+            case DELETE:
+                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() - rating.getOldRatingTaste());
+                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() - rating.getOldRatingPrice());
+                productEntity.setReviewCount(productEntity.getReviewCount() - 1);
+                break;
+
+            default:
+                throw new CustomException(ErrorCode.SERVER_ERROR,
+                        ErrorCode.SERVER_ERROR.formatMessage("제품의 평점 업데이트"));
+        }
+    }
 }

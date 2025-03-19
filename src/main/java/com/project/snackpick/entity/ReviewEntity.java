@@ -26,48 +26,37 @@ public class ReviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int reviewId;
 
-    // 작성자
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id") // 회원 ID FK
+    @JoinColumn(name = "member_id")
     private MemberEntity memberEntity;
 
-    // 작성시간
     @CreationTimestamp
     @Column(name = "create_dt", updatable = false)
     private LocalDateTime createDt;
 
-    // 수정시간
     @UpdateTimestamp
     @Column(name = "update_dt")
     private LocalDateTime updateDt;
 
-    // 내용
     @Column(name = "content")
     private String content;
 
-    // 맛 별점
     @Column(name = "rating_taste")
     private double ratingTaste;
 
-    // 가격 별점
     @Column(name = "rating_price")
     private double ratingPrice;
 
-    // 구매 위치
     @Column(name = "location")
     private String location;
 
-    // 삭제 상태(0: 삭제 안됨, 1: 삭제됨)
     @Column(name = "state", columnDefinition = "TINYINT(1)")
     private boolean state;
 
-    // 제품과 리뷰는 1:N 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity productEntity;
 
-    // 리뷰 사진과 1:N 관계
-    // 리뷰 사진은 조회할 때 JOIN FETCH 사용하기
     @OneToMany(mappedBy = "reviewEntity")
     @BatchSize(size = 10)
     private List<ReviewImageEntity> reviewImageEntityList = new ArrayList<>();

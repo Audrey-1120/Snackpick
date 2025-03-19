@@ -2,30 +2,24 @@
 <html lang="en">
 
   <!-- <head> 태그 내 공통된 stylesheets 분리 -->
-  <head th:replace="~{stylesheets/head :: head (title='상품 검색')}"></head>
+  <head th:replace="~{stylesheets/head :: head (title='제품 검색')}"></head>
 
   <link href="/assets/css/product.css" rel="stylesheet">
 
   <body class="index-page">
-
-    <!-- 헤더 레이아웃 분리 -->
     <header th:replace="~{layout/header::header}"></header>
-
-    <!-- 메인 부분 -->
     <main class="main text-center">
       <div class="main-section">
-        <p class="main-title">상품 검색</p>
+        <p class="main-title">제품 검색</p>
         <div class="newsletter-form main-searchform">
           <input type="text" name="productName" placeholder="원하는 제품명을 입력해주세요.">
           <i class="fa-solid fa-magnifying-glass btn-search"></i>
         </div>
-
         <section id="services" class="services section">
           <div class="container">
             <div class="row gy-4 result-section"></div>
           </div>
         </section>
-
       </div>
     </main>
 

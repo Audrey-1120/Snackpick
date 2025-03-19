@@ -28,7 +28,13 @@ public class ErrorResponse {
                 .status(e.getErrorCode().getHttpStatus())
                 .body(ErrorResponse.builder()
                         .success(false)
-                        .message(e.getErrorCode().getMessage())
+                        .message(getErrorMessage(e))
                         .build());
+    }
+
+    private static String getErrorMessage(CustomException e) {
+        return (e.getMessage() != null && !e.getMessage().isEmpty())
+                ? e.getMessage()
+                : e.getErrorCode().getMessage();
     }
 }

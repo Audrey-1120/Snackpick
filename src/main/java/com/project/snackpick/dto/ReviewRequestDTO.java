@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReviewRequestDTO {
 
-    private boolean addProduct;
-    private int representIndex;
+    private boolean addProduct, deleteAllImageList;
+    private int representIndex, representImageId;
     private ReviewDTO reviewDTO;
     private ProductDTO productDTO;
 

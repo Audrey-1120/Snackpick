@@ -1,5 +1,7 @@
 package com.project.snackpick.utils;
 
+import com.project.snackpick.exception.CustomException;
+import com.project.snackpick.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -15,21 +17,19 @@ import java.util.UUID;
 public class MyFileUtils {
 
     private static final String BASE_URL = "http://localhost:8080/images";
-    private static final String FILE_STORAGE_PATH = "/home/audrey";
+    private static final String FILE_STORAGE_PATH = "/home/snackpickImage";
 
     // 현재 날짜
     public static final LocalDate TODAY = LocalDate.now();
 
     // 이미지 업로드 경로 반환
     public String getUploadPath(String path) {
-        String homeDir = System.getProperty("user.home");
-        return homeDir + "/" + path + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
+        return FILE_STORAGE_PATH + "/" + path + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
     }
 
     // 브라우저 접근 URL 반환
     public String getImageUrl(String path) {
-        String imageUrl = "http://localhost:8080/images";
-        return imageUrl + "/" + path + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
+        return BASE_URL + "/" + path + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
     }
 
     // 저장 파일명 반환
@@ -73,7 +73,8 @@ public class MyFileUtils {
             try{
                 profile.transferTo(file);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new CustomException(ErrorCode.SERVER_ERROR,
+                        ErrorCode.SERVER_ERROR.formatMessage("프로필 사진 업로드"));
             }
         }
         return profileImagePath;
@@ -111,7 +112,8 @@ public class MyFileUtils {
                 try{
                     reviewImage.transferTo(file);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new CustomException(ErrorCode.SERVER_ERROR,
+                            ErrorCode.SERVER_ERROR.formatMessage("리뷰 사진 업로드"));
                 }
             }
         }
@@ -121,7 +123,6 @@ public class MyFileUtils {
     // 리뷰 사진 삭제
     public boolean deleteExistImage(List<String> imageURlList) {
 
-        // 경로 변환
         List<String> imagePathList = convertUrlToPath(imageURlList);
         boolean result = true;
 

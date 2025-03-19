@@ -1,29 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <!-- <head> 태그 내 공통된 stylesheets 분리 -->
   <head th:replace="~{stylesheets/head :: head (title='로그인')}"></head>
 
   <link href="/assets/css/login.css" rel="stylesheet">
 
   <body class="index-page">
-
-    <!-- 헤더 레이아웃 분리 -->
     <header th:replace="~{layout/header::header}"></header>
-
-    <!-- 메인 부분 -->
     <main class="main text-center">
-
-      <!-- 로그인 폼 -->
       <section id="contact" class="contact section">
-
         <div class="container" data-aos="fade-up" data-aos-delay="100">
-
           <h1>로그인</h1>
-
           <div class="main-section">
             <div class="detail-section">
-              <form action="/member/login" method="post" class="pb-5 pt-3">
+              <form th:action="@{/member/login}" method="post" class="pb-5 pt-3" th:csrf>
                 <div>
                   <div class="login-section">
                     <div class="w-100">
@@ -37,7 +27,6 @@
                     </div>
                     <div class="login-submenu">
                       <a href="/member/signup.page">회원가입</a>
-                      <a>비밀번호 찾기</a>
                     </div>
                     <div class="w-100">
                       <button type="submit" class="btn-login">로그인</button>
@@ -49,7 +38,6 @@
           </div>
         </div>
       </section>
-
     </main>
 
     <!-- footer 레이아웃 분리 -->

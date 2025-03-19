@@ -21,6 +21,9 @@ public interface ReviewService {
     // 리뷰 이미지 삭제
     void deleteReviewImage(ReviewEntity reviewEntity);
 
+    // 리뷰 이미지 대표 여부 설정
+    void updateRepresentImage(int reviewImageId, ReviewEntity reviewEntity);
+
     // 리뷰 리스트 조회
     PageDTO<ReviewDTO> getReviewList(Pageable pageable, int productNo);
 

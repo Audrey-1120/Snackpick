@@ -53,15 +53,13 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
         ProductEntity productEntity;
 
-        // 제품 직접 추가 여부
         if(reviewRequestDTO.isAddProduct()) {
-            productEntity = productService.insertProduct(productDTO); // 제품 추가
+            productEntity = productService.insertProduct(productDTO);
         } else {
             productEntity = productRepository.findProductByProductId(reviewDTO.getProductId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT)); // 기존 제품 조회
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
         }
 
-        // 리뷰 저장
         MemberEntity memberEntity = memberRepository.findById(user.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
@@ -70,10 +68,17 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.save(reviewEntity);
 
-        // 제품 평점 합, 리뷰 개수 업데이트
-        productService.updateProductRating(productEntity.getProductId(), reviewEntity.getRatingTaste(), reviewEntity.getRatingPrice());
+        UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
+                productEntity.getProductId(),
+                0,
+                0,
+                reviewEntity.getRatingTaste(),
+                reviewEntity.getRatingPrice(),
+                ReviewAction.INSERT
+        );
 
-        // 첨부한 리뷰 이미지 있을 시 저장
+        productService.updateProductRating(updateRatingDTO);
+
         if(reviewImageList != null) {
             insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
         }
@@ -87,28 +92,22 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void insertReviewImage(MultipartFile[] reviewImageList, ReviewEntity reviewEntity, int representIndex) {
 
-        // 리뷰 이미지 업로드
         ArrayList<String> reviewImagePath = myFileUtils.uploadReviewImage(reviewImageList);
 
-        // 이미지 경로 리스트 반복해서 돌면서 DB에 저장
         for(int i = 0; i < reviewImagePath.size(); i++) {
 
-            // 리뷰 이미지 엔티티 생성
             ReviewImageEntity reviewImageEntity = ReviewImageEntity.builder()
                     .reviewEntity(reviewEntity)
                     .reviewImagePath(reviewImagePath.get(i))
                     .build();
 
-            // 대표 이미지 여부 설정
             if(i == representIndex) {
                 reviewImageEntity.setRepresent(true);
             } else {
                 reviewImageEntity.setRepresent(false);
             }
 
-            // 리뷰 이미지 저장
             reviewImageRepository.save(reviewImageEntity);
-
         }
     }
 
@@ -117,28 +116,19 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     public PageDTO<ReviewDTO> getReviewList(Pageable pageable, int productId) {
 
-        // 페이지 0 이상일 경우 1 빼줌.
         int pageNumber = (pageable.getPageNumber() > 0) ? pageable.getPageNumber() - 1: 0;
-        // 같은 값이 있을 경우 reviewId 오름차순으로 정렬
         Sort sort = pageable.getSort().and(Sort.by(Sort.Order.asc("reviewId")));
-
-        // 페이지 번호 조정해서 pageable 객체 생성
         Pageable finalPageable = PageRequest.of(pageNumber, pageable.getPageSize(), sort);
 
-        // 리뷰 데이터 1차 조회 - 페이징
         Page<ReviewEntity> reviewEntityPage = reviewRepository.findByReviewListByProductId(productId, finalPageable);
-
-        // 리뷰 데이터 2차 조회 - 리뷰 이미지, 작성자 프로필
         List<ReviewEntity> reviewListWithImage = reviewRepository.findReviewListWithImage(reviewEntityPage.getContent());
 
-        // ReviewDTO로 변환
         List<ReviewDTO> reviewDTOList = reviewListWithImage.stream()
                 .map(ReviewDTO::new)
                 .toList();
 
         Page<ReviewDTO> finalPage = new PageImpl<>(reviewDTOList, finalPageable, reviewEntityPage.getTotalElements());
         return myPageUtils.toPageDTO(finalPage);
-
     }
 
     // 리뷰 상세 조회
@@ -158,27 +148,33 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public Map<String, Object> deleteReview(int reviewId, CustomUserDetails user) {
 
-        // 리뷰 데이터 찾기
         ReviewEntity review = reviewRepository.findReviewByReviewId(reviewId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
-        // 리뷰 작성자 memberId와 현재 로그인한 유저의 id가 같아야 함.
         if(review.getMemberEntity().getMemberId() != user.getMemberId()) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
                     ErrorCode.NOT_PERMISSION.formatMessage("리뷰 삭제"));
         }
 
-        // 이미 삭제된 리뷰일 시
         if(review.isState()) {
             throw new CustomException(ErrorCode.ALREADY_DELETE_REVIEW);
         }
 
         review.setState(true);
 
-        return Map.of("success", true
-                , "message", "리뷰가 삭제되었습니다."
-                , "redirectUrl", "/product/productDetail.page?productId=");
+        UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
+                review.getProductEntity().getProductId(),
+                review.getRatingTaste(),
+                review.getRatingPrice(),
+                0,
+                0,
+                ReviewAction.DELETE
+        );
 
+        productService.updateProductRating(updateRatingDTO);
+
+        return Map.of("success", true
+                , "message", "리뷰가 삭제되었습니다.");
     }
 
     // 리뷰 수정
@@ -188,14 +184,19 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
 
-        MemberEntity memberEntity = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+        ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+
+        if(reviewEntity.getMemberEntity().getMemberId() != user.getMemberId()) {
+            throw new CustomException(ErrorCode.NOT_PERMISSION,
+                    ErrorCode.NOT_PERMISSION.formatMessage("리뷰 수정"));
+        }
+
+        double oldRatingTaste = reviewEntity.getRatingTaste();
+        double oldRatingPrice = reviewEntity.getRatingPrice();
 
         ProductEntity productEntity = productRepository.findProductByProductId(reviewDTO.getProductId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
-
-        ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
         reviewEntity.setRatingTaste(reviewDTO.getRatingTaste());
         reviewEntity.setRatingPrice(reviewDTO.getRatingPrice());
@@ -203,16 +204,29 @@ public class ReviewServiceImpl implements ReviewService {
         reviewEntity.setLocation(reviewDTO.getLocation());
         reviewEntity.setUpdateDt(LocalDateTime.now());
 
-        // reviewImage 삭제 후 다시 업로드
-        deleteReviewImage(reviewEntity);
+        UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
+                productEntity.getProductId(),
+                oldRatingTaste,
+                oldRatingPrice,
+                reviewDTO.getRatingTaste(),
+                reviewDTO.getRatingPrice(),
+                ReviewAction.UPDATE
+        );
 
-        // 리뷰 이미지 path 리스트 추출
-        insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
+        productService.updateProductRating(updateRatingDTO);
+
+        if (reviewRequestDTO.isDeleteAllImageList()) {
+            deleteReviewImage(reviewEntity);
+        } else if (reviewImageList != null) {
+            deleteReviewImage(reviewEntity);
+            insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
+        } else if (reviewRequestDTO.getRepresentImageId() != 0) {
+            updateRepresentImage(reviewRequestDTO.getRepresentImageId(), reviewEntity);
+        }
 
         return Map.of("success", true
                 , "message", "리뷰가 수정되었습니다."
                 , "redirectUrl", "/product/productDetail.page?productId=" + productEntity.getProductId());
-
     }
 
     // 리뷰 이미지 삭제
@@ -227,7 +241,26 @@ public class ReviewServiceImpl implements ReviewService {
                 .map(ReviewImageEntity::getReviewImagePath)
                 .toList();
 
-        myFileUtils.deleteExistImage(imageURlList);
+        if(!myFileUtils.deleteExistImage(imageURlList)) {
+            throw new CustomException(ErrorCode.SERVER_ERROR,
+                    ErrorCode.SERVER_ERROR.formatMessage("업로드된 이미지 삭제"));
+        }
+
         reviewEntity.getReviewImageEntityList().forEach(reviewImageRepository::delete);
+    }
+
+    // 리뷰 이미지 대표 여부 설정
+    @Override
+    public void updateRepresentImage(int reviewImageId, ReviewEntity reviewEntity) {
+
+        List<ReviewImageEntity> reviewImageList = reviewEntity.getReviewImageEntityList();
+
+        for(ReviewImageEntity reviewImage : reviewImageList) {
+            if(reviewImage.getReviewImageId() == reviewImageId) {
+                reviewImage.setRepresent(true);
+            } else {
+                reviewImage.setRepresent(false);
+            }
+        }
     }
 }

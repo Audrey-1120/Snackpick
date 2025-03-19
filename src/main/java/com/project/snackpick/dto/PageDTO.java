@@ -13,10 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PageDTO<T> {
 
-    private List<T> contents; // 조회 데이터
-    private int currentPage; // 현재 페이지
-    private int totalPage; // 전체 페이지
-    private int beginPage; // 시작 페이지
-    private int endPage; // 끝 페이지
+    private List<T> contents;
+    private int currentPage, totalPage, beginPage, endPage;
 
 }
