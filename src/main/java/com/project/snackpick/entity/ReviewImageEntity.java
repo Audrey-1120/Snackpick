@@ -22,7 +22,7 @@ public class ReviewImageEntity {
     @JoinColumn(name = "review_id", nullable = false)
     private ReviewEntity reviewEntity;
 
-    @Column(name = "review_image_path")
+    @Column(name = "review_image_path", length = 200)
     private String reviewImagePath;
 
     @Column(name = "is_represent", columnDefinition = "TINYINT(1)")

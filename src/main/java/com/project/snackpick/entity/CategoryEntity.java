@@ -24,7 +24,7 @@ public class CategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryId;
 
-    @Column(name = "category_name")
+    @Column(name = "category_name", length = 30)
     private String categoryName;
 
     @ManyToOne(fetch = FetchType.LAZY)

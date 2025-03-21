@@ -22,7 +22,7 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
 
-    @Column(name = "product_name", unique = true, nullable = false, length = 25)
+    @Column(name = "product_name", unique = true, nullable = false, length = 50)
     private String productName;
 
     @Column(name = "total_rating_taste")

@@ -25,16 +25,16 @@ public class MemberEntity {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name", length = 50)
+    @Column(name = "name", length = 25)
     private String name;
 
-    @Column(name = "nickname", length = 20)
+    @Column(name = "nickname", length = 25)
     private String nickname;
 
-    @Column(name = "profile_image")
+    @Column(name = "profile_image", length = 200)
     private String profileImage;
 
-    @Column(name = "role")
+    @Column(name = "role", length = 20)
     private String role;
 
 }
