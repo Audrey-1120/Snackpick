@@ -59,6 +59,7 @@ public class ReviewEntity {
 
     @OneToMany(mappedBy = "reviewEntity")
     @BatchSize(size = 10)
+    @Builder.Default
     private List<ReviewImageEntity> reviewImageEntityList = new ArrayList<>();
 
     public static ReviewEntity toReviewEntity(ReviewDTO reviewDTO, MemberEntity memberEntity, ProductEntity productEntity) {

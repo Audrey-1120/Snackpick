@@ -117,7 +117,7 @@ public class ReviewTest {
                 .build();
 
         ProductDTO productDTO = ProductDTO.builder()
-                .productName("신당동 떡볶이")
+                .productName("과자1")
                 .topCategory("3")
                 .subCategory("14")
                 .build();
@@ -133,9 +133,9 @@ public class ReviewTest {
         // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
-                .id("haha1212")
-                .name("하동훈")
-                .nickname("하하")
+                .id("testuser1")
+                .name("사용자1")
+                .nickname("사용자닉네임1")
                 .build();
 
         // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)

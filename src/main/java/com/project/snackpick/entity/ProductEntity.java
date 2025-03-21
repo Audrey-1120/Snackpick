@@ -44,6 +44,7 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "productEntity")
     @BatchSize(size = 10)
+    @Builder.Default
     private List<ReviewEntity> reviewList = new ArrayList<>();
 
 }
