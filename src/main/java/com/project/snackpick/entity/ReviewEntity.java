@@ -38,7 +38,7 @@ public class ReviewEntity {
     @Column(name = "update_dt")
     private LocalDateTime updateDt;
 
-    @Column(name = "content")
+    @Column(name = "content", length = 160)
     private String content;
 
     @Column(name = "rating_taste")
@@ -47,7 +47,7 @@ public class ReviewEntity {
     @Column(name = "rating_price")
     private double ratingPrice;
 
-    @Column(name = "location")
+    @Column(name = "location", length = 50)
     private String location;
 
     @Column(name = "state", columnDefinition = "TINYINT(1)")
