@@ -16,7 +16,7 @@ import java.util.UUID;
 @Component
 public class MyFileUtils {
 
-    private static final String BASE_URL = "http://localhost:8080/images";
+    private static final String BASE_URL = "/images";
     private static final String FILE_STORAGE_PATH = "/home/snackpickImage";
 
     // 현재 날짜

@@ -35,6 +35,7 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "topCategory")
     @BatchSize(size = 20)
     @JsonManagedReference
+    @Builder.Default
     private List<CategoryEntity> subCategoryList = new ArrayList<>();
 
     @Override
