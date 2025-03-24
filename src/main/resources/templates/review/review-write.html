@@ -37,10 +37,10 @@
                 <div class="category2 d-flex">
                   <p>중분류</p>
                   <select id="select-cat2" name="subCategory" class="form-select" aria-label="Default select example">
-                    <option value="0" selected>-- 선택 --</option>
+                    <option value="0" selected th:data-parent="0">-- 선택 --</option>
                     <th:block th:each="category : ${categoryList}">
                       <th:block th:each="sub : ${category.subCategoryList}">
-                        <option   th:text="${sub.categoryName}" th:value="${sub.categoryId}"></option>
+                        <option th:text="${sub.categoryName}" th:value="${sub.categoryId}" th:data-parent="${category.categoryId}"></option>
                       </th:block>
                     </th:block>
                   </select>

@@ -62,6 +62,8 @@ let addProduct = false;
 let ratingTaste = 0;
 let ratingPrice = 0;
 
+let subCategoryList = [];
+
 /******************** 함수 **********************/
 
 // 별점 고정
@@ -173,6 +175,26 @@ function fnAddProductName() {
         addProduct = false;
     }
     $('#search-modal').modal('hide');
+}
+
+// 대분류 선택 시 해당하는 중분류 값 세팅
+const fnSetSubCategory = () => {
+
+    if(!addProduct) {
+        return;
+    }
+
+    let subCate = $('#select-cat2');
+    let selectedMainCate = parseInt($('#select-cat1 option:selected').val());
+
+    subCate.empty();
+    $.each(subCategoryList, function (i, item) {
+        if($(item).data('parent') === selectedMainCate) {
+            subCate.append($(this).clone());
+        }
+    });
+
+    subCate.prop('selectedIndex', 0);
 }
 
 // 이미지 사이즈 제한
@@ -407,6 +429,10 @@ const fnWriteReview = () => {
 
 /******************** 이벤트 **********************/
 
+$(document).ready(() => {
+    subCategoryList = Array.from($('#select-cat2 option'));
+})
+
 $('.stars').on('click', 'i', fnSetRating);
 
 $('.btn-ProductSearch').on('click', fnSearchProduct);
@@ -436,3 +462,5 @@ $('#write-form').on('submit', (evt) => {
     evt.preventDefault();
     fnFinalCheck();
 });
+
+$(document).on('change', '#select-cat1', fnSetSubCategory);
