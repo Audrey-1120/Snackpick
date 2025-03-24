@@ -73,8 +73,6 @@
     width: 70%;
 }
 
-
-
 /* 리뷰 글자수 */
 .review-content p {
     text-align: end;
@@ -87,6 +85,11 @@
     gap: 0.3rem;
 }
 
+/* 편의점 위치 input, 제품 입력 input */
+.location-input,
+.productName-input {
+    cursor: pointer;
+}
 
 /* 편의점 위치 글자 */
 .location-title p:last-child {
@@ -143,6 +146,7 @@
 .product-search {
     overflow-y: auto;
     text-align: justify;
+    height: 18vh;
 }
 
 /* 제품 결과 아이템 */
@@ -155,9 +159,21 @@
     transition: all 0.3s ease 0s;
 }
 
+.no-content span {
+    color: #D9232D;
+}
+
+.no-content p {
+    font-size: 0.8rem;
+}
+
 .product-item:hover {
     background-color: #d9232d;
     border: none;
+    color: white;
+}
+
+.product-item:hover span {
     color: white;
 }
 
@@ -190,6 +206,15 @@
     border: none;
     border-radius: 10%;
     background-color: #D9232D;
+    color: white;
+}
+
+/* 취소 버튼 */
+.btn-undo {
+    padding: 0.5rem 0.9rem;
+    border: none;
+    border-radius: 10%;
+    background-color: gray;
     color: white;
 }
 
