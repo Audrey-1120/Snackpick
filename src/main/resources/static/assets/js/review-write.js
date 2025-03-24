@@ -18,11 +18,13 @@ var ps = new kakao.maps.services.Places(map);
 // 키워드 주소 검색 함수
 function searchCon() {
     let keyword = $('.location-input').find('input').val();
-    ps.keywordSearch(keyword, placesSearchCB);
+    ps.keywordSearch(keyword, placesSearchCB, {
+        category_group_code: 'CS2'
+    });
 }
 
 // 키워드 검색 완료 시 호출되는 콜백 함수
-function placesSearchCB (data, status, pagination) {
+function placesSearchCB (data, status) {
     if (status === kakao.maps.services.Status.OK) {
 
         var bounds = new kakao.maps.LatLngBounds();
