@@ -43,13 +43,17 @@ function displayMarker(place) {
         position: new kakao.maps.LatLng(place.y, place.x)
     });
 
+    var locationFinal = $('.location-final');
+    var locationInput = $('.location-input');
+
     kakao.maps.event.addListener(marker, 'click', function() {
 
         infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
         infowindow.open(map, marker);
 
-        $('.location-final').text(place.place_name);
-        $('.location-input').val(place.place_name);
+        locationInput.val(place.place_name);
+        locationFinal.text(place.place_name);
+        locationFinal.removeClass(('no-location'));
 
     });
 }
@@ -100,11 +104,14 @@ function fnUpdateStars(starsGroup, score, isHalf) {
 
 // 제품 검색
 const fnSearchProduct = () => {
+    
+    console.log('제품 검색 실행');
 
-    let searchKeyword = $('.modal-body input').val();
+    // 검색어 정제
+    let searchKeyword = $('#product-name').val().replace(/\s+/g, ' ').trim();
 
     if(searchKeyword === '') {
-        $('.modal-body input').focus();
+        $('#product-name').focus();
         return;
     }
 
@@ -129,8 +136,9 @@ const fnShowSearchResult = (productList) => {
 
     if(productList.length === 0) {
 
+        let productName = $('#product-name').val().replace(/\s+/g, ' ').trim();
         let str = '<div class="product-item no-content">';
-        str += '<p>검색 결과가 없습니다. 직접 등록하기.</p>';
+        str += '<p>검색 결과가 없습니다. <span>\'' + productName + '\'</span> 직접 등록하기.</p>';
         str += '</div>';
 
         container.append(str);
@@ -158,7 +166,7 @@ function fnAddProductName() {
 
     if($(this).hasClass('no-content')) {
 
-        let productName = $('.modal-body input').val();
+        let productName = $('#product-name').val().replace(/\s+/g, ' ').trim()
         defaultInput.val(productName);
         $('.review-category').css('display', 'block');
         addProduct = true;
@@ -175,6 +183,16 @@ function fnAddProductName() {
         addProduct = false;
     }
     $('#search-modal').modal('hide');
+}
+
+const fnDebounce = (fn, delay)  => {
+    let timer;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn.apply(this, args);
+        }, delay);
+    };
 }
 
 // 대분류 선택 시 해당하는 중분류 값 세팅
@@ -269,6 +287,27 @@ const fnSelectRepresentImage = (evt) => {
     currentImage.removeClass('is-represent');
     imageDiv.addClass('is-represent');
 
+    fnRepresentIndex();
+
+}
+
+// 대표 이미지 인덱스 지정
+const fnRepresentIndex = () => {
+
+    let imageDivs = $('.image');
+    let representIndex = -1;
+
+    imageDivs.each(function(index) {
+        if($(this).hasClass('is-represent')) {
+            representIndex = index;
+        }
+    });
+
+    if(imageDivs.length === 1) {
+        representIndex = 0;
+    }
+
+    $('#represent-index').val(representIndex);
 }
 
 // 맛, 가격 별점 소수로 변환
@@ -307,9 +346,15 @@ const fnCheckEmpty = () => {
         }
     }
 
+    let tasteStars = $('#taste-rating i');
+    let priceStars = $('#price-rating i');
+
     let productInput = $('.productName-input');
     let contentArea = $('.content-area');
-    let locationInput = $('.location-input');
+    let locationInput = $('.location-final');
+
+    ratingTaste = fnCalculateRating(tasteStars);
+    ratingPrice = fnCalculateRating(priceStars);
 
     if(productInput.val() === '') {
         alert('제품을 선택해주세요.');
@@ -317,13 +362,23 @@ const fnCheckEmpty = () => {
         return false;
     }
 
-    if(contentArea.val() === '') {
+    if(ratingTaste === 0) {
+        alert('맛 별점을 선택해주세요.');
+        return false;
+    }
+
+    if(ratingPrice === 0) {
+        alert('가격 별점을 선택해주세요.');
+        return false;
+    }
+
+    if(contentArea.val().trim() === '') {
         alert('리뷰를 작성해주세요.');
         contentArea.focus();
         return false;
     }
 
-    if(locationInput.val() === '') {
+    if(locationInput.hasClass('no-location')) {
         alert('편의점 위치를 등록해주세요.');
         locationInput.focus();
         return false;
@@ -338,34 +393,8 @@ const fnFinalCheck = () => {
         return;
     }
 
-    let tasteStars = $('#taste-rating i');
-    let priceStars = $('#price-rating i');
-
-    ratingTaste = fnCalculateRating(tasteStars);
-    ratingPrice = fnCalculateRating(priceStars);
-
-    if(ratingTaste === 0) {
-        alert('맛 별점을 선택해주세요.');
-        return;
-    }
-
-    if(ratingPrice === 0) {
-        alert('가격 별점을 선택해주세요.');
-        return;
-    }
-
-    let imageDivs = $('.image');
-    let representIndex = -1;
-
-    imageDivs.each(function(index) {
-        if($(this).hasClass('is-represent')) {
-            representIndex = index;
-        }
-    });
-
-    $('#represent-index').val(representIndex);
+    fnRepresentIndex();
     fnWriteReview();
-
 }
 
 // csrf 토큰 가져오기
@@ -390,8 +419,8 @@ const fnWriteReview = () => {
             ratingTaste: ratingTaste,
             ratingPrice: ratingPrice,
             productId: $('#productId').val(),
-            content: $('.content-area').val(),
-            location: $('.location-input').val()
+            content: $('.content-area').val().trim(),
+            location: $('.location-final').text()
         },
         representIndex: $('#represent-index').val(),
         addProduct: addProduct
@@ -435,7 +464,7 @@ $(document).ready(() => {
 
 $('.stars').on('click', 'i', fnSetRating);
 
-$('.btn-ProductSearch').on('click', fnSearchProduct);
+$('#product-name').on('keyup', fnDebounce(fnSearchProduct, 400));
 
 $(document).on('click', '.product-item', fnAddProductName);
 
