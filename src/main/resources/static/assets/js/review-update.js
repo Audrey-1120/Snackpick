@@ -48,6 +48,8 @@ function displayMarker(place) {
         $('.location-final').text(place.place_name);
         $('.location-input').val(place.place_name);
 
+        fnActivateUpdateBtn();
+
     });
 }
 
@@ -178,7 +180,6 @@ const fnSelectRepresentImage = (evt) => {
     imageDiv.addClass('is-represent');
 
     fnRepresentIndex();
-
 }
 
 // 대표 이미지 인덱스 지정
@@ -220,6 +221,8 @@ const fnCalculateRating = (list) => {
 const fnActivateUpdateBtn = () => {
 
     let currentForm = $('#update-form').serializeArray();
+    currentForm.push({name: 'location', value: $('.location-final').text()});
+
     let formChange = !_.isEqual(currentForm, initForm) || fileChanged;
 
     let currentTasteRating = fnCalculateRating($('#taste-rating i'));
@@ -232,27 +235,14 @@ const fnActivateUpdateBtn = () => {
 // 빈값 검사
 const fnCheckEmpty = () => {
 
-    let productInput = $('.productName-input');
     let contentArea = $('.content-area');
-    let locationInput = $('.location-input');
 
-    if(productInput.val() === '') {
-        alert('제품을 선택해주세요.');
-        productInput.focus();
-        return false;
-    }
-
-    if(contentArea.val() === '') {
+    if(contentArea.val().trim() === '') {
         alert('리뷰를 작성해주세요.');
         contentArea.focus();
         return false;
     }
 
-    if(locationInput.val() === '') {
-        alert('편의점 위치를 등록해주세요.');
-        locationInput.focus();
-        return false;
-    }
     return true;
 }
 
@@ -263,25 +253,8 @@ const fnFinalCheck = () => {
         return;
     }
 
-    let tasteStars = $('#taste-rating i');
-    let priceStars = $('#price-rating i');
-
-    ratingTaste = fnCalculateRating(tasteStars);
-    ratingPrice = fnCalculateRating(priceStars);
-
-    if(ratingTaste === 0) {
-        alert('맛 별점을 선택해주세요.');
-        return;
-    }
-
-    if(ratingPrice === 0) {
-        alert('가격 별점을 선택해주세요.');
-        return;
-    }
-
     fnRepresentIndex();
     fnUpdateReview();
-
 }
 
 // csrf 토큰 가져오기
@@ -295,14 +268,17 @@ const fnUpdateReview = () => {
     let form = $('#update-form')[0];
     let formData = new FormData(form);
 
+    let tasteStars = $('#taste-rating i');
+    let priceStars = $('#price-rating i');
+
     let reviewRequestDTO = {
         reviewDTO: {
             reviewId: reviewId,
             productId: productId,
-            ratingTaste: ratingTaste,
-            ratingPrice: ratingPrice,
-            content: $('.content-area').val(),
-            location: $('.location-input').val()
+            ratingTaste: fnCalculateRating(tasteStars),
+            ratingPrice: fnCalculateRating(priceStars),
+            content: $('.content-area').val().trim(),
+            location: $('.location-final').text()
         },
         representIndex: $('#represent-index').val(),
         representImageId: representImageId,
@@ -343,21 +319,35 @@ const fnUpdateReview = () => {
 
 }
 
+const fnDebounce = (fn, delay)  => {
+    let timer;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn.apply(this, args);
+        }, delay);
+    };
+}
+
 /******************** 이벤트 **********************/
 $(document).ready(() => {
     const urlParams = new URL(location.href).searchParams;
     productId = urlParams.get('productId');
     reviewId = urlParams.get('reviewId');
 
+    let locationFinal = $('.location-final').text();
+
     searchCon();
 
-    $('.location-input').val($('.location-final').text());
+    $('.location-input').val(locationFinal);
 
     fnRepresentIndex();
 
     initForm = $('#update-form').serializeArray();
-    initRatingTaste = $('#taste-rating').data('ratingTaste');
-    initRatingPrice = $('#price-rating').data('ratingPrice');
+    initForm.push({name: 'location', value: locationFinal});
+
+    initRatingTaste = Number($('#taste-rating').data('ratingTaste'));
+    initRatingPrice = Number($('#price-rating').data('ratingPrice'));
     initRepresentIndex = $('#represent-index').val();
 });
 
@@ -371,13 +361,12 @@ $('#review-image').on('change', fnCheckImagecount);
 $('input[type="file"]').on('change', () => {
     fileChanged = true;
     deleteAllImageList = false;
+    fnActivateUpdateBtn();
 });
 
 $('.btn-LocationSearch').on('click', searchCon);
 
-$('#update-form input, #update-form textarea').on('keyup change', () => {
-    fnActivateUpdateBtn();
-});
+$('#update-form textarea').on('keyup', fnDebounce(fnActivateUpdateBtn, 300));
 
 $('.btn-deleteAllImage').on('click', () => {
     $('#review-image').val('');
@@ -392,9 +381,14 @@ $(document).on('click', '.image img', (evt) => {
     if(initRepresentIndex !== $('#represent-index').val()) {
         $('.btn-update').prop('disabled', false);
     }
+    fnActivateUpdateBtn();
 });
 
 $('#update-form').on('submit', (evt) => {
     evt.preventDefault();
     fnFinalCheck();
 });
+
+$('.btn-undo').on('click', () => {
+    window.history.back();
+})
