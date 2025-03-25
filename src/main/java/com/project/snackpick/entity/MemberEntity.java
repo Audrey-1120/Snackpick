@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -36,5 +40,15 @@ public class MemberEntity {
 
     @Column(name = "role", length = 20)
     private String role;
+
+    @OneToMany(mappedBy = "memberEntity")
+    @BatchSize(size = 10)
+    @Builder.Default
+    private List<ReviewEntity> reviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "memberEntity")
+    @BatchSize(size = 10)
+    @Builder.Default
+    private List<RecommendEntity> recommendList = new ArrayList<>();
 
 }
