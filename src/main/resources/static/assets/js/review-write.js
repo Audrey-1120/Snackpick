@@ -106,10 +106,7 @@ function fnUpdateStars(starsGroup, score, isHalf) {
 
 // 제품 검색
 const fnSearchProduct = () => {
-    
-    console.log('제품 검색 실행');
 
-    // 검색어 정제
     let searchKeyword = $('#product-name').val().replace(/\s+/g, ' ').trim();
 
     if(searchKeyword === '') {

@@ -24,7 +24,11 @@ public class MemberViewController {
     // 회원가입 페이지
     @GetMapping("/signup.page")
     @Operation(summary = "회원가입 페이지 이동", description = "회원가입 페이지로 이동")
-    public String signupPage() {
+    public String signupPage(Authentication authentication) {
+
+        if(authentication != null && authentication.isAuthenticated()) {
+            return "redirect:/";
+        }
         return "member/signup";
     }
 }
