@@ -217,7 +217,11 @@
     overflow-x: auto;
     white-space: nowrap;
     flex-wrap: nowrap;
-    width: 100%;
+    width: 70%;
+}
+
+.reviewContent-modal {
+    height: 50vh;
 }
 
 .image {
@@ -265,6 +269,93 @@
 .location-modal span {
     color: red;
 }
+
+/* 댓글 영역 */
+.content-3 {
+    text-align: start;
+    overflow-y: auto;
+    white-space: nowrap;
+    height: 65%;
+}
+
+/* 댓글(원글) 아이템 */
+.comment-modal {
+    display: flex;
+    gap: 0.7rem;
+    padding: 0.7rem 0.7rem 0;
+}
+
+/* 댓글(답글) 아이템 */
+.reply {
+    padding: 0.7rem 0.7rem 0 3rem !important;
+}
+
+/* 댓글 입력창 */
+.comment-input input {
+    width: 92%;
+    border-radius: 0.5rem;
+    outline: none;
+    border: 0.5px solid gray;
+    padding: 0.3rem;
+}
+
+/* 댓글 작성 버튼 */
+.btn-comment {
+    border: none;
+    padding: 0.3rem 0.7rem;
+    border-radius: 0.5rem;
+    background-color: #d9232d;
+    color: white;
+}
+
+/* 댓글 작성자 이미지 영역 */
+.comment-write-section {
+    align-content: center;
+}
+
+
+/* 댓글 작성자 프로필 */
+.comment-writer {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: gray;
+    object-fit: cover;
+}
+
+.comment-writer img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 댓글 작성자명 및 날짜 */
+.comment-profile {
+    display: flex;
+    gap: 0.7rem;
+}
+
+.comment-profile p {
+    font-size: 0.6rem;
+}
+
+.comment-profile p:last-child {
+    color: #B7B7B7;
+}
+
+.comment-profile ~ p {
+    font-size: 0.8rem;
+    align-content: center;
+}
+
+/* 구분선 */
+.line {
+    border: 1px solid #ECECEC;
+}
+
+
+
 
 
 
