@@ -37,10 +37,10 @@
                 <div class="category2 d-flex">
                   <p>중분류</p>
                   <select id="select-cat2" name="subCategory" class="form-select" aria-label="Default select example">
-                    <option value="0" selected>-- 선택 --</option>
+                    <option value="0" selected th:data-parent="0">-- 선택 --</option>
                     <th:block th:each="category : ${categoryList}">
                       <th:block th:each="sub : ${category.subCategoryList}">
-                        <option   th:text="${sub.categoryName}" th:value="${sub.categoryId}"></option>
+                        <option th:text="${sub.categoryName}" th:value="${sub.categoryId}" th:data-parent="${category.categoryId}"></option>
                       </th:block>
                     </th:block>
                   </select>
@@ -74,7 +74,7 @@
               <div class="review-location mt-4">
                 <div class="location-title">
                   <p>구매위치</p>
-                  <p class="location-final">편의점 위치가 지정되지 않았습니다.</p>
+                  <p class="location-final no-location">편의점 위치가 지정되지 않았습니다.</p>
                 </div>
                 <div class="location-input d-flex gap-2">
                   <input type="text" class="form-control mt-2 location-input" name="location" placeholder="편의점 위치를 입력해주세요.">
@@ -116,9 +116,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="mb-3 d-flex gap-2">
+          <div class="mb-3">
             <input type="text" class="form-control" id="product-name" placeholder="제품명을 입력하세요.">
-            <i class="fa-solid fa-magnifying-glass btn-ProductSearch"></i>
           </div>
           <div class="mb-3 product-search">
           </div>

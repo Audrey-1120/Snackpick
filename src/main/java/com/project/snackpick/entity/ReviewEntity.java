@@ -62,6 +62,16 @@ public class ReviewEntity {
     @Builder.Default
     private List<ReviewImageEntity> reviewImageEntityList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "reviewEntity")
+    @BatchSize(size = 10)
+    @Builder.Default
+    private List<CommentEntity> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reviewEntity")
+    @BatchSize(size = 10)
+    @Builder.Default
+    private List<RecommendEntity> recommendList = new ArrayList<>();
+
     public static ReviewEntity toReviewEntity(ReviewDTO reviewDTO, MemberEntity memberEntity, ProductEntity productEntity) {
         return ReviewEntity.builder()
                 .memberEntity(memberEntity)

@@ -56,7 +56,7 @@
                 <p class="location-final" th:text="${review.location}"></p>
               </div>
               <div class="location-input d-flex gap-2">
-                <input type="text" class="form-control mt-2 location-input" th:value="${review.location}" name="location">
+                <input type="text" class="form-control mt-2 location-input" th:value="${review.location}">
                 <i class="fa-solid fa-magnifying-glass btn-LocationSearch"></i>
               </div>
               <div id="map" class="kakao-map mt-2"></div>
@@ -83,8 +83,9 @@
               </div>
               <p class="text-start text-primary">이미지는 최대 5장까지 첨부 가능합니다.</p>
             </div>
-            <div class="btn-section">
+            <div class="btn-section gap-2">
               <button type="submit" class="btn-update" disabled>저장</button>
+              <button type="button" class="btn-undo">취소</button>
             </div>
           </div>
         </div>

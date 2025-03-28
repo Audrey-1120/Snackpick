@@ -23,6 +23,7 @@ build/
 ### Docker ###
 docker-compose.yml
 Dockerfile
+.dockerignore
 
 ### STS ###
 .apt_generated
