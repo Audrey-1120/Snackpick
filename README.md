@@ -2,7 +2,7 @@
   <img src="https://github.com/user-attachments/assets/c98a91ba-b954-40aa-948b-3a1f529336b6" width="100" height="100"/>
 
 # ☑️ 사이트
-- **배포주소** : http://3.34.3.194:8080
+- **배포주소** : http://www.snackpick.site
 - **테스트 계정**
   - 아이디 : monami1908
   - 비밀번호 : Asdfg12345@
