@@ -1,8 +1,17 @@
 # Snackpick
   <img src="https://github.com/user-attachments/assets/c98a91ba-b954-40aa-948b-3a1f529336b6" width="100" height="100"/>
+
+# ☑️ 사이트
+- **배포주소** : http://3.34.3.194:8080
+- **테스트 계정**
+  - 아이디 : monami1908
+  - 비밀번호 : Asdfg12345@
+
+- **확인 방법**
+    - 리뷰가 존재하는 상품을 확인해주세요!
+    - 예시 상품 : 이클립스 페퍼민트향
   
 # ☑️ 개요
-
 - **프로젝트 명 : Snackpick**
 - **개발내용**
     - 편의점 식품 리뷰 사이트
