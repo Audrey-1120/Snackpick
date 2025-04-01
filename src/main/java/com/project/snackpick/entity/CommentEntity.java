@@ -1,5 +1,6 @@
 package com.project.snackpick.entity;
 
+import com.project.snackpick.dto.CommentDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +31,7 @@ public class CommentEntity {
     @Column(name = "update_dt")
     private LocalDateTime updateDt;
 
-    @Column(name = "content", length = 100)
+    @Column(name = "content", length = 150)
     private String content;
 
     @Column(name = "state", columnDefinition = "TINYINT(1)")
@@ -49,5 +50,16 @@ public class CommentEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity memberEntity;
+
+    public static CommentEntity toCommentEntity(CommentDTO commentDTO, ReviewEntity reviewEntity, MemberEntity memberEntity) {
+        return CommentEntity.builder()
+                .content(commentDTO.getContent())
+                .state(commentDTO.isState())
+                .depth(commentDTO.getDepth())
+                .groupId(commentDTO.getGroupId())
+                .reviewEntity(reviewEntity)
+                .memberEntity(memberEntity)
+                .build();
+    }
 
 }

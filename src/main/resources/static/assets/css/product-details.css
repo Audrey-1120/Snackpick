@@ -74,10 +74,6 @@
     gap: 0.2rem;
 }
 
-/*.stars-taste p, .stars-price p {*/
-/*  align-content: center;*/
-/*}*/
-
 /* 리뷰 정렬 선택 */
 #review-sort {
     padding: 0.2rem 0.3rem;
@@ -204,9 +200,6 @@
 
 /* 리뷰 삭제 버튼 */
 .btn-delete {
-    /*border: none;*/
-    /*border-radius: 0.5rem;*/
-    /*padding: 0.3rem 0.7rem;*/
     font-size: 1.3rem;
     align-content: end;
     cursor: pointer;
@@ -215,9 +208,6 @@
 /* 리뷰 상세 모달 - 이미지 */
 .reviewImage-modal {
     overflow-x: auto;
-    white-space: nowrap;
-    flex-wrap: nowrap;
-    width: 70%;
 }
 
 .reviewContent-modal {
@@ -241,7 +231,7 @@
 .image {
     background-color: #ADADAD;
     flex-shrink: 0;
-    flex-basis: 40%;
+    flex-basis: 25%;
     height: 15vh;
 }
 
@@ -288,7 +278,6 @@
 .content-3 {
     text-align: start;
     overflow-y: auto;
-    white-space: nowrap;
     height: 65%;
 }
 
@@ -296,12 +285,13 @@
 .comment-modal {
     display: flex;
     gap: 0.7rem;
-    padding: 0.7rem 0.7rem 0;
+    padding: 0.7rem 0.7rem;
 }
 
 /* 댓글(답글) 아이템 */
 .reply {
-    padding: 0.7rem 0.7rem 0 3rem !important;
+    width: 95%;
+    margin-left: auto;
 }
 
 /* 댓글 입력창 */
@@ -323,18 +313,8 @@
 }
 
 /* 댓글 작성자 이미지 영역 */
-.comment-write-section {
+.comment-writer-section {
     align-content: center;
-}
-
-
-/* 댓글 작성자 프로필 */
-.comment-writer {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background-color: gray;
-    object-fit: cover;
 }
 
 .comment-writer img {
@@ -358,9 +338,23 @@
     color: #B7B7B7;
 }
 
-.comment-profile ~ p {
+/* 댓글 내용 및 답글 버튼 */
+.comment-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.comment-content > p,
+.comment-content > i {
     font-size: 0.8rem;
     align-content: center;
+}
+
+/* 답글 작성 아이콘 */
+.btn-reply {
+    cursor: pointer;
+    font-size: 0.7rem;
 }
 
 /* 구분선 */
@@ -368,8 +362,8 @@
     border: 1px solid #ECECEC;
 }
 
-
-
-
-
-
+/* 선택한 메시지 */
+.selected-comment {
+    background-color: rgba(217, 35, 45, .1);
+    border-radius: 0.7rem;
+}

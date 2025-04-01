@@ -104,29 +104,13 @@
             <div class="line"></div>
 
             <p class="text-start my-2 text-start fw-bolder">댓글</p>
-            <div class="content-3">
+            <div class="content-3"></div>
 
-              <div class="comment-modal">
-                <div class="comment-write-section">
-                  <div class="comment-writer">
-                    <!-- image -->
-                  </div>
-                </div>
-
-                <div>
-                  <div class="comment-profile ">
-                    <p>사용자1</p>
-                    <p>3분전</p>
-                  </div>
-                  <p>스피어 민트랑 비교했을 때 뭐가 더 쎄요?</p>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="comment-input mt-2">
+            <div th:if="${#authorization.expression('isAuthenticated()')}" class="comment-input mt-2">
               <input type="text" placeholder="댓글을 입력해주세요">
-              <button type="button" class="btn-comment">작성</button>
+              <button type="button" class="btn-comment">
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
             </div>
           </div>
           <div class="mb-3 product-search">

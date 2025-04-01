@@ -177,50 +177,13 @@ const fnGetReviewDetail = (evt) => {
     .then((response) => {
 
         let review = response.data.review;
+        let commentList = response.data.commentList;
+
         let imageContainer = $('.reviewImage-modal');
+        let commentContainer = $('.content-3');
 
-        let imageStr = '';
-        review.reviewImageList.forEach((reviewImage) => {
-            imageStr += '<div class="image">';
-            imageStr += '<img src="' + reviewImage.reviewImagePath + '"></div>';
-        });
-        imageContainer.html(imageStr);
-
-        let str = '<p>맛</p>';
-        str += '<div class="stars">';
-        for(let i = 1; i <= 5; i++) {
-            if(review.ratingTaste >= i) {
-                str += '<i class="bi bi-star-fill"></i>';
-            } else if((review.ratingTaste > i - 1) && (review.ratingTaste < i)) {
-                str += '<i class="bi bi-star-half"></i>';
-            } else {
-                str += '<i class="bi bi-star"></i>';
-            }
-        }
-        str += '</div>';
-        str += '<p>가격</p>';
-        str += '<div class="stars">';
-        for(let i = 1; i <= 5; i++) {
-            if(review.ratingPrice >= i) {
-                str += '<i class="bi bi-star-fill"></i>';
-            } else if((review.ratingPrice > i - 1) && (review.ratingPrice < i)) {
-                str += '<i class="bi bi-star-half"></i>';
-            } else {
-                str += '<i class="bi bi-star"></i>';
-            }
-        }
-        str += '</div>';
-        $('.rating-modal').html(str);
-
-        if(review.member.profileImage !== '') {
-            $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
-        } else {
-            $('.writerImage-modal').html('<img src="/assets/img/default-profile.jpg">');
-        }
-        $('.writerProfile-modal p').html(review.member.nickname);
-
-        $('.content-2 p:eq(0)').text(review.content);
-        $('.location-modal span').text(review.location);
+        fnShowReviewDetail(review, imageContainer);
+        fnShowCommentList(commentList, commentContainer);
 
         $('#review-detail').modal('show');
 
@@ -228,6 +191,133 @@ const fnGetReviewDetail = (evt) => {
     .catch((error) => {
         alert(error.response.data.message);
     })
+}
+
+// 리뷰 상세 조회 데이터 화면에 추가
+const fnShowReviewDetail = (review, imageContainer) => {
+
+    let imageStr = '';
+    review.reviewImageList.forEach((reviewImage) => {
+        imageStr += '<div class="image">';
+        imageStr += '<img src="' + reviewImage.reviewImagePath + '"></div>';
+    });
+    imageContainer.html(imageStr);
+
+    let str = '<p>맛</p>';
+    str += '<div class="stars">';
+    for(let i = 1; i <= 5; i++) {
+        if(review.ratingTaste >= i) {
+            str += '<i class="bi bi-star-fill"></i>';
+        } else if((review.ratingTaste > i - 1) && (review.ratingTaste < i)) {
+            str += '<i class="bi bi-star-half"></i>';
+        } else {
+            str += '<i class="bi bi-star"></i>';
+        }
+    }
+    str += '</div>';
+    str += '<p>가격</p>';
+    str += '<div class="stars">';
+    for(let i = 1; i <= 5; i++) {
+        if(review.ratingPrice >= i) {
+            str += '<i class="bi bi-star-fill"></i>';
+        } else if((review.ratingPrice > i - 1) && (review.ratingPrice < i)) {
+            str += '<i class="bi bi-star-half"></i>';
+        } else {
+            str += '<i class="bi bi-star"></i>';
+        }
+    }
+    str += '</div>';
+    $('.rating-modal').html(str);
+
+    if(review.member.profileImage !== '') {
+        $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
+    } else {
+        $('.writerImage-modal').html('<img src="/assets/img/default-profile.jpg">');
+    }
+    $('.writerProfile-modal p').html(review.member.nickname);
+
+    $('.content-2 p:eq(0)').text(review.content);
+    $('.location-modal span').text(review.location);
+
+}
+
+// 리뷰 댓글 데이터 화면에 표시
+const fnShowCommentList = (commentList, commentContainer) => {
+
+    let loginId = $('.login-id').val();
+
+    let str = ''
+    commentList.forEach((comment) => {
+
+        if(comment.depth === 0) {
+            str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-depth="' + comment.depth + '">';
+        } else {
+            str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-depth="' + comment.depth + '">';
+        }
+
+        str += '<div class="comment-writer-section">';
+        if(comment.member.profileImage !== '') {
+            str += '<div class="comment-writer"><img src="' + comment.member.profileImage + '"></div>';
+        } else {
+            str += '<div class="comment-writer"><img src="/assets/img/default-profile.jpg"></div>';
+        }
+        str += '</div>';
+        str += '<div class="w-100">';
+        str += '<div class="comment-profile">';
+        str += '<p>' + comment.member.nickname + '</p>';
+        str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
+        str += '</div>';
+        str += '<div class="comment-content">';
+        str += '<p>' + comment.content + '</p>';
+        if(comment.member.memberId === Number(loginId)) { // 내가 작성한 댓글일 경우
+            str += '<div>';
+            str += '<i class="fa-solid fa-pen-to-square btn-comment-update"></i>';
+            str += ' | '
+            str += '<i class="fa-solid fa-trash btn-comment-delete"></i>';
+            str += '</div>';
+        } else {
+            if(comment.depth === 0 && loginId !== undefined) {
+                str += '<p class="btn-reply">댓글달기</p>';
+            }
+        }
+        str += '</div>';
+        str += '</div>';
+        str += '</div>';
+
+    });
+
+    commentContainer.empty();
+    commentContainer.html(str);
+
+}
+
+// 날짜 포맷
+const fnFormatDate = (datetime) => {
+    const date = new Date(datetime);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMin = Math.floor(diffMs / 6000);
+
+    if(diffMin < 1) {
+        return '방금 전';
+    }
+
+    if(diffMin < 60) {
+        return diffMin + '분 전';
+    }
+
+    if(diffMin < 120) {
+        return '1시간 전';
+    }
+
+    // 1시간 이상 경과되었을 경우..
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth()).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mi = String(date.getMinutes()).padStart(2, '0');
+
+    return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mi;
 }
 
 // csrf 토큰 가져오기
@@ -298,3 +388,25 @@ $(document).on('click', '.btn-update', (evt) => {
     let reviewId = $(evt.currentTarget).closest('.review-item').data('review-id');
     location.href = "/review/reviewUpdate.page?reviewId=" + reviewId + '&productId=' + productId;
 });
+
+// 대댓글 달기
+$(document).on('click', '.btn-reply', (evt) => {
+    evt.stopPropagation();
+    let comment = $(evt.currentTarget).closest('.comment-modal');
+    let commentInput = $('.comment-input input');
+
+    $('.comment-modal').not(comment).removeClass('selected-comment');
+    comment.addClass('selected-comment');
+    commentInput.attr('placeholder', '대댓글을 입력해주세요');
+
+});
+
+// 대댓글 달기 취소
+$(document).on('click', '.comment-modal', (evt) => {
+    evt.stopPropagation();
+    let comment = $(evt.currentTarget);
+    let commentInput = $('.comment-input input');
+
+    comment.removeClass('selected-comment');
+    commentInput.attr('placeholder', '댓글을 입력해주세요');
+})
