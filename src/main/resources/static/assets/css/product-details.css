@@ -1,6 +1,6 @@
 /* 메인화면 */
 .main {
-    padding: 10vh 10vh 20vh 10vh;
+    padding: 6vh 10vh 20vh 10vh;
 }
 
 /* 타이틀 + 검색폼 */
@@ -221,7 +221,21 @@
 }
 
 .reviewContent-modal {
-    height: 50vh;
+    height: 55vh;
+}
+
+.content-1 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.content-2 {
+    text-align: start;
+    height: 14%;
+}
+
+.content-2 p:first-child {
+    height: 60%;
 }
 
 .image {

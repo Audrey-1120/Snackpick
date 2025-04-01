@@ -50,7 +50,7 @@ public class ReviewController {
     @GetMapping("/getReviewList")
     @Operation(summary = "리뷰 목록 조회", description = "리뷰 목록 조회")
     @ApiResponse(responseCode = "200", description = "성공")
-    public ResponseEntity<Map<String, Object>> getReviewList(@PageableDefault(size = 6, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseEntity<Map<String, Object>> getReviewList(@PageableDefault(size = 4, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable,
                                                              @RequestParam int productId) {
 
         PageDTO<ReviewDTO> reviewList = reviewService.getReviewList(pageable, productId);
