@@ -82,6 +82,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <input type="hidden" class="review-id" data-review-id="0">
           <div class="reviewImage-modal d-flex gap-2"></div>
           <div class="reviewContent-modal">
             <div class="content-1 mt-2">
@@ -107,7 +108,7 @@
             <div class="content-3"></div>
 
             <div th:if="${#authorization.expression('isAuthenticated()')}" class="comment-input mt-2">
-              <input type="text" placeholder="댓글을 입력해주세요">
+              <input type="text" placeholder="댓글을 입력해주세요" maxlength="150">
               <button type="button" class="btn-comment">
                 <i class="fa-solid fa-paper-plane"></i>
               </button>
