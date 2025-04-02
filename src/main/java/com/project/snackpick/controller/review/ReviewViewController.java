@@ -7,6 +7,7 @@ import com.project.snackpick.service.CategoryService;
 import com.project.snackpick.service.ProductService;
 import com.project.snackpick.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/review")
+@Tag(name = "Review-View", description = "리뷰 화면")
 public class ReviewViewController {
 
     private final ProductService productService;

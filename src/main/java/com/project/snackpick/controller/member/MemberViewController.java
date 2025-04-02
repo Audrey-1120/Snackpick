@@ -1,6 +1,7 @@
 package com.project.snackpick.controller.member;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/member")
+@Tag(name = "Member-View", description = "회원 화면")
 public class MemberViewController {
 
     // 로그인 페이지
