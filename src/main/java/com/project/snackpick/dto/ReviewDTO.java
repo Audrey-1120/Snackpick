@@ -37,8 +37,7 @@ public class ReviewDTO {
 
         this.reviewImageList = reviewEntity.getReviewImageEntityList().stream()
                 .map(ReviewImageDTO::new)
-                .collect(Collectors.toList());
-
+                .toList();
         this.member = new MemberDTO(reviewEntity.getMemberEntity());
 
     }

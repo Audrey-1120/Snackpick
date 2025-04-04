@@ -14,13 +14,13 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
-    // 리뷰 리스트 1차 조회 - 페이징
+    // 리뷰 목록 조회 - 페이징
     @Query(value = "SELECT r.reviewId FROM ReviewEntity r " +
                     "WHERE r.productEntity.productId = :productId " +
                     "AND r.state = false")
     Page<ReviewEntity> findByReviewListByProductId(@Param("productId") int productId, Pageable pageable);
 
-    // 리뷰 리스트 2차 조회 - 리뷰 이미지, 작성자 정보
+    // 리뷰 목록 조회 - 리뷰 이미지, 작성자 정보
     @Query("SELECT r FROM ReviewEntity r " +
             "LEFT JOIN FETCH r.memberEntity m " +
             "LEFT JOIN FETCH r.reviewImageEntityList ri " +

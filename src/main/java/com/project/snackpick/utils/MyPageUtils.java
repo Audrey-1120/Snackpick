@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyPageUtils {
 
-    public static <T> PageDTO<T> toPageDTO(Page<T> page) {
+    public <T> PageDTO<T> toPageDTO(Page<T> page) {
 
         int currentPage;
         int pagePerBlock = 5;

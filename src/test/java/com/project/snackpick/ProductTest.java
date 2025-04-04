@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@Transactional // 각각의 테스트 메소드에 대해서 트랜잭션 시작한 후 테스트가 종료되면 롤백한다.
+@Transactional
 public class ProductTest {
 
     private final ProductService productService;
@@ -38,6 +38,7 @@ public class ProductTest {
     @Test
     @DisplayName("제품ID로 제품 상세 데이터 조회")
     public void getProductDetail() throws Exception {
+
         // Given
         int productId = 1;
 

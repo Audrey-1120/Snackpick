@@ -5,7 +5,6 @@ import com.project.snackpick.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -16,11 +15,12 @@ public class CategoryServiceImpl implements CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    // 카테고리 목록 조회
     @Override
     public List<CategoryDTO> getAllCategoryList() {
         List<CategoryDTO> categoryList = categoryRepository.findAllCategoryList().stream()
                 .map(CategoryDTO::new)
-                .collect(Collectors.toList());
+                .toList();
 
         return categoryList;
     }

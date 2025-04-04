@@ -16,13 +16,6 @@ public class ErrorResponse {
     private final boolean success;
     private final String message;
 
-    public ErrorResponse(ErrorCode errorCode, boolean success) {
-        this.httpStatus = errorCode.getHttpStatus();
-        this.code = errorCode.name();
-        this.success = success;
-        this.message = errorCode.getMessage();
-    }
-
     public static ResponseEntity<ErrorResponse> error(CustomException e) {
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())

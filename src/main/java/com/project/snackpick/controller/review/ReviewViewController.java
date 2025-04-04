@@ -58,6 +58,7 @@ public class ReviewViewController {
 
         ProductDTO product = productService.getProductDetail(productId);
         ReviewDTO review = reviewService.getReviewDetail(reviewId);
+
         model.addAttribute("review", review);
         model.addAttribute("product", product);
         return "review/review-update";

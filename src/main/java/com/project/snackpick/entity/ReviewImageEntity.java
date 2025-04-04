@@ -28,11 +28,4 @@ public class ReviewImageEntity {
     @Column(name = "is_represent", columnDefinition = "TINYINT(1)")
     private boolean isRepresent;
 
-    public ReviewImageEntity toReviewImageEntity(ReviewEntity reviewEntity, String reviewImagePath, boolean isRepresent) {
-        return ReviewImageEntity.builder()
-                .reviewEntity(reviewEntity)
-                .reviewImagePath(reviewImagePath)
-                .isRepresent(isRepresent)
-                .build();
-    }
 }

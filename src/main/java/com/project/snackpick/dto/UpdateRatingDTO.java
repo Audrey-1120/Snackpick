@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateRatingDTO {
 
-    private int productId;
     private double oldRatingTaste;
     private double oldRatingPrice;
     private double newRatingTaste;

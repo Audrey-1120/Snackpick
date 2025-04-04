@@ -68,7 +68,7 @@ public class ReviewTest {
         // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
-                .id("testuser1")
+                .id("mintii92")
                 .build();
 
         // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)
@@ -87,13 +87,13 @@ public class ReviewTest {
         );
 
         // MultipartFile 배열 초기화
-        MultipartFile[] reviewImageList = {file1, file2};
+        MultipartFile[] files = {file1, file2};
 
         // CustomDetails 객체 생성
         CustomUserDetails user = new CustomUserDetails(memberEntity);
 
         // 서비스 호출
-        Map<String, Object> map = reviewService.insertReview(reviewRequestDTO, reviewImageList, user);
+        Map<String, Object> map = reviewService.insertReview(reviewRequestDTO, files, user);
 
         System.out.println("완료 메시지: " + String.valueOf(map.get("message")));
         System.out.println("리다이렉트 경로" + String.valueOf(map.get("redirectUrl")));
@@ -108,7 +108,6 @@ public class ReviewTest {
 
         // ReviewDTO 객체 생성
         ReviewDTO reviewDTO = ReviewDTO.builder()
-                .productId(1)
                 .state(false)
                 .ratingTaste(2.5)
                 .ratingPrice(3.5)
@@ -133,9 +132,9 @@ public class ReviewTest {
         // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
-                .id("testuser1")
-                .name("사용자1")
-                .nickname("사용자닉네임1")
+                .id("mintii92")
+                .name("김민티")
+                .nickname("민티927")
                 .build();
 
         // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)
@@ -154,13 +153,13 @@ public class ReviewTest {
         );
 
         // MultipartFile 배열 초기화
-        MultipartFile[] reviewImageList = {file1, file2};
+        MultipartFile[] files = {file1, file2};
 
         // CustomDetails 객체 생성
         CustomUserDetails user = new CustomUserDetails(memberEntity);
 
         // 서비스 호출
-        Map<String, Object> map = reviewService.insertReview(reviewRequestDTO, reviewImageList, user);
+        Map<String, Object> map = reviewService.insertReview(reviewRequestDTO, files, user);
 
         System.out.println("완료 메시지: " + String.valueOf(map.get("message")));
         System.out.println("리다이렉트 경로" + String.valueOf(map.get("redirectUrl")));
@@ -174,9 +173,9 @@ public class ReviewTest {
     @DisplayName("리뷰 목록 조회")
     public void getReviewList() throws Exception {
 
-        int page = 4;
-        int size = 6;
-        int productId = 3;
+        int page = 1;
+        int size = 4;
+        int productId = 1;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createDt").descending());
 
@@ -226,9 +225,9 @@ public class ReviewTest {
         // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
-                .id("haha1212")
-                .name("하동훈")
-                .nickname("하하")
+                .id("mintii92")
+                .name("김민티")
+                .nickname("민티927")
                 .build();
 
         // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)
@@ -247,13 +246,13 @@ public class ReviewTest {
         );
 
         // MultipartFile 배열 초기화
-        MultipartFile[] reviewImageList = {file1, file2};
+        MultipartFile[] files = {file1, file2};
 
         // CustomDetails 객체 생성
         CustomUserDetails user = new CustomUserDetails(memberEntity);
 
         // 서비스 호출
-        Map<String, Object> map = reviewService.updateReview(reviewRequestDTO, reviewImageList, user);
+        Map<String, Object> map = reviewService.updateReview(reviewRequestDTO, files, user);
 
         System.out.println("완료 메시지: " + String.valueOf(map.get("message")));
         System.out.println("리다이렉트 경로" + String.valueOf(map.get("redirectUrl")));
@@ -270,9 +269,9 @@ public class ReviewTest {
         // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
-                .id("haha1212")
-                .name("하동훈")
-                .nickname("하하")
+                .id("mintii92")
+                .name("김민티")
+                .nickname("민티927")
                 .build();
 
         CustomUserDetails user = new CustomUserDetails(memberEntity);

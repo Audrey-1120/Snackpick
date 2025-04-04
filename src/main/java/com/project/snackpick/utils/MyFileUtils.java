@@ -1,12 +1,12 @@
 package com.project.snackpick.utils;
 
-import com.project.snackpick.exception.CustomException;
-import com.project.snackpick.exception.ErrorCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -18,6 +18,8 @@ public class MyFileUtils {
 
     private static final String BASE_URL = "/images";
     private static final String FILE_STORAGE_PATH = "/home/snackpickImage";
+
+    private static final Logger log = LoggerFactory.getLogger(MyFileUtils.class);
 
     // 현재 날짜
     public static final LocalDate TODAY = LocalDate.now();
@@ -34,7 +36,12 @@ public class MyFileUtils {
 
     // 저장 파일명 반환
     public String getFileSystemName(String originalFilename) {
-        String extName = null;
+
+        if(originalFilename == null || originalFilename.isBlank()) {
+            originalFilename = UUID.randomUUID().toString() + ".jpg";
+        }
+
+        String extName;
         if(originalFilename.endsWith(".tar.gz")) {
             extName = ".tar.gz";
         } else {
@@ -43,109 +50,90 @@ public class MyFileUtils {
         return UUID.randomUUID().toString().replace("-", "") + extName;
     }
 
-    // 프로필 사진 첨부
-    public String uploadProfileImage(MultipartHttpServletRequest request) {
+    // 파일 리스트 빈값 체크
+    public boolean isFilesEmpty(MultipartFile[] files) {
+        return files == null || files.length == 0;
+    }
 
-        MultipartFile profile = request.getFile("profileImage");
-        String profileImagePath = "";
+    // 브라우저 접근 URL 리스트 반환
+    public List<String> getImageUrlList(MultipartFile[] files, String path) {
 
-        if(profile != null && !profile.isEmpty() && profile.getSize() > 0) {
+        List<String> imageUrlList = new ArrayList<>();
+
+        if(isFilesEmpty(files)) return imageUrlList;
+
+        for(MultipartFile file : files) {
+
             StringBuilder builder = new StringBuilder();
-            String uploadPath = getUploadPath("profile");
-            String imageUrl = getImageUrl("profile");
 
+            String imageUrl = getImageUrl(path);
+            String originalFilename = file.getOriginalFilename();
+            String fileSystemName = getFileSystemName(originalFilename);
+
+            imageUrlList.add(builder.append(imageUrl)
+                    .append("/")
+                    .append(fileSystemName).toString());
+
+            builder.setLength(0);
+
+        }
+        return imageUrlList;
+    }
+
+    // 이미지 업로드
+    public void uploadImage(MultipartFile[] files, List<String> imageUrlList, String path) throws IOException {
+
+        if(isFilesEmpty(files)) return;
+
+        for(int i = 0; i < files.length; i++) {
+
+            String uploadPath = getUploadPath(path);
+            String browserUrl = imageUrlList.get(i);
             File dir = new File(uploadPath);
 
             if(!dir.exists()) {
                 dir.mkdirs();
             }
 
-            String originalFilename = profile.getOriginalFilename();
-            String fileSystemName = getFileSystemName(originalFilename);
-
-            profileImagePath = builder.append(imageUrl)
-                                        .append("/")
-                                        .append(fileSystemName).toString();
-            builder.setLength(0);
-
-            File file = new File(dir, fileSystemName);
+            String fileSystemName = browserUrl.substring(browserUrl.lastIndexOf("/") + 1);
+            File uploadFile = new File(dir, fileSystemName);
 
             try{
-                profile.transferTo(file);
+                files[i].transferTo(uploadFile);
             } catch (Exception e) {
-                throw new CustomException(ErrorCode.SERVER_ERROR,
-                        ErrorCode.SERVER_ERROR.formatMessage("프로필 사진 업로드"));
+                log.error("이미지 업로드 실패: {}", uploadFile);
+                throw e;
             }
         }
-        return profileImagePath;
     }
 
-    // 리뷰 사진 업로드
-    public ArrayList<String> uploadReviewImage(MultipartFile[] reviewImageList) {
+    // 이미지 삭제
+    public void deleteImage(List<String> imageUrlList) {
 
-        ArrayList<String> reviewImagePath = new ArrayList<>();
-
-        if(reviewImageList != null && reviewImageList.length > 0) {
-
-            for(MultipartFile reviewImage : reviewImageList) {
-
-                StringBuilder builder = new StringBuilder();
-                String uploadPath = getUploadPath("review");
-                String imageUrl = getImageUrl("review");
-
-                File dir = new File(uploadPath);
-
-                if(!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                String originalFilename = reviewImage.getOriginalFilename();
-                String fileSystemName = getFileSystemName(originalFilename);
-
-                reviewImagePath.add(builder.append(imageUrl)
-                                            .append("/")
-                                            .append(fileSystemName).toString());
-                builder.setLength(0);
-
-                File file = new File(dir, fileSystemName);
-
-                try{
-                    reviewImage.transferTo(file);
-                } catch (Exception e) {
-                    throw new CustomException(ErrorCode.SERVER_ERROR,
-                            ErrorCode.SERVER_ERROR.formatMessage("리뷰 사진 업로드"));
-                }
-            }
-        }
-        return reviewImagePath;
-    }
-
-    // 리뷰 사진 삭제
-    public boolean deleteExistImage(List<String> imageURlList) {
-
-        List<String> imagePathList = convertUrlToPath(imageURlList);
-        boolean result = true;
+        List<String> imagePathList = convertUrlToPath(imageUrlList);
 
         for (String imagePath : imagePathList) {
-            File file = new File(imagePath);
-            if(file.exists()) {
-                if(file.delete()) {
-                    result = true;
+            try {
+                File file = new File(imagePath);
+                if(file.exists()) {
+                    boolean deleted = file.delete();
+                    if(!deleted) {
+                        log.error("이미지 삭제 실패: {}", imagePath);
+                    }
                 } else {
-                    result = false;
+                    log.warn("파일 없음: {}", imagePath);
                 }
-            } else {
-                return false;
+            } catch (Exception e) {
+                log.error("이미지 삭제 중 에러 발생: {}", imagePath, e);
             }
         }
-        return result;
     }
 
-    // 파일 경로 브라우저 -> WSL2 내부 경로로 변환
+    // 이미지 실제 업로드 경로 변환
     public static List<String> convertUrlToPath(List<String> imageUrlList) {
         return imageUrlList.stream()
-                .filter(url -> url.startsWith(BASE_URL)) // BASE_URL로 시작하는 것만 처리한다.
-                .map(url -> FILE_STORAGE_PATH + url.substring(BASE_URL.length())) // 파일 경로로 변환한다...
+                .filter(url -> url.startsWith(BASE_URL))
+                .map(url -> FILE_STORAGE_PATH + url.substring(BASE_URL.length()))
                 .toList();
     }
 }

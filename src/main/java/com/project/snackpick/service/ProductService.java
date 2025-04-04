@@ -18,6 +18,6 @@ public interface ProductService {
     ProductEntity insertProduct(ProductDTO productDTO);
 
     // 제품 평점 총합, 리뷰 개수 업데이트
-    void updateProductRating(UpdateRatingDTO updateRatingDTO);
+    void updateProductRating(UpdateRatingDTO updateRatingDTO, ProductEntity product);
 
 }
