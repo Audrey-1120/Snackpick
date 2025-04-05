@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 작성
     @Override
     @Transactional
-    public Map<String, Object> insertReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] reviewImageList, CustomUserDetails user) {
+    public Map<String, Object> insertReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, CustomUserDetails user) {
 
         ProductDTO productDTO = reviewRequestDTO.getProductDTO();
         ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
@@ -60,27 +61,30 @@ public class ReviewServiceImpl implements ReviewService {
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
         }
 
-        MemberEntity memberEntity = memberRepository.findById(user.getUsername())
+        MemberEntity member = memberRepository.findById(user.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
-        reviewDTO.setMember(new MemberDTO(memberEntity));
-        ReviewEntity reviewEntity = ReviewEntity.toReviewEntity(reviewDTO, memberEntity, productEntity);
+        reviewDTO.setMember(new MemberDTO(member));
+        ReviewEntity review = ReviewEntity.toReviewEntity(reviewDTO, member, productEntity);
 
-        reviewRepository.save(reviewEntity);
+        reviewRepository.save(review);
 
         UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
                 productEntity.getProductId(),
                 0,
                 0,
-                reviewEntity.getRatingTaste(),
-                reviewEntity.getRatingPrice(),
+                review.getRatingTaste(),
+                review.getRatingPrice(),
                 ReviewAction.INSERT
         );
 
         productService.updateProductRating(updateRatingDTO);
 
-        if(reviewImageList != null) {
-            insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
+        try {
+            insertReviewImage(files, review, reviewRequestDTO.getRepresentIndex());
+        } catch(IOException e) {
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
+                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("프로필"));
         }
 
         return Map.of("success", true
@@ -90,25 +94,26 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 이미지 저장
     @Override
-    public void insertReviewImage(MultipartFile[] reviewImageList, ReviewEntity reviewEntity, int representIndex) {
+    public void insertReviewImage(MultipartFile[] files, ReviewEntity review, int representIndex) throws IOException {
 
-        ArrayList<String> reviewImagePath = myFileUtils.uploadReviewImage(reviewImageList);
+        if(files == null || files.length == 0 || files[0].isEmpty()) {
+            return;
+        }
 
-        for(int i = 0; i < reviewImagePath.size(); i++) {
+        List<String> imageUrlList = myFileUtils.getImageUrlList(files, "review");
 
-            ReviewImageEntity reviewImageEntity = ReviewImageEntity.builder()
-                    .reviewEntity(reviewEntity)
-                    .reviewImagePath(reviewImagePath.get(i))
+        for(int i = 0; i < imageUrlList.size(); i++) {
+
+            ReviewImageEntity reviewImage = ReviewImageEntity.builder()
+                    .reviewEntity(review)
+                    .reviewImagePath(imageUrlList.get(i))
                     .build();
 
-            if(i == representIndex) {
-                reviewImageEntity.setRepresent(true);
-            } else {
-                reviewImageEntity.setRepresent(false);
-            }
-
-            reviewImageRepository.save(reviewImageEntity);
+            reviewImage.setRepresent(i == representIndex);
+            reviewImageRepository.save(reviewImage);
         }
+
+        myFileUtils.uploadImage(files, imageUrlList, "review");
     }
 
     // 리뷰 목록 조회
@@ -180,29 +185,29 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 수정
     @Override
     @Transactional
-    public Map<String, Object> updateReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] reviewImageList, CustomUserDetails user) {
+    public Map<String, Object> updateReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, CustomUserDetails user) {
 
         ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
 
-        ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
+        ReviewEntity review = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
 
-        if(reviewEntity.getMemberEntity().getMemberId() != user.getMemberId()) {
+        if(review.getMemberEntity().getMemberId() != user.getMemberId()) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
                     ErrorCode.NOT_PERMISSION.formatMessage("리뷰 수정"));
         }
 
-        double oldRatingTaste = reviewEntity.getRatingTaste();
-        double oldRatingPrice = reviewEntity.getRatingPrice();
+        double oldRatingTaste = review.getRatingTaste();
+        double oldRatingPrice = review.getRatingPrice();
 
         ProductEntity productEntity = productRepository.findProductByProductId(reviewDTO.getProductId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
 
-        reviewEntity.setRatingTaste(reviewDTO.getRatingTaste());
-        reviewEntity.setRatingPrice(reviewDTO.getRatingPrice());
-        reviewEntity.setContent(reviewDTO.getContent());
-        reviewEntity.setLocation(reviewDTO.getLocation());
-        reviewEntity.setUpdateDt(LocalDateTime.now());
+        review.setRatingTaste(reviewDTO.getRatingTaste());
+        review.setRatingPrice(reviewDTO.getRatingPrice());
+        review.setContent(reviewDTO.getContent());
+        review.setLocation(reviewDTO.getLocation());
+        review.setUpdateDt(LocalDateTime.now());
 
         UpdateRatingDTO updateRatingDTO = new UpdateRatingDTO(
                 productEntity.getProductId(),
@@ -215,13 +220,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         productService.updateProductRating(updateRatingDTO);
 
-        if (reviewRequestDTO.isDeleteAllImageList()) {
-            deleteReviewImage(reviewEntity);
-        } else if (reviewImageList != null) {
-            deleteReviewImage(reviewEntity);
-            insertReviewImage(reviewImageList, reviewEntity, reviewRequestDTO.getRepresentIndex());
-        } else if (reviewRequestDTO.getRepresentImageId() != 0) {
-            updateRepresentImage(reviewRequestDTO.getRepresentImageId(), reviewEntity);
+        try {
+            updateReviewImage(reviewRequestDTO, files, review);
+        } catch(IOException e) {
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
+                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("리뷰"));
         }
 
         return Map.of("success", true
@@ -229,24 +232,36 @@ public class ReviewServiceImpl implements ReviewService {
                 , "redirectUrl", "/product/productDetail.page?productId=" + productEntity.getProductId());
     }
 
+    // 리뷰 이미지 수정
+    @Override
+    public void updateReviewImage(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, ReviewEntity review) throws IOException {
+
+        if (reviewRequestDTO.isDeleteAllImageList()) {
+            deleteReviewImage(review);
+        } else if (files != null) {
+            deleteReviewImage(review);
+            insertReviewImage(files, review, reviewRequestDTO.getRepresentIndex());
+        } else if (reviewRequestDTO.getRepresentImageId() != 0) {
+            updateRepresentImage(reviewRequestDTO.getRepresentImageId(), review);
+        }
+    }
+
     // 리뷰 이미지 삭제
     @Override
-    public void deleteReviewImage(ReviewEntity reviewEntity) {
+    public void deleteReviewImage(ReviewEntity review) {
 
-        if(reviewEntity.getReviewImageEntityList().isEmpty()) {
+        List<ReviewImageEntity> reviewImageList = review.getReviewImageEntityList();
+
+        if(reviewImageList == null || reviewImageList.isEmpty()) {
             return;
         }
 
-        List<String> imageURlList = reviewEntity.getReviewImageEntityList().stream()
+        List<String> imageURlList = reviewImageList.stream()
                 .map(ReviewImageEntity::getReviewImagePath)
                 .toList();
 
-        if(!myFileUtils.deleteExistImage(imageURlList)) {
-            throw new CustomException(ErrorCode.SERVER_ERROR,
-                    ErrorCode.SERVER_ERROR.formatMessage("업로드된 이미지 삭제"));
-        }
-
-        reviewEntity.getReviewImageEntityList().forEach(reviewImageRepository::delete);
+        reviewImageRepository.deleteAll(review.getReviewImageEntityList());
+        myFileUtils.deleteImage(imageURlList);
     }
 
     // 리뷰 이미지 대표 여부 설정
@@ -256,11 +271,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewImageEntity> reviewImageList = reviewEntity.getReviewImageEntityList();
 
         for(ReviewImageEntity reviewImage : reviewImageList) {
-            if(reviewImage.getReviewImageId() == reviewImageId) {
-                reviewImage.setRepresent(true);
-            } else {
-                reviewImage.setRepresent(false);
-            }
+            reviewImage.setRepresent(reviewImage.getReviewImageId() == reviewImageId);
         }
     }
 }
