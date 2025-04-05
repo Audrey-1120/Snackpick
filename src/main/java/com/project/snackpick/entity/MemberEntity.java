@@ -1,5 +1,6 @@
 package com.project.snackpick.entity;
 
+import com.project.snackpick.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,5 +51,16 @@ public class MemberEntity {
     @BatchSize(size = 10)
     @Builder.Default
     private List<RecommendEntity> recommendList = new ArrayList<>();
+
+    public static MemberEntity toMemberEntity(MemberDTO memberDTO) {
+        return MemberEntity.builder()
+                .id(memberDTO.getId())
+                .password(memberDTO.getPassword())
+                .name(memberDTO.getName())
+                .nickname(memberDTO.getNickname())
+                .profileImage(memberDTO.getProfileImage())
+                .role(memberDTO.getRole())
+                .build();
+    }
 
 }
