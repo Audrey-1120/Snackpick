@@ -3,6 +3,8 @@ package com.project.snackpick.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,15 +13,18 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component(value = "authenticationFailureHandler")
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(LoginFailureHandler.class);
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        exception.printStackTrace();
-        String errorMessage = URLEncoder.encode(getExceptionMessage(exception), "UTF-8");
+        log.error("로그인 실패: {}", exception.getMessage(), exception);
+        String errorMessage = URLEncoder.encode(getExceptionMessage(exception), StandardCharsets.UTF_8);
         setDefaultFailureUrl("/member/loginFail?error=true&exception=" + errorMessage);
         super.onAuthenticationFailure(request, response, exception);
     }
