@@ -14,16 +14,19 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
 
     // 제품 검색
-    @Query("SELECT p, p.reviewCount FROM ProductEntity p " +
+    @Query("SELECT p FROM ProductEntity p " +
             "LEFT JOIN FETCH p.topCategory " +
             "LEFT JOIN FETCH p.subCategory " +
-            "WHERE p.productName LIKE %:searchKeyword% " +
-            "GROUP BY p")
+            "WHERE p.productName LIKE %:searchKeyword% ")
     List<ProductEntity> SearchProductByProductName(@Param("searchKeyword") String searchKeyword);
 
     // 제품 상세 조회
     @EntityGraph(attributePaths = {"reviewList", "topCategory", "subCategory"})
-    @Query("SELECT p FROM ProductEntity p WHERE p.productId = :productId")
+    @Query("SELECT DISTINCT p FROM ProductEntity p " +
+            "LEFT JOIN FETCH p.reviewList " +
+            "LEFT JOIN FETCH p.topCategory " +
+            "LEFT JOIN FETCH p.subCategory " +
+            "WHERE p.productId = :productId")
     Optional<ProductEntity> findProductByProductId(@Param("productId") int productId);
 
 }

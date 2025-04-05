@@ -11,7 +11,9 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
 
     // 모든 카테고리 조회
-    @Query("SELECT DISTINCT c FROM CategoryEntity c LEFT JOIN FETCH c.subCategoryList WHERE c.topCategory IS NULL")
+    @Query("SELECT DISTINCT c FROM CategoryEntity c " +
+            "LEFT JOIN FETCH c.subCategoryList " +
+            "WHERE c.topCategory IS NULL")
     List<CategoryEntity> findAllCategoryList();
 
 }
