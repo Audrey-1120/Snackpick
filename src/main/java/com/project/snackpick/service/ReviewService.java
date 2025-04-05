@@ -1,9 +1,7 @@
 package com.project.snackpick.service;
 
-import com.project.snackpick.dto.CustomUserDetails;
-import com.project.snackpick.dto.PageDTO;
-import com.project.snackpick.dto.ReviewDTO;
-import com.project.snackpick.dto.ReviewRequestDTO;
+import com.project.snackpick.dto.*;
+import com.project.snackpick.entity.ProductEntity;
 import com.project.snackpick.entity.ReviewEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,5 +49,30 @@ public interface ReviewService {
     void updateRepresentImage(int reviewImageId, ReviewEntity review);
 
 
+
+    /*
+        공통 로직
+     */
+
+    // 제품 평점 및 리뷰 개수 업데이트
+    void updateProductStats(ProductEntity product, ReviewEntity review, ReviewDTO reviewDTO, ReviewAction action);
+
+    // 권한 확인
+    boolean hasPermission(ReviewEntity review, CustomUserDetails user);
+
+
+
+    /*
+        하위 처리
+     */
+
+    // 리뷰 데이터 저장
+    ReviewEntity insertReviewFields(ReviewRequestDTO reviewRequestDTO, ProductEntity product, CustomUserDetails user);
+
+    // 리뷰 데이터 수정
+    void updateReviewFields(ReviewEntity review, ReviewDTO reviewDTO);
+
+    // 제품 처리
+    ProductEntity handleProduct(ReviewRequestDTO reviewRequestDTO);
 
 }

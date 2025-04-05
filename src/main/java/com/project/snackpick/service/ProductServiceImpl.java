@@ -28,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
 
     // 제품 검색
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDTO> searchProduct(String searchKeyword) {
 
         List<ProductEntity> productEntityList = productRepository.SearchProductByProductName(searchKeyword);
@@ -45,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
     // 제품 상세 조회
     @Override
+    @Transactional(readOnly = true)
     public ProductDTO getProductDetail(int productId) {
 
         ProductDTO product = new ProductDTO(productRepository.findProductByProductId(productId)
@@ -75,33 +77,39 @@ public class ProductServiceImpl implements ProductService {
 
     // 제품 평점 총합 및 리뷰 개수 업데이트
     @Override
-    @Transactional
-    public void updateProductRating(UpdateRatingDTO rating) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateProductRating(UpdateRatingDTO rating, ProductEntity product) {
 
-        ProductEntity productEntity = productRepository.findProductByProductId(rating.getProductId())
-                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
+        double totalTaste = product.getTotalRatingTaste();
+        double totalPrice = product.getTotalRatingPrice();
+        double oldTaste = rating.getOldRatingTaste();
+        double oldPrice = rating.getOldRatingPrice();
+        double newTaste = rating.getNewRatingTaste();
+        double newPrice = rating.getNewRatingPrice();
+
+        long reviewCount = product.getReviewCount();
 
         switch (rating.getAction()) {
             case INSERT:
-                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() + rating.getNewRatingTaste());
-                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() + rating.getNewRatingPrice());
-                productEntity.setReviewCount(productEntity.getReviewCount() + 1);
+                product.setTotalRatingTaste(totalTaste + newTaste);
+                product.setTotalRatingPrice(totalPrice + newPrice);
+                product.setReviewCount(reviewCount + 1);
                 break;
 
             case UPDATE:
-                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() - rating.getOldRatingTaste() + rating.getNewRatingTaste());
-                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() - rating.getOldRatingPrice() + rating.getNewRatingPrice());
+                product.setTotalRatingTaste(totalTaste - oldTaste + newTaste);
+                product.setTotalRatingPrice(totalPrice - oldPrice + newPrice);
                 break;
 
             case DELETE:
-                productEntity.setTotalRatingTaste(productEntity.getTotalRatingTaste() - rating.getOldRatingTaste());
-                productEntity.setTotalRatingPrice(productEntity.getTotalRatingPrice() - rating.getOldRatingPrice());
-                productEntity.setReviewCount(productEntity.getReviewCount() - 1);
+                product.setTotalRatingTaste(totalTaste - oldTaste);
+                product.setTotalRatingPrice(totalPrice - oldPrice);
+                product.setReviewCount(reviewCount - 1);
                 break;
 
             default:
                 throw new CustomException(ErrorCode.SERVER_ERROR,
-                        ErrorCode.SERVER_ERROR.formatMessage("제품의 평점 업데이트"));
+                        ErrorCode.SERVER_ERROR.formatMessage("제품 정보 업데이트"));
         }
     }
 }
