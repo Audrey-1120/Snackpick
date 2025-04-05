@@ -1,9 +1,7 @@
 package com.project.snackpick.controller.review;
 
-import com.project.snackpick.dto.CustomUserDetails;
-import com.project.snackpick.dto.PageDTO;
-import com.project.snackpick.dto.ReviewDTO;
-import com.project.snackpick.dto.ReviewRequestDTO;
+import com.project.snackpick.dto.*;
+import com.project.snackpick.service.CommentService;
 import com.project.snackpick.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -27,9 +26,11 @@ import java.util.Map;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final CommentService commentService;
 
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, CommentService commentService) {
         this.reviewService = reviewService;
+        this.commentService = commentService;
     }
 
     // 리뷰 작성
@@ -50,7 +51,7 @@ public class ReviewController {
     @GetMapping("/getReviewList")
     @Operation(summary = "리뷰 목록 조회", description = "리뷰 목록 조회")
     @ApiResponse(responseCode = "200", description = "성공")
-    public ResponseEntity<Map<String, Object>> getReviewList(@PageableDefault(size = 6, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseEntity<Map<String, Object>> getReviewList(@PageableDefault(size = 4, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable,
                                                              @RequestParam int productId) {
 
         PageDTO<ReviewDTO> reviewList = reviewService.getReviewList(pageable, productId);
@@ -65,7 +66,9 @@ public class ReviewController {
     public ResponseEntity<Map<String, Object>> getReviewDetail(@RequestParam int reviewId) {
 
         ReviewDTO review = reviewService.getReviewDetail(reviewId);
-        return ResponseEntity.ok(Map.of("review", review));
+        List<CommentDTO> commentList = commentService.getCommentList(reviewId);
+        return ResponseEntity.ok(Map.of("review", review,
+                                        "commentList", commentList));
     }
 
     // 리뷰 삭제
