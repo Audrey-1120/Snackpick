@@ -16,7 +16,7 @@ public interface ReviewService {
      */
 
     // 리뷰 작성
-    Map<String, Object> insertReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] reviewImageList, CustomUserDetails user);
+    Map<String, Object> insertReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, CustomUserDetails user);
 
     // 리뷰 목록 조회
     PageDTO<ReviewDTO> getReviewList(Pageable pageable, int productNo);
@@ -28,7 +28,7 @@ public interface ReviewService {
     Map<String, Object> deleteReview(int reviewId, CustomUserDetails user);
 
     // 리뷰 수정
-    Map<String, Object> updateReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] reviewImageList, CustomUserDetails user);
+    Map<String, Object> updateReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, CustomUserDetails user);
 
 
 

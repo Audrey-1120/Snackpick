@@ -46,7 +46,10 @@ const fnGetReviewList = (page, sort) => {
             fnSetPaging(reviewList.currentPage, reviewList.totalPage, reviewList.beginPage, reviewList.endPage);
         } else {
             let str = '<div><p>리뷰가 없어요. 첫번째 리뷰 작성자가 되어 주세요!</p></div>';
-            $('.pagination-container').append(str);
+            let container = $('.pagination-container');
+
+            container.empty();
+            container.append(str);
         }
     })
     .catch((error) => {
@@ -98,7 +101,7 @@ const fnShowResult = (reviewList) => {
         str += '<div class="testimonial-item">';
         str += '<div class="writer-profile">';
         str += '<div class="writer-image">';
-        if(review.member.profileImage !== '') {
+        if(review.member.profileImage !== null) {
             str += '<img src="' + review.member.profileImage + '">';
         } else {
             str += '<img src="/assets/img/default-profile.jpg">';
@@ -112,7 +115,7 @@ const fnShowResult = (reviewList) => {
             str += '<img src="' + review.reviewImageList[0].reviewImagePath + '">';
             str += '</div>';
         } else {
-            str += '<div class="review-image"><div class="default-image"></div></div>';
+            str += '<div class="review-image"><img src="/assets/img/snackpick-circle-logo.png"></div>';
         }
         str += '<div class="content-form">';
         str += '<div class="rating mb-1">';
@@ -142,7 +145,7 @@ const fnShowResult = (reviewList) => {
         str += '</div>';
         str += '</div>';
         str += '<div class="line"></div>';
-        str += '<h4 class="review-content mt-2">' + review.content + '</h4>';
+        str += '<h4 class="review-content mt-3">' + review.content + '</h4>';
         str += '<div class="review-bottom d-flex justify-content-between">';
         str += '<p class="review-location mt-3"><span>' + review.location + '</span>에서 구매했어요!</p>';
 
@@ -224,7 +227,7 @@ const fnShowReviewDetail = (review) => {
     str += '</div>';
     $('.rating-modal').html(str);
 
-    if(review.member.profileImage !== '') {
+    if(review.member.profileImage !== null) {
         $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
     } else {
         $('.writerImage-modal').html('<img src="/assets/img/default-profile.jpg">');

@@ -26,6 +26,6 @@ public class CategoryDTO {
 
         this.subCategoryList = categoryEntity.getSubCategoryList().stream()
                 .map(CategoryDTO::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
