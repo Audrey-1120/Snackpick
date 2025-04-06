@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface CategoryService {
 
+    // 카테고리 목록 조회
     List<CategoryDTO> getAllCategoryList();
 }

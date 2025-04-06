@@ -15,17 +15,6 @@ public class MemberDTO {
     private String id, password, name, nickname, profileImage, role;
     private int memberId;
 
-    public MemberEntity toMemberEntity() {
-        return MemberEntity.builder()
-                .id(id)
-                .password(password)
-                .name(name)
-                .nickname(nickname)
-                .profileImage(profileImage)
-                .role(role)
-                .build();
-    }
-
     public MemberDTO(MemberEntity memberEntity) {
         this.memberId = memberEntity.getMemberId();
         this.id = memberEntity.getId();

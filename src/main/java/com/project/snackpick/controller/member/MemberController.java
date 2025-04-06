@@ -1,5 +1,6 @@
 package com.project.snackpick.controller.member;
 
+import com.project.snackpick.dto.MemberDTO;
 import com.project.snackpick.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,11 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -46,9 +44,10 @@ public class MemberController {
     @Operation(summary = "회원가입", description = "새로운 회원 데이터 추가")
     @ApiResponse(responseCode = "200", description = "성공")
     @ApiResponse(responseCode = "400", description = "중복된 회원이 가입함")
-    public ResponseEntity<Map<String, Object>> signup(MultipartHttpServletRequest multipartHttpServletRequest) {
+    public ResponseEntity<Map<String, Object>> signup(@ModelAttribute MemberDTO memberDTO,
+                                                      @RequestPart MultipartFile[] files) {
 
-        Map<String, Object> response = memberService.signup(multipartHttpServletRequest);
+        Map<String, Object> response = memberService.signup(memberDTO, files);
         return ResponseEntity.ok(response);
     }
 
