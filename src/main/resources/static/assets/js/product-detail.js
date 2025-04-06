@@ -245,6 +245,7 @@ const fnShowCommentList = (commentList) => {
 
     let loginId = $('.login-id').val();
     let commentContainer = $('.content-3');
+    let writerName = $('.writerImage-modal ~ p').text();
 
     let str = ''
     commentList.forEach((comment) => {
@@ -254,9 +255,8 @@ const fnShowCommentList = (commentList) => {
         } else {
             str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
         }
-
         str += '<div class="comment-writer-section">';
-        if(comment.member.profileImage !== '') {
+        if(comment.member.profileImage !== null) {
             str += '<div class="comment-writer"><img src="' + comment.member.profileImage + '"></div>';
         } else {
             str += '<div class="comment-writer"><img src="/assets/img/default-profile.jpg"></div>';
@@ -264,7 +264,11 @@ const fnShowCommentList = (commentList) => {
         str += '</div>';
         str += '<div class="w-100">';
         str += '<div class="comment-profile">';
-        str += '<p>' + comment.member.nickname + '</p>';
+        if(comment.member.nickname === writerName) {
+            str += '<p style="color: #D9232D;">글쓴이</p>';
+        } else {
+            str += '<p>' + comment.member.nickname + '</p>';
+        }
         str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
         str += '</div>';
         str += '<div class="comment-content">';
@@ -295,8 +299,8 @@ const fnShowCommentList = (commentList) => {
 const fnFormatDate = (datetime) => {
     const date = new Date(datetime);
     const now = new Date();
-    const diffMs = now - date;
-    const diffMin = Math.floor(diffMs / 6000);
+    const diffMs = now - date; // 시간 차이 (밀리초 단위)
+    const diffMin = Math.floor(diffMs / 60000);
 
     if(diffMin < 1) {
         return '방금 전';
@@ -376,6 +380,7 @@ const fnShowComment = (comment) => {
 
     let commentArea = $('.content-3');
     let isReply = comment.depth === 0;
+    let writerName = $('.writerImage-modal ~ p').text();
 
     let commentContainer
         = isReply ? commentArea : $('[data-group-id="' + comment.groupId + '"]').last();
@@ -390,7 +395,7 @@ const fnShowComment = (comment) => {
     }
 
     str += '<div class="comment-writer-section">';
-    if(comment.member.profileImage !== '') {
+    if(comment.member.profileImage !== null) {
         str += '<div class="comment-writer"><img src="' + comment.member.profileImage + '"></div>';
     } else {
         str += '<div class="comment-writer"><img src="/assets/img/default-profile.jpg"></div>';
@@ -398,7 +403,11 @@ const fnShowComment = (comment) => {
     str += '</div>';
     str += '<div class="w-100">';
     str += '<div class="comment-profile">';
-    str += '<p>' + comment.member.nickname + '</p>';
+    if(comment.member.nickname === writerName) {
+        str += '<p style="color: #D9232D;">글쓴이</p>';
+    } else {
+        str += '<p>' + comment.member.nickname + '</p>';
+    }
     str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
     str += '</div>';
     str += '<div class="comment-content">';
