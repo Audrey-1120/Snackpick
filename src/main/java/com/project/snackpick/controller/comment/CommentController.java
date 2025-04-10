@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,7 +22,7 @@ import java.util.Map;
 @Tag(name = "Comment", description = "댓글 API")
 public class CommentController {
 
-    private CommentService commentService;
+    private final CommentService commentService;
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
@@ -40,4 +41,18 @@ public class CommentController {
         Map<String, Object> response = commentService.insertComment(commentDTO, user);
         return ResponseEntity.ok(response);
     }
+
+    // 댓글 수정
+    @PutMapping("/updateComment")
+    @Operation(summary = "댓글 수정", description = "댓글 수정")
+    @ApiResponse(responseCode = "200", description = "성공")
+    @ApiResponse(responseCode = "403", description = "댓글을 수정할 권한이 없음")
+    @ApiResponse(responseCode = "404", description = "수정할 댓글 정보가 없음")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> updateComment(@RequestBody CommentDTO commentDTO,
+                                                             @AuthenticationPrincipal CustomUserDetails user) {
+        Map<String, Object> response = commentService.updateComment(commentDTO, user);
+        return ResponseEntity.ok(response);
+    }
+
 }

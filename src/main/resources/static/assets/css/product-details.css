@@ -299,7 +299,7 @@
 }
 
 /* 댓글 작성 버튼 */
-.btn-comment {
+.btn-comment, .btn-comment-update {
     border: none;
     padding: 0.3rem 0.7rem;
     border-radius: 0.5rem;
@@ -361,4 +361,11 @@
 .selected-comment {
     background-color: rgba(217, 35, 45, .1);
     border-radius: 0.7rem;
+}
+
+/* 댓글 수정 아이콘 */
+.icon-comment-update,
+.icon-comment-delete {
+    align-content: center;
+    cursor: pointer;
 }

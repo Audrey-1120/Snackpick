@@ -1,6 +1,7 @@
 /******************** 전역 변수 **********************/
 let productId = 0;
 let globalSort = 'createDt,DESC';
+let initComment = '';
 
 const list = document.querySelector('.reviewImage-modal');
 
@@ -271,20 +272,42 @@ const fnShowCommentList = (commentList) => {
         }
         str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
         str += '</div>';
-        str += '<div class="comment-content">';
-        str += '<p>' + comment.content + '</p>';
-        if(comment.member.memberId === Number(loginId)) { // 내가 작성한 댓글일 경우
-            str += '<div>';
-            str += '<i class="fa-solid fa-pen-to-square btn-comment-update"></i>';
-            str += ' | '
-            str += '<i class="fa-solid fa-trash btn-comment-delete"></i>';
-            str += '</div>';
-        } else {
-            if(comment.depth === 0 && loginId !== undefined) {
-                str += '<p class="btn-reply">댓글달기</p>';
+
+        if(loginId !== undefined) {
+
+            if(comment.member.memberId === Number(loginId)) {
+
+                if(comment.depth === 0) {
+                    str += '<div class="comment-content"><p>' + comment.content + '</p>';
+                    str += '<div class="d-flex gap-1">';
+                    str += '<p class="btn-reply" style="align-content: end;">댓글달기</p>';
+                    str += '<div>';
+                    str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i> | ';
+                    str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
+                    str += '</div>';
+                    str += '</div>';
+                    str += '</div>';
+                } else {
+                    str += '<div class="comment-content">';
+                    str += '<p>' + comment.content + '</p>';
+                    str += '<div>';
+                    str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i>';
+                    str += ' | ';
+                    str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
+                    str += '</div>';
+                    str += '</div>';
+                }
+            } else {
+
+                if(comment.depth === 0) {
+                    str += '<div class="comment-content"><p>' + comment.content + '</p><p class="btn-reply">댓글달기</p></div>';
+                } else {
+                    str += '<div class="comment-content"><p>' + comment.content + '</p></div>';
+                }
             }
+        } else {
+            str += '<div class="comment-content"><p>' + comment.content + '</p></div>';
         }
-        str += '</div>';
         str += '</div>';
         str += '</div>';
 
@@ -358,12 +381,15 @@ const fnSelectReply = (item, isSelected) => {
 
     let commentInput = $('.comment-input input');
 
+    fnChangeCommentBtn('insert');
+
     if(isSelected) {
 
         let comment = item.closest('.comment-modal');
 
         $('.comment-modal').not(comment).removeClass('selected-comment');
         comment.addClass('selected-comment');
+        commentInput.val('');
         commentInput.attr('placeholder', '대댓글을 입력해주세요');
 
     } else {
@@ -371,6 +397,7 @@ const fnSelectReply = (item, isSelected) => {
         let comment = item;
 
         comment.removeClass('selected-comment');
+        commentInput.val('');
         commentInput.attr('placeholder', '댓글을 입력해주세요');
     }
 }
@@ -410,20 +437,42 @@ const fnShowComment = (comment) => {
     }
     str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
     str += '</div>';
-    str += '<div class="comment-content">';
-    str += '<p>' + comment.content + '</p>';
-    if(comment.member.memberId === Number(loginId)) { // 내가 작성한 댓글일 경우
-        str += '<div>';
-        str += '<i class="fa-solid fa-pen-to-square btn-comment-update"></i>';
-        str += ' | '
-        str += '<i class="fa-solid fa-trash btn-comment-delete"></i>';
-        str += '</div>';
-    } else {
-        if(isReply && loginId !== undefined) {
-            str += '<p class="btn-reply">댓글달기</p>';
+
+    if(loginId !== undefined) {
+
+        if(comment.member.memberId === Number(loginId)) {
+
+            if(comment.depth === 0) {
+                str += '<div class="comment-content"><p>' + comment.content + '</p>';
+                str += '<div class="d-flex gap-1">';
+                str += '<p class="btn-reply" style="align-content: end;">댓글달기</p>';
+                str += '<div>';
+                str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i> | ';
+                str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
+                str += '</div>';
+                str += '</div>';
+                str += '</div>';
+            } else {
+                str += '<div class="comment-content">';
+                str += '<p>' + comment.content + '</p>';
+                str += '<div>';
+                str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i>';
+                str += ' | ';
+                str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
+                str += '</div>';
+                str += '</div>';
+            }
+        } else {
+
+            if(comment.depth === 0) {
+                str += '<div class="comment-content"><p>' + comment.content + '</p><p class="btn-reply">댓글달기</p></div>';
+            } else {
+                str += '<div class="comment-content"><p>' + comment.content + '</p></div>';
+            }
         }
+    } else {
+        str += '<div class="comment-content"><p>' + comment.content + '</p></div>';
     }
-    str += '</div>';
     str += '</div>';
     str += '</div>';
 
@@ -439,7 +488,7 @@ const fnShowComment = (comment) => {
 
 }
 
-// 댓글 달기
+// 댓글 작성
 const fnWriteComment = (selectedComment) => {
 
     const isReply = selectedComment.length !== 0;
@@ -477,6 +526,93 @@ const fnWriteComment = (selectedComment) => {
     });
 
 }
+
+// 댓글 수정 입력 표시
+const fnSetUpdateComment = (selectedComment) => {
+
+    // 수정할 댓글 내용을 가져와서 input에 설정
+    let commentId = selectedComment.closest('.comment-modal').data('commentId');
+    let content = selectedComment.closest('.comment-content').find('p').first().text();
+    let commentInput = $('.comment-input input');
+
+    fnChangeCommentBtn('update');
+    commentInput.val(content);
+    commentInput.attr('placeholder', '수정할 댓글을 입력해주세요.');
+
+    initComment = content;
+
+    $('.update-comment-id').val(commentId);
+}
+
+// 댓글 버튼 타입 변경
+const fnChangeCommentBtn = (type) => {
+    if(type === 'insert') {
+        $('.btn-comment').css('display', '');
+        $('.btn-comment-update').css('display', 'none');
+    } else {
+        $('.btn-comment').css('display', 'none');
+        $('.btn-comment-update').css('display', '');
+    }
+}
+
+// 수정한 댓글 표시
+const fnShowUpdateComment = (comment) => {
+
+    let commentId = comment.commentId;
+    let commentContent = $('[data-comment-id="' + commentId + '"]').find('.comment-content p').first();
+    let commentInput = $('.comment-input input');
+
+    commentContent.text(comment.content);
+    commentInput.val('');
+    commentInput.attr('placeholder', '댓글을 입력해주세요.');
+
+    fnChangeCommentBtn('insert');
+}
+
+// 댓글 수정
+const fnUpdateComment = () => {
+
+    let content = $('.comment-input input');
+    let commentId = $('.update-comment-id').val();
+
+    // 빈값 검사
+    if(content.val().trim() === '') {
+        alert('댓글을 입력해주세요.');
+        return;
+    }
+
+    // 초기 댓글 내용과 비교
+    if(content.val().trim() === initComment) {
+        alert('댓글이 수정되었습니다.');
+        content.val('');
+        content.attr('placeholder', '댓글을 작성해주세요.');
+        fnChangeCommentBtn('insert');
+        return;
+    }
+
+    const commentDTO = {
+        commentId: commentId,
+        content: content.val().trim()
+    }
+
+    axios.put('/comment/updateComment', commentDTO,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': fnGetCsrfToken()
+            }
+        })
+        .then((response) => {
+            if(response.data.success) {
+                alert('댓글이 수정되었습니다.');
+                fnShowUpdateComment(response.data.comment);
+            }
+        })
+        .catch((error) => {
+            alert(response.data.message);
+        });
+}
+
 
 /******************** 이벤트 **********************/
 $(document).ready(() => {
@@ -533,4 +669,15 @@ $(document).on('click', '.comment-modal', (evt) => {
 // 댓글 작성
 $('.btn-comment').on('click', () => {
     fnWriteComment($('.selected-comment'));
+});
+
+// 댓글 수정 input 표시
+$(document).on('click', '.icon-comment-update', (evt) => {
+    evt.stopPropagation();
+    fnSetUpdateComment($(evt.currentTarget));
+});
+
+// 댓글 수정
+$('.btn-comment-update').on('click', (evt) => {
+    fnUpdateComment();
 });
