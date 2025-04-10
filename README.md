@@ -1,5 +1,16 @@
-# Snackpick
-  <img src="https://github.com/user-attachments/assets/c98a91ba-b954-40aa-948b-3a1f529336b6" width="100" height="100"/>
+# Snackpick - 편의점 식품 리뷰 사이트
+  <img src="https://github.com/user-attachments/assets/c98a91ba-b954-40aa-948b-3a1f529336b6" width="100" height="100"/>  
+  
+# ☑️버전 정보
+✅ ver 1.1 (배포 완료)
+- 제품 검색 로직 개선
+- 코드 리팩토링
+
+🚧 ver 1.2 (현재 개발중)
+- 댓글 CRUD
+- 마이페이지
+  - 정보수정
+  - 회원탈퇴
 
 # ☑️ 사이트
 - **배포주소** : http://www.snackpick.site
