@@ -93,6 +93,31 @@ public class CommentServiceImpl implements CommentService {
                     , "message", "댓글이 수정되었습니다.");
     }
 
+    // 댓글 삭제
+    @Override
+    @Transactional
+    public Map<String, Object> deleteComment(CommentDTO commentDTO, CustomUserDetails user) {
+
+        CommentEntity comment = commentRepository.findById(commentDTO.getCommentId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("댓글")));
+
+        if(!hasPermission(comment, user)) {
+            throw new CustomException(ErrorCode.NOT_PERMISSION,
+                    ErrorCode.NOT_PERMISSION.formatMessage("댓글 수정"));
+        }
+
+        if(comment.isState()) {
+            throw new CustomException(ErrorCode.ALREADY_DELETE,
+                    ErrorCode.ALREADY_DELETE.formatMessage("댓글"));
+        }
+
+        comment.setState(true);
+
+        return Map.of("success", true
+                , "message", "댓글이 삭제되었습니다.");
+    }
+
     // 권한 확인
     @Override
     public boolean hasPermission(CommentEntity comment, CustomUserDetails user) {

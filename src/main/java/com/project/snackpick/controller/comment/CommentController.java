@@ -55,4 +55,17 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
 
+    // 댓글 삭제
+    @PutMapping("/deleteComment")
+    @Operation(summary = "댓글 수정", description = "댓글 수정")
+    @ApiResponse(responseCode = "200", description = "성공")
+    @ApiResponse(responseCode = "400", description = "이미 삭제된 댓글임")
+    @ApiResponse(responseCode = "403", description = "댓글을 삭제할 권한이 없음")
+    @ApiResponse(responseCode = "404", description = "수정할 댓글 정보가 없음")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> deleteComment(@RequestBody CommentDTO commentDTO,
+                                                             @AuthenticationPrincipal CustomUserDetails user) {
+        Map<String, Object> response = commentService.deleteComment(commentDTO, user);
+        return ResponseEntity.ok(response);
+    }
 }

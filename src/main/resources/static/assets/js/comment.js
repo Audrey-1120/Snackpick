@@ -213,10 +213,10 @@ const fnShowComment = (comment) => {
     str += '</div>';
     str += '</div>';
 
-    if(isReply) { // 댓글인 경우 맨 마지막에 댓글 추가 및 스크롤 맨 아래로 내리기
+    if(isReply) {
         commentContainer.append(str);
         commentArea.scrollTop(commentArea[0].scrollHeight);
-    } else { // 대댓글인 경우 같은 group_id를 가진 요소 다음에 댓글 추가 및 스크롤 해당 댓글의 원글로 이동
+    } else {
         commentContainer.after(str);
     }
 
@@ -253,21 +253,19 @@ const fnWriteComment = (selectedComment) => {
                 'X-XSRF-TOKEN': fnGetCsrfToken()
             }
         })
-        .then((response) => {
-            if(response.data.success) {
-                fnShowComment(response.data.comment);
-            }
-        })
-        .catch((error) => {
-            alert(response.data.message);
-        });
-
+    .then((response) => {
+        if(response.data.success) {
+            fnShowComment(response.data.comment);
+        }
+    })
+    .catch((error) => {
+        alert(response.data.message);
+    });
 }
 
 // 댓글 수정 입력 표시
 const fnSetUpdateComment = (selectedComment) => {
 
-    // 수정할 댓글 내용을 가져와서 input에 설정
     let commentId = selectedComment.closest('.comment-modal').data('commentId');
     let content = selectedComment.closest('.comment-content').find('p').first().text();
     let commentInput = $('.comment-input input');
@@ -312,13 +310,11 @@ const fnUpdateComment = () => {
     let content = $('.comment-input input');
     let commentId = $('.update-comment-id').val();
 
-    // 빈값 검사
     if(content.val().trim() === '') {
         alert('댓글을 입력해주세요.');
         return;
     }
 
-    // 초기 댓글 내용과 비교
     if(content.val().trim() === initComment) {
         alert('댓글이 수정되었습니다.');
         content.val('');
@@ -345,7 +341,34 @@ const fnUpdateComment = () => {
             fnShowUpdateComment(response.data.comment);
         }
     })
-    .catch((error) => {
+    .catch(() => {
+        alert(response.data.message);
+    });
+}
+
+// 댓글 삭제
+const fnDeleteComment = (evt) => {
+
+    let commentId = evt.closest('.comment-modal').data('commentId');
+
+    const commentDTO = {
+        commentId: commentId
+    }
+
+    axios.put('/comment/deleteComment', commentDTO,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': fnGetCsrfToken()
+            }
+        })
+    .then((response) => {
+        if(response.data.success) {
+            alert('댓글이 삭제되었습니다.');
+            evt.closest('.comment-modal').remove();
+        }
+    })
+    .catch(() => {
         alert(response.data.message);
     });
 }
@@ -375,8 +398,16 @@ $(document).on('click', '.icon-comment-update', (evt) => {
 });
 
 // 댓글 수정
-$('.btn-comment-update').on('click', (evt) => {
+$('.btn-comment-update').on('click', () => {
     fnUpdateComment();
 });
+
+// 댓글 삭제
+$(document).on('click', '.icon-comment-delete', (evt) => {
+    evt.stopPropagation();
+    if(confirm("댓글을 삭제하시겠습니까?")) {
+        fnDeleteComment($(evt.currentTarget));
+    }
+})
 
 export { fnShowCommentList, fnShowComment };

@@ -15,6 +15,7 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
     @Query(value = "SELECT c FROM CommentEntity c " +
             "JOIN FETCH c.memberEntity " +
             "WHERE c.reviewEntity.reviewId = :reviewId " +
+            "AND c.state = false " +
             "ORDER BY c.groupId ASC, c.depth ASC, c.createDt ASC")
     List<CommentEntity> findCommentListByReviewId(@Param("reviewId") int reviewId);
 
