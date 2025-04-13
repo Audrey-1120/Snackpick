@@ -10,69 +10,76 @@ const fnShowCommentList = (commentList) => {
     let writerName = $('.writerImage-modal ~ p').text();
 
     let str = ''
-    commentList.forEach((comment) => {
 
-        if(comment.depth === 0) {
-            str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-        } else {
-            str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-        }
-        str += '<div class="comment-writer-section">';
-        if(comment.member.profileImage !== null) {
-            str += '<div class="comment-writer"><img src="' + comment.member.profileImage + '"></div>';
-        } else {
-            str += '<div class="comment-writer"><img src="/assets/img/default-profile.jpg"></div>';
-        }
-        str += '</div>';
-        str += '<div class="w-100">';
-        str += '<div class="comment-profile">';
-        if(comment.member.nickname === writerName) {
-            str += '<p style="color: #D9232D;">글쓴이</p>';
-        } else {
-            str += '<p>' + comment.member.nickname + '</p>';
-        }
-        str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
-        str += '</div>';
+    if(commentList.length !== 0) {
 
-        if(loginId !== undefined) {
+        commentList.forEach((comment) => {
 
-            if(comment.member.memberId === Number(loginId)) {
+            if(comment.depth === 0) {
+                str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
+            } else {
+                str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
+            }
+            str += '<div class="comment-writer-section">';
+            if(comment.member.profileImage !== null) {
+                str += '<div class="comment-writer"><img src="' + comment.member.profileImage + '"></div>';
+            } else {
+                str += '<div class="comment-writer"><img src="/assets/img/default-profile.jpg"></div>';
+            }
+            str += '</div>';
+            str += '<div class="w-100">';
+            str += '<div class="comment-profile">';
+            if(comment.member.nickname === writerName) {
+                str += '<p style="color: #D9232D;">글쓴이</p>';
+            } else {
+                str += '<p>' + comment.member.nickname + '</p>';
+            }
+            str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
+            str += '</div>';
 
-                if(comment.depth === 0) {
-                    str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p>';
-                    str += '<div class="d-flex gap-1">';
-                    str += '<p class="btn-reply" style="align-content: end;">댓글달기</p>';
-                    str += '<div>';
-                    str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i> | ';
-                    str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
-                    str += '</div>';
-                    str += '</div>';
-                    str += '</div>';
+            if(loginId !== undefined) {
+                if(comment.member.memberId === Number(loginId)) {
+                    if(comment.depth === 0) {
+                        str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p>';
+                        str += '<div class="d-flex gap-1">';
+                        str += '<p class="btn-reply" style="align-content: end;">댓글달기</p>';
+                        str += '<div style="align-content: end">';
+                        str += '<i class="fa-solid fa-pen-to-square icon-comment-update"></i> | ';
+                        str += '<i class="fa-solid fa-trash icon-comment-delete"></i>';
+                        str += '</div>';
+                        str += '</div>';
+                        str += '</div>';
+                    } else {
+                        str += '<div class="comment-content">';
+                        str += '<p class="w-75">' + comment.content + '</p>';
+                        str += '<div style="align-content: end">';
+                        str += '<i class="fa-solid fa-pen-to-square icon-comment-update"></i>';
+                        str += ' | ';
+                        str += '<i class="fa-solid fa-trash icon-comment-delete"></i>';
+                        str += '</div>';
+                        str += '</div>';
+                    }
                 } else {
-                    str += '<div class="comment-content">';
-                    str += '<p class="w-75">' + comment.content + '</p>';
-                    str += '<div>';
-                    str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i>';
-                    str += ' | ';
-                    str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
-                    str += '</div>';
-                    str += '</div>';
+
+                    if(comment.depth === 0) {
+                        str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p><p class="btn-reply">댓글달기</p></div>';
+                    } else {
+                        str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p></div>';
+                    }
                 }
             } else {
-
-                if(comment.depth === 0) {
-                    str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p><p class="btn-reply">댓글달기</p></div>';
-                } else {
-                    str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p></div>';
-                }
+                str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p></div>';
             }
-        } else {
-            str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p></div>';
-        }
-        str += '</div>';
-        str += '</div>';
+            str += '</div>';
+            str += '</div>';
+        });
 
-    });
+    } else {
+
+        str += '<div class="no-comment">';
+        str += '<p>댓글이 없습니다.</p>';
+        str += '</div>';
+    }
 
     commentContainer.empty();
     commentContainer.html(str);
@@ -109,7 +116,7 @@ const fnFormatDate = (datetime) => {
 }
 
 // 대댓글 선택
-const fnSelectReply = (item, isSelected) => {
+const fnSelectReply = (commentItem, isSelected) => {
 
     let commentInput = $('.comment-input input');
 
@@ -117,7 +124,7 @@ const fnSelectReply = (item, isSelected) => {
 
     if(isSelected) {
 
-        let comment = item.closest('.comment-modal');
+        let comment = commentItem.closest('.comment-modal');
 
         $('.comment-modal').not(comment).removeClass('selected-comment');
         comment.addClass('selected-comment');
@@ -126,9 +133,7 @@ const fnSelectReply = (item, isSelected) => {
 
     } else {
 
-        let comment = item;
-
-        comment.removeClass('selected-comment');
+        $('.selected-comment').removeClass('selected-comment');
         commentInput.val('');
         commentInput.attr('placeholder', '댓글을 입력해주세요');
     }
@@ -183,19 +188,19 @@ const fnShowComment = (comment) => {
                 str += '<div class="comment-content"><p class="w-75">' + comment.content + '</p>';
                 str += '<div class="d-flex gap-1">';
                 str += '<p class="btn-reply" style="align-content: end;">댓글달기</p>';
-                str += '<div>';
-                str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i> | ';
-                str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
+                str += '<div style="align-content: end">';
+                str += '<i class="fa-solid fa-pen-to-square icon-comment-update"></i> | ';
+                str += '<i class="fa-solid fa-trash icon-comment-delete"></i>';
                 str += '</div>';
                 str += '</div>';
                 str += '</div>';
             } else {
                 str += '<div class="comment-content">';
                 str += '<p class="w-75">' + comment.content + '</p>';
-                str += '<div>';
-                str += '<i class="fa-solid fa-pen-to-square icon-comment-update" style="align-content: center;"></i>';
+                str += '<div style="align-content: end">';
+                str += '<i class="fa-solid fa-pen-to-square icon-comment-update"></i>';
                 str += ' | ';
-                str += '<i class="fa-solid fa-trash icon-comment-delete" style="align-content: center;"></i>';
+                str += '<i class="fa-solid fa-trash icon-comment-delete"></i>';
                 str += '</div>';
                 str += '</div>';
             }
@@ -219,6 +224,8 @@ const fnShowComment = (comment) => {
     } else {
         commentContainer.after(str);
     }
+
+    $('.no-comment').remove();
 
     $('.selected-comment').removeClass('selected-comment');
     $('.comment-input input').val('');
@@ -270,6 +277,7 @@ const fnSetUpdateComment = (selectedComment) => {
     let content = selectedComment.closest('.comment-content').find('p').first().text();
     let commentInput = $('.comment-input input');
 
+    $('.selected-comment').removeClass(('selected-comment'));
     fnChangeCommentBtn('update');
     commentInput.val(content);
     commentInput.attr('placeholder', '수정할 댓글을 입력해주세요.');
@@ -366,6 +374,12 @@ const fnDeleteComment = (evt) => {
         if(response.data.success) {
             alert('댓글이 삭제되었습니다.');
             evt.closest('.comment-modal').remove();
+            if($('.comment-modal').length === 0) {
+                let str = '<div class="no-comment">';
+                str += '<p>댓글이 없습니다.</p>';
+                str += '</div>';
+                $('.content-3').append(str);
+            }
         }
     })
     .catch(() => {
@@ -380,11 +394,11 @@ $(document).on('click', '.btn-reply', (evt) => {
     fnSelectReply($(evt.currentTarget), true);
 });
 
-// 대댓글 달 원글 선택 취소
-$(document).on('click', '.comment-modal', (evt) => {
+// 취소 버튼 클릭 시 일반 댓글 창 표시
+$('.btn-comment-undo').on('click', (evt) => {
     evt.stopPropagation();
     fnSelectReply($(evt.currentTarget), false);
-});
+})
 
 // 댓글 작성
 $('.btn-comment').on('click', () => {

@@ -109,14 +109,12 @@
 
             <div th:if="${#authorization.expression('isAuthenticated()')}" class="comment-input mt-2">
               <input type="text" placeholder="댓글을 입력해주세요" maxlength="150">
-              <button type="button" class="btn-comment">
-                <i class="fa-solid fa-paper-plane"></i>
-              </button>
-              <button type="button" class="btn-comment-update" style="display: none;">
-                <i class="fa-solid fa-pen"></i>
+              <div class="comment-buttons">
+                <button type="button" class="btn-comment">등록</button>
+                <button type="button" class="btn-comment-update" style="display: none;">저장</button>
                 <input type="hidden" class="update-comment-id" value="0">
-              </button>
-
+                <button type="button" class="btn-comment-undo">취소</button>
+              </div>
             </div>
           </div>
           <div class="mb-3 product-search">

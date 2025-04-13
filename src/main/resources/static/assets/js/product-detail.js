@@ -159,6 +159,7 @@ const fnShowResult = (reviewList) => {
         str += '</div>';
         str += '</div>';
         str += '</div>';
+        str += '</div>';
 
     });
 
