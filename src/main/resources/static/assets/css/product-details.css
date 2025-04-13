@@ -220,7 +220,7 @@
 }
 
 .content-2 p:first-child {
-    height: 60%;
+    height: 95%;
 }
 
 .image {
@@ -273,7 +273,7 @@
 .content-3 {
     text-align: start;
     overflow-y: auto;
-    height: 65%;
+    height: 60%;
 }
 
 /* 댓글(원글) 아이템 */
