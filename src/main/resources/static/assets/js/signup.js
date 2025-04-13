@@ -293,3 +293,8 @@ $('.btn-checkId').on('click', () => {
 $('#profileImage').on('change', (evt) => {
     fnCheckProfileImage(evt);
 });
+
+$('.btn-delete').on('click', () => {
+    $('#profileImage').val('');
+    $('#image-preview').empty();
+});
