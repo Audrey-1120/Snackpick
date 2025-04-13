@@ -1,59 +1,4 @@
-/******************** Kakao Maps API **********************/
-let infowindow = new kakao.maps.InfoWindow({zIndex:1});
-let container = document.getElementById('map');
-let options = {
-    center: new kakao.maps.LatLng(37.50185785121449, 126.78766910206697),
-    level: 3
-};
-
-// 지도 생성
-let map = new kakao.maps.Map(container, options);
-
-// 장소 검색 객체 생성
-let ps = new kakao.maps.services.Places(map);
-
-// 키워드 주소 검색 함수
-function searchCon() {
-    let keyword = $('.location-input').find('input').val();
-    ps.keywordSearch(keyword, placesSearchCB, {
-        category_group_code: 'CS2'
-    });
-}
-
-// 키워드 검색 완료 시 호출되는 콜백 함수
-function placesSearchCB (data, status) {
-    if (status === kakao.maps.services.Status.OK) {
-
-        let bounds = new kakao.maps.LatLngBounds();
-
-        for (let i=0; i<data.length; i++) {
-            displayMarker(data[i]);
-            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-        }
-        map.setBounds(bounds);
-    }
-}
-
-// 지도에 마커 표시하는 함수
-function displayMarker(place) {
-
-    var marker = new kakao.maps.Marker({
-        map: map,
-        position: new kakao.maps.LatLng(place.y, place.x)
-    });
-
-    kakao.maps.event.addListener(marker, 'click', function() {
-
-        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
-        infowindow.open(map, marker);
-
-        $('.location-final').text(place.place_name);
-        $('.location-input').val(place.place_name);
-
-        fnActivateUpdateBtn();
-
-    });
-}
+import * as kakaoMaps from './kakao-maps.js';
 
 /******************** 전역 변수 **********************/
 let productId = 0;
@@ -339,7 +284,7 @@ $(document).ready(() => {
 
     let locationFinal = $('.location-final').text();
 
-    searchCon();
+    kakaoMaps.searchCon();
 
     $('.location-input').val(locationFinal);
 
@@ -366,7 +311,7 @@ $('input[type="file"]').on('change', () => {
     fnActivateUpdateBtn();
 });
 
-$('.btn-LocationSearch').on('click', searchCon);
+$('.btn-LocationSearch').on('click', kakaoMaps.searchCon);
 
 $('#update-form textarea').on('keyup', fnDebounce(fnActivateUpdateBtn, 300));
 

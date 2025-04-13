@@ -50,7 +50,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductDetail(int productId) {
 
         ProductDTO product = new ProductDTO(productRepository.findProductByProductId(productId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT)));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("제품"))));
 
         return product;
     }
@@ -61,10 +62,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductEntity insertProduct(ProductDTO productDTO) {
 
         CategoryEntity topCategory = categoryRepository.findById(Integer.parseInt(productDTO.getTopCategory()))
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CATEGORY));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("대분류 카테고리")));
 
         CategoryEntity subCategory = categoryRepository.findById(Integer.parseInt(productDTO.getSubCategory()))
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CATEGORY));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("중분류 카테고리")));
 
         ProductEntity productEntity = ProductEntity.builder()
                 .productName(productDTO.getProductName())

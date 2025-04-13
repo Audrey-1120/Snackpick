@@ -1,8 +1,8 @@
+import * as comment from './comment.js';
+
 /******************** 전역 변수 **********************/
 let productId = 0;
 let globalSort = 'createDt,DESC';
-
-const list = document.querySelector('.reviewImage-modal');
 
 /******************** 함수 **********************/
 // 리뷰 리스트 조회 데이터 받아서 정렬
@@ -159,6 +159,7 @@ const fnShowResult = (reviewList) => {
         str += '</div>';
         str += '</div>';
         str += '</div>';
+        str += '</div>';
 
     });
 
@@ -180,7 +181,7 @@ const fnGetReviewDetail = (evt) => {
     .then((response) => {
 
         fnShowReviewDetail(response.data.review);
-        fnShowCommentList(response.data.commentList);
+        comment.fnShowCommentList(response.data.commentList);
 
         $('#review-detail').modal('show');
     })
@@ -240,86 +241,6 @@ const fnShowReviewDetail = (review) => {
 
 }
 
-// 리뷰 댓글 데이터 화면에 표시
-const fnShowCommentList = (commentList) => {
-
-    let loginId = $('.login-id').val();
-    let commentContainer = $('.content-3');
-
-    let str = ''
-    commentList.forEach((comment) => {
-
-        if(comment.depth === 0) {
-            str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-        } else {
-            str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-        }
-
-        str += '<div class="comment-writer-section">';
-        if(comment.member.profileImage !== '') {
-            str += '<div class="comment-writer"><img src="' + comment.member.profileImage + '"></div>';
-        } else {
-            str += '<div class="comment-writer"><img src="/assets/img/default-profile.jpg"></div>';
-        }
-        str += '</div>';
-        str += '<div class="w-100">';
-        str += '<div class="comment-profile">';
-        str += '<p>' + comment.member.nickname + '</p>';
-        str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
-        str += '</div>';
-        str += '<div class="comment-content">';
-        str += '<p>' + comment.content + '</p>';
-        if(comment.member.memberId === Number(loginId)) { // 내가 작성한 댓글일 경우
-            str += '<div>';
-            str += '<i class="fa-solid fa-pen-to-square btn-comment-update"></i>';
-            str += ' | '
-            str += '<i class="fa-solid fa-trash btn-comment-delete"></i>';
-            str += '</div>';
-        } else {
-            if(comment.depth === 0 && loginId !== undefined) {
-                str += '<p class="btn-reply">댓글달기</p>';
-            }
-        }
-        str += '</div>';
-        str += '</div>';
-        str += '</div>';
-
-    });
-
-    commentContainer.empty();
-    commentContainer.html(str);
-
-}
-
-// 날짜 포맷
-const fnFormatDate = (datetime) => {
-    const date = new Date(datetime);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMin = Math.floor(diffMs / 6000);
-
-    if(diffMin < 1) {
-        return '방금 전';
-    }
-
-    if(diffMin < 60) {
-        return diffMin + '분 전';
-    }
-
-    if(diffMin < 120) {
-        return '1시간 전';
-    }
-
-    // 1시간 이상 경과되었을 경우..
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth()).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    const hh = String(date.getHours()).padStart(2, '0');
-    const mi = String(date.getMinutes()).padStart(2, '0');
-
-    return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mi;
-}
-
 // csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
@@ -349,127 +270,9 @@ const fnDeleteReview = (evt) => {
     });
 }
 
-// 대댓글 선택
-const fnSelectReply = (item, isSelected) => {
-
-    let commentInput = $('.comment-input input');
-
-    if(isSelected) {
-
-        let comment = item.closest('.comment-modal');
-
-        $('.comment-modal').not(comment).removeClass('selected-comment');
-        comment.addClass('selected-comment');
-        commentInput.attr('placeholder', '대댓글을 입력해주세요');
-
-    } else {
-
-        let comment = item;
-
-        comment.removeClass('selected-comment');
-        commentInput.attr('placeholder', '댓글을 입력해주세요');
-    }
-}
-
-// 작성 댓글 표시
-const fnShowComment = (comment) => {
-
-    let commentArea = $('.content-3');
-    let isReply = comment.depth === 0;
-
-    let commentContainer
-        = isReply ? commentArea : $('[data-group-id="' + comment.groupId + '"]').last();
-
-    let loginId = $('.login-id').val();
-
-    let str = '';
-    if(isReply) {
-        str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-    } else {
-        str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-    }
-
-    str += '<div class="comment-writer-section">';
-    if(comment.member.profileImage !== '') {
-        str += '<div class="comment-writer"><img src="' + comment.member.profileImage + '"></div>';
-    } else {
-        str += '<div class="comment-writer"><img src="/assets/img/default-profile.jpg"></div>';
-    }
-    str += '</div>';
-    str += '<div class="w-100">';
-    str += '<div class="comment-profile">';
-    str += '<p>' + comment.member.nickname + '</p>';
-    str += '<p>' + fnFormatDate(comment.createDt) + '</p>';
-    str += '</div>';
-    str += '<div class="comment-content">';
-    str += '<p>' + comment.content + '</p>';
-    if(comment.member.memberId === Number(loginId)) { // 내가 작성한 댓글일 경우
-        str += '<div>';
-        str += '<i class="fa-solid fa-pen-to-square btn-comment-update"></i>';
-        str += ' | '
-        str += '<i class="fa-solid fa-trash btn-comment-delete"></i>';
-        str += '</div>';
-    } else {
-        if(isReply && loginId !== undefined) {
-            str += '<p class="btn-reply">댓글달기</p>';
-        }
-    }
-    str += '</div>';
-    str += '</div>';
-    str += '</div>';
-
-    if(isReply) { // 댓글인 경우 맨 마지막에 댓글 추가 및 스크롤 맨 아래로 내리기
-        commentContainer.append(str);
-        commentArea.scrollTop(commentArea[0].scrollHeight);
-    } else { // 대댓글인 경우 같은 group_id를 가진 요소 다음에 댓글 추가 및 스크롤 해당 댓글의 원글로 이동
-        commentContainer.after(str);
-    }
-
-    $('.selected-comment').removeClass('selected-comment');
-    $('.comment-input input').val('');
-
-}
-
-// 댓글 달기
-const fnWriteComment = (selectedComment) => {
-
-    const isReply = selectedComment.length !== 0;
-
-    let content = $('.comment-input input').val().trim();
-    let reviewId = $('.review-id').val();
-
-    if(content === '') {
-        alert('댓글을 입력해주세요.');
-        return;
-    }
-
-    const commentDTO = {
-        reviewId,
-        content,
-        depth: isReply ? 1 : 0,
-        groupId: isReply ? selectedComment.data('commentId') : undefined,
-        state: false
-    }
-
-    axios.post('/comment/insertComment', commentDTO,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'X-XSRF-TOKEN': fnGetCsrfToken()
-            }
-        })
-    .then((response) => {
-        if(response.data.success) {
-            fnShowComment(response.data.comment);
-        }
-    })
-    .catch((error) => {
-        alert(response.data.message);
-    });
-
-}
-
 /******************** 이벤트 **********************/
+window.fnGetReviewList = fnGetReviewList;
+
 $(document).ready(() => {
     const urlParams = new URL(location.href).searchParams;
     productId = urlParams.get('productId');
@@ -509,19 +312,3 @@ $(document).on('click', '.btn-update', (evt) => {
     location.href = "/review/reviewUpdate.page?reviewId=" + reviewId + '&productId=' + productId;
 });
 
-// 대댓글 달 원글 선택
-$(document).on('click', '.btn-reply', (evt) => {
-    evt.stopPropagation();
-    fnSelectReply($(evt.currentTarget), true);
-});
-
-// 대댓글 달 원글 선택 취소
-$(document).on('click', '.comment-modal', (evt) => {
-    evt.stopPropagation();
-    fnSelectReply($(evt.currentTarget), false);
-});
-
-// 댓글 작성
-$('.btn-comment').on('click', () => {
-    fnWriteComment($('.selected-comment'));
-});

@@ -289,13 +289,44 @@
     margin-left: auto;
 }
 
+.comment-input {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+}
+
 /* 댓글 입력창 */
 .comment-input input {
-    width: 92%;
+    flex-grow: 1;
+    min-width: 200px;
+    max-width: 100%;
     border-radius: 0.5rem;
     outline: none;
     border: 0.5px solid gray;
     padding: 0.3rem;
+}
+
+@media screen and (max-width: 990px) {
+    .comment-input input {
+        width: 75%;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .comment-input {
+        display: flex;
+        gap: 0.3rem;
+    }
+
+    .comment-input input {
+        width: calc(100% - 110px);
+        min-width: 0;
+    }
+
+    .comment-buttons {
+        display: flex;
+        gap: 0.3rem;
+    }
 }
 
 /* 댓글 작성 버튼 */
@@ -305,6 +336,18 @@
     border-radius: 0.5rem;
     background-color: #d9232d;
     color: white;
+}
+
+.comment-buttons button {
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    background-color: #d9232d;
+    color: white;
+}
+
+.btn-comment-undo {
+    background-color: #6c757d !important;
 }
 
 /* 댓글 작성자 이미지 영역 */
@@ -346,6 +389,13 @@
     align-content: center;
 }
 
+.no-comment {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 /* 답글 작성 아이콘 */
 .btn-reply {
     cursor: pointer;
@@ -361,4 +411,11 @@
 .selected-comment {
     background-color: rgba(217, 35, 45, .1);
     border-radius: 0.7rem;
+}
+
+/* 댓글 수정 아이콘 */
+.icon-comment-update,
+.icon-comment-delete {
+    align-content: center;
+    cursor: pointer;
 }

@@ -21,7 +21,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     Page<ReviewEntity> findByReviewListByProductId(@Param("productId") int productId, Pageable pageable);
 
     // 리뷰 목록 조회 - 리뷰 이미지, 작성자 정보
-    @Query("SELECT r FROM ReviewEntity r " +
+    @Query("SELECT DISTINCT r FROM ReviewEntity r " +
             "LEFT JOIN FETCH r.memberEntity m " +
             "LEFT JOIN FETCH r.reviewImageEntityList ri " +
             "WHERE r.reviewId IN :reviewIdList " +
@@ -29,7 +29,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     List<ReviewEntity> findReviewListWithImage(@Param("reviewIdList") List<ReviewEntity> reviewIdList);
 
     // 리뷰 상세 조회
-    @Query("SELECT r FROM ReviewEntity r " +
+    @Query("SELECT DISTINCT r FROM ReviewEntity r " +
             "LEFT JOIN FETCH r.memberEntity m " +
             "LEFT JOIN FETCH r.reviewImageEntityList ri " +
             "WHERE r.reviewId = :reviewId")

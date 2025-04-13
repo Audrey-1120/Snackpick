@@ -77,6 +77,7 @@ public class ReviewController {
     @ApiResponse(responseCode = "200", description = "성공")
     @ApiResponse(responseCode = "404", description = "리뷰 ID에 해당하는 리뷰 데이터가 없음.")
     @ApiResponse(responseCode = "403", description = "리뷰를 삭제할 권한이 없음.")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> deleteReview(@RequestBody Map<String, String> param,
                                                             @AuthenticationPrincipal CustomUserDetails user) {
 
@@ -91,6 +92,7 @@ public class ReviewController {
     @ApiResponse(responseCode = "200", description = "성공")
     @ApiResponse(responseCode = "404", description = "리뷰 ID에 해당하는 리뷰 데이터가 없음.")
     @ApiResponse(responseCode = "403", description = "리뷰를 수정할 권한이 없음.")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> updateReview(@RequestPart("reviewRequest") ReviewRequestDTO reviewRequestDTO,
                                                             @RequestPart(value = "reviewImageList", required = false) MultipartFile[] reviewImageList,
                                                             @AuthenticationPrincipal CustomUserDetails user) {

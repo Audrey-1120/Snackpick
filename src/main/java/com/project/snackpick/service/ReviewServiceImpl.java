@@ -93,7 +93,8 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDTO getReviewDetail(int reviewId) {
 
         ReviewEntity review = reviewRepository.findReviewByReviewId(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("리뷰")));
 
         return new ReviewDTO(review);
     }
@@ -104,7 +105,8 @@ public class ReviewServiceImpl implements ReviewService {
     public Map<String, Object> deleteReview(int reviewId, CustomUserDetails user) {
 
         ReviewEntity review = reviewRepository.findReviewByReviewId(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("리뷰")));
 
         if(!hasPermission(review, user)) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
@@ -112,13 +114,15 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         if(review.isState()) {
-            throw new CustomException(ErrorCode.ALREADY_DELETE_REVIEW);
+            throw new CustomException(ErrorCode.ALREADY_DELETE,
+                    ErrorCode.ALREADY_DELETE.formatMessage("리뷰"));
         }
 
         review.setState(true);
 
         ProductEntity product = productRepository.findProductByProductId(review.getProductEntity().getProductId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("제품")));
 
         updateProductStats(product, review, new ReviewDTO(), ReviewAction.DELETE);
 
@@ -133,9 +137,12 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
         ReviewEntity review = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_REVIEW));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("리뷰")));
+
         ProductEntity product = productRepository.findProductByProductId(reviewDTO.getProductId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("제품")));
 
         if(!hasPermission(review, user)) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
@@ -277,7 +284,8 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewEntity insertReviewFields(ReviewRequestDTO reviewRequestDTO, ProductEntity product, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
 
         ReviewEntity review = ReviewEntity.toReviewEntity(reviewRequestDTO.getReviewDTO(), member, product);
         return reviewRepository.save(review);
@@ -302,8 +310,10 @@ public class ReviewServiceImpl implements ReviewService {
             return productService.insertProduct(reviewRequestDTO.getProductDTO());
         } else {
             int productId = reviewRequestDTO.getReviewDTO().getProductId();
+
             return productRepository.findProductByProductId(productId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PRODUCT));
+                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                            ErrorCode.NOT_FOUND_ENTITY.formatMessage("제품")));
         }
     }
 

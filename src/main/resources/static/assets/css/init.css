@@ -19,3 +19,29 @@ body, h1, h2, h3, h4, h5, h6 {
 p {
     margin-bottom: 0 !important;
 }
+
+@media (min-width: 1200px) {
+    .navmenu p {
+        padding: 18px 15px;
+        font-size: 15px;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+        transition: 0.3s;
+    }
+}
+
+@media (max-width: 1199px) {
+    .navmenu p {
+        padding: 10px 20px;
+        font-size: 17px;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+        transition: 0.3s;
+    }
+}

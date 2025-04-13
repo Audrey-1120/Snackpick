@@ -24,7 +24,7 @@
           <li><a th:href="@{/review/reviewWrite.page}">리뷰 작성</a></li>
           <li><a th:href="@{/product/product.page}">리뷰 조회</a></li>
           <li th:if="${#authorization.expression('isAuthenticated()')}" class="d-flex" style="font-size: 15px; color: #556270;">
-            <p th:text="${#authentication.principal.nickname}"></p>님 환영합니다.
+            <p><span th:text="${#authentication.principal.nickname}"></span>님 환영합니다.</p>
             <input type="hidden" class="login-id" th:value="${#authentication.principal.memberId}">
           </li>
         </ul>
