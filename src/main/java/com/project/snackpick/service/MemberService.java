@@ -1,5 +1,6 @@
 package com.project.snackpick.service;
 
+import com.project.snackpick.dto.CustomUserDetails;
 import com.project.snackpick.dto.MemberDTO;
 import com.project.snackpick.entity.MemberEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,4 +18,7 @@ public interface MemberService {
 
     // 프로필 사진 업로드
     void uploadProfileImage(MemberEntity member, MultipartFile[] files) throws IOException;
+
+    // 회원 정보 조회
+    MemberDTO getMemberById(CustomUserDetails user);
 }

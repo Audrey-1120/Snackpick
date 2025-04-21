@@ -1,9 +1,15 @@
 package com.project.snackpick.controller.member;
 
+import com.project.snackpick.dto.CustomUserDetails;
+import com.project.snackpick.dto.MemberDTO;
+import com.project.snackpick.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,6 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/member")
 @Tag(name = "Member-View", description = "회원 화면")
 public class MemberViewController {
+
+    private final MemberService memberService;
+
+    public MemberViewController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     // 로그인 페이지
     @GetMapping("/login.page")
@@ -32,5 +44,16 @@ public class MemberViewController {
             return "redirect:/";
         }
         return "member/signup";
+    }
+
+    // 마이페이지
+    @GetMapping("/profile.page")
+    @Operation(summary = "마이페이지 이동", description = "마이페이지로 이동")
+    @PreAuthorize("isAuthenticated()")
+    public String myPage(@AuthenticationPrincipal CustomUserDetails user, Model model) {
+
+        MemberDTO member = memberService.getMemberById(user);
+        model.addAttribute("member", member);
+        return "member/profile";
     }
 }

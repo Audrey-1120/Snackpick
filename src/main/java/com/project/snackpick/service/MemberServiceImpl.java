@@ -1,5 +1,6 @@
 package com.project.snackpick.service;
 
+import com.project.snackpick.dto.CustomUserDetails;
 import com.project.snackpick.dto.MemberDTO;
 import com.project.snackpick.entity.MemberEntity;
 import com.project.snackpick.exception.CustomException;
@@ -77,5 +78,20 @@ public class MemberServiceImpl implements MemberService {
         member.setProfileImage(imageUrlList.get(0));
 
         myFileUtils.uploadImage(files, imageUrlList, "profile");
+    }
+
+    // 회원 정보 조회
+    @Override
+    public MemberDTO getMemberById(CustomUserDetails user) {
+
+        Object[] result = (Object[]) memberRepository.findMemberByMemberId(user.getMemberId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")))[0];
+
+        MemberEntity member = (MemberEntity) result[0];
+        Long reviewCount = (Long) result[1];
+        Long commentCount = (Long) result[2];
+
+        return new MemberDTO(member, reviewCount, commentCount);
     }
 }

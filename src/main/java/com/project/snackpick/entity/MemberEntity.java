@@ -50,6 +50,11 @@ public class MemberEntity {
     @OneToMany(mappedBy = "memberEntity")
     @BatchSize(size = 10)
     @Builder.Default
+    private List<CommentEntity> commentList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "memberEntity")
+    @BatchSize(size = 10)
+    @Builder.Default
     private List<RecommendEntity> recommendList = new ArrayList<>();
 
     public static MemberEntity toMemberEntity(MemberDTO memberDTO) {

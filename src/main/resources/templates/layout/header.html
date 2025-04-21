@@ -32,6 +32,7 @@
       </nav>
       <a th:if="${#authorization.expression('isAnonymous()')}" class="btn-getstarted" th:href="@{/member/login.page}">로그인</a>
       <a th:if="${#authorization.expression('isAuthenticated()')}" class="btn-getstarted" th:href="@{/member/logout}">로그아웃</a>
+      <a th:if="${#authorization.expression('isAuthenticated()')}" class="btn-getstarted" th:href="@{/member/profile.page}"><i class="fa-solid fa-user"></i></a>
     </div>
   </header>
 </html>
