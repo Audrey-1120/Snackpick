@@ -100,4 +100,15 @@ public class ReviewController {
         Map<String, Object> response = reviewService.updateReview(reviewRequestDTO, reviewImageList, user);
         return ResponseEntity.ok(response);
     }
+
+    // 회원 별 리뷰 목록 조회
+    @GetMapping("/getReviewListByMemberId")
+    @Operation(summary = "회원 별 리뷰 목록 조회", description = "회원 ID로 리뷰 목록 조회")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> getReviewListByMemberId(@PageableDefault(size = 4, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable,
+                                                                       @AuthenticationPrincipal CustomUserDetails user) {
+
+        PageDTO<ReviewDTO> reviewList = reviewService.getReviewListByMemberId(pageable, user);
+        return ResponseEntity.ok(Map.of("reviewList", reviewList));
+    }
 }
