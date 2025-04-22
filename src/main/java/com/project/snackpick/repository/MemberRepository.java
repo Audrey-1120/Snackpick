@@ -19,8 +19,8 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Integer> {
 
     // memberID로 회원 정보 조회
     @Query("SELECT m, COUNT(DISTINCT r), COUNT(DISTINCT c) FROM MemberEntity m " +
-            "LEFT JOIN m.reviewList r " +
-            "LEFT JOIN m.commentList c " +
+            "LEFT JOIN m.reviewList r ON r.state = false " +
+            "LEFT JOIN m.commentList c ON c.state = false " +
             "WHERE m.memberId = :memberId " +
             "GROUP BY m")
     Optional<Object[]> findMemberByMemberId(@Param("memberId") int memberId);
