@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static com.project.snackpick.dto.CommentDTO.withMember;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -94,7 +96,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return Map.of("success", true
-                    , "comment", new CommentDTO(comment, true)
+                    , "comment", withMember(comment)
                     , "message", "댓글이 작성되었습니다.");
     }
 
@@ -116,7 +118,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setUpdateDt(LocalDateTime.now());
 
         return Map.of("success", true
-                    , "comment", new CommentDTO(comment, true)
+                    , "comment", withMember(comment)
                     , "message", "댓글이 수정되었습니다.");
     }
 

@@ -20,7 +20,7 @@ public class CommentDTO {
     private boolean state;
     private MemberDTO member;
 
-    public CommentDTO(CommentEntity commentEntity, boolean includeMember) {
+    private CommentDTO(CommentEntity commentEntity, boolean includeMember) {
         this.commentId = commentEntity.getCommentId();
         this.depth = commentEntity.getDepth();
         this.content = commentEntity.getContent();

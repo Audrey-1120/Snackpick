@@ -275,7 +275,7 @@ const fnWriteComment = (selectedComment) => {
         }
     })
     .catch((error) => {
-        alert(response.data.message);
+        alert(error.response.data.message);
     });
 }
 
@@ -354,12 +354,14 @@ const fnUpdateComment = () => {
         })
     .then((response) => {
         if(response.data.success) {
-            alert('댓글이 수정되었습니다.');
+            alert(response.data.message);
             fnShowUpdateComment(response.data.comment);
+        } else {
+            alert(response.data.message);
         }
     })
-    .catch(() => {
-        alert(response.data.message);
+    .catch((error) => {
+        alert(error.response.data.message);
     });
 }
 
@@ -391,8 +393,8 @@ const fnDeleteComment = (evt) => {
             }
         }
     })
-    .catch(() => {
-        alert(response.data.message);
+    .catch((error) => {
+        alert(error.response.data.message);
     });
 }
 
