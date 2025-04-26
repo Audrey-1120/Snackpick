@@ -56,4 +56,15 @@ public class MemberViewController {
         model.addAttribute("member", member);
         return "member/profile";
     }
+
+    // 정보 수정 페이지
+    @GetMapping("/profile-update.page")
+    @Operation(summary = "정보수정 페이지 이동", description = "정보수정 페이지 이동")
+    @PreAuthorize("isAuthenticated()")
+    public String updateProfile(@AuthenticationPrincipal CustomUserDetails user, Model model) {
+
+        MemberDTO member= memberService.getMemberById(user);
+        model.addAttribute("member", member);
+        return "member/profile-update";
+    }
 }

@@ -3,14 +3,12 @@
     min-height: 61rem;
 }
 
-/* 타이틀 + 검색폼 */
 .main-section {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-/* 한눈에 보는 리뷰들 */
 .main-title {
     font-size: 2rem;
     font-weight: 900;

@@ -19,6 +19,7 @@ public class MemberDTO {
     public MemberDTO(MemberEntity memberEntity) {
         this.memberId = memberEntity.getMemberId();
         this.id = memberEntity.getId();
+        this.name = memberEntity.getName();
         this.nickname = memberEntity.getNickname();
         this.profileImage = memberEntity.getProfileImage();
         this.role = memberEntity.getRole();
@@ -27,6 +28,7 @@ public class MemberDTO {
     public MemberDTO(MemberEntity memberEntity, long reviewCount, long commentCount) {
         this.memberId = memberEntity.getMemberId();
         this.id = memberEntity.getId();
+        this.name = memberEntity.getName();
         this.nickname = memberEntity.getNickname();
         this.profileImage = memberEntity.getProfileImage();
         this.role = memberEntity.getRole();
