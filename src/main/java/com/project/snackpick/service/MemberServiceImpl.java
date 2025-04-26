@@ -94,4 +94,15 @@ public class MemberServiceImpl implements MemberService {
 
         return new MemberDTO(member, reviewCount, commentCount);
     }
+
+    // 비밀번호 검증
+    @Override
+    public Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user) {
+
+        MemberEntity member = memberRepository.findById(user.getUsername())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
+
+        return bCryptPasswordEncoder.matches(memberDTO.getPassword(), member.getPassword());
+    }
 }

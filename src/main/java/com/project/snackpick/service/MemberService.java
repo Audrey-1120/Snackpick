@@ -21,4 +21,7 @@ public interface MemberService {
 
     // 회원 정보 조회
     MemberDTO getMemberById(CustomUserDetails user);
+
+    // 비밀번호 인증
+    Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user);
 }

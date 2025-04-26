@@ -153,10 +153,9 @@
 }
 
 /* 리뷰 작성 버튼 */
-.btn-write {
-    margin-left: auto;
+.btn-check-password {
     border: none;
-    padding: 0.5rem 0.7rem;
+    padding: 0.3rem 0.7rem;
     border-radius: 0.5rem;
     background-color: #d9232d;
     color: white;
@@ -247,4 +246,13 @@
 
 .comment-update-wrap button:last-child {
     background-color: #6c757d;
+}
+
+.input-password {
+    width: 80%;
+    border: 1px solid lightgray;
+    border-radius: 0.3rem;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    outline: none;
 }

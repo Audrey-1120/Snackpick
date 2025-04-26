@@ -334,6 +334,31 @@ const fnDeleteReview = (item) => {
     });
 }
 
+// 패스워드 검증
+const fnCheckPassword = () => {
+
+    let password = $('.input-password').val().trim();
+
+    if(password === '') {
+        alert('비밀번호를 입력해주세요.');
+        return;
+    }
+
+    axios.post('/member/checkPassword', {
+        password: password
+    })
+    .then((response) => {
+        if(response.data.success) {
+            location.href='/member/profile-update.page';
+        } else {
+            alert('비밀번호가 일치하지 않습니다.');
+        }
+    })
+    .catch((error) => {
+        alert(error.response.data.message);
+    });
+}
+
 // 페이징 설정 함수
 const fnSetPaging = (currentPage, totalPage, beginPage, endPage, fnName) => {
 
@@ -474,4 +499,9 @@ $(document).on('click', '.btn-comment-delete', (evt) => {
     if(confirm("댓글을 삭제하시겠습니까?")) {
         fnDeleteComment($(evt.currentTarget));
     }
+});
+
+// 프로필 수정 시 비밀번호 검증
+$('.btn-check-password').on('click', () => {
+    fnCheckPassword();
 });
