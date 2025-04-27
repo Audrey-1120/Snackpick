@@ -78,11 +78,10 @@ public class ReviewController {
     @ApiResponse(responseCode = "404", description = "리뷰 ID에 해당하는 리뷰 데이터가 없음.")
     @ApiResponse(responseCode = "403", description = "리뷰를 삭제할 권한이 없음.")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> deleteReview(@RequestBody Map<String, String> param,
+    public ResponseEntity<Map<String, Object>> deleteReview(@RequestBody ReviewDTO reviewDTO,
                                                             @AuthenticationPrincipal CustomUserDetails user) {
 
-        int reviewId = Integer.parseInt(param.get("reviewId"));
-        Map<String, Object> response = reviewService.deleteReview(reviewId, user);
+        Map<String, Object> response = reviewService.deleteReview(reviewDTO.getReviewId(), user);
         return ResponseEntity.ok(response);
     }
 

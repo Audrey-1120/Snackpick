@@ -70,7 +70,7 @@ const fnShowCommentResult = (commentList) => {
 
         str += '<div class="comment-item mt-3" data-comment-id="' + comment.commentId + '">';
         str += '<div class="comment-modify-form" style="display: none;">';
-        str += '<textarea class="comment-input w-100" placeholder="수정 댓글 입력해주세요." maxlength="150">' + comment.content + '</textarea>';
+        str += '<textarea class="comment-input w-100" placeholder="수정할 댓글 입력해주세요." maxlength="150">' + comment.content + '</textarea>';
         str += '<div class="comment-update-wrap">';
         str += '<button type="button" class="btn-comment-save">저장</button>';
         str += '<button type="button" class="btn-comment-undo">취소</button>';
