@@ -15,10 +15,16 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 
     // 리뷰 목록 조회 - 페이징
-    @Query(value = "SELECT r.reviewId FROM ReviewEntity r " +
+    @Query("SELECT r.reviewId FROM ReviewEntity r " +
             "WHERE r.productEntity.productId = :productId " +
             "AND r.state = false")
     Page<ReviewEntity> findByReviewListByProductId(@Param("productId") int productId, Pageable pageable);
+
+    // 회원별 리뷰 목록 조회 - 페이징
+    @Query("SELECT r.reviewId FROM ReviewEntity r " +
+            "WHERE r.memberEntity.memberId = :memberId " +
+            "AND r.state = false")
+    Page<ReviewEntity> findByReviewListByMemberId(@Param("memberId") int memberId, Pageable pageable);
 
     // 리뷰 목록 조회 - 리뷰 이미지, 작성자 정보
     @Query("SELECT DISTINCT r FROM ReviewEntity r " +

@@ -338,4 +338,4 @@ $('#update-form').on('submit', (evt) => {
 
 $('.btn-undo').on('click', () => {
     window.history.back();
-})
+});

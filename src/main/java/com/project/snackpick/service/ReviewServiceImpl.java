@@ -77,9 +77,28 @@ public class ReviewServiceImpl implements ReviewService {
         Pageable pageable = PageRequest.of(pageNumber, initPageable.getPageSize(), sort);
 
         Page<ReviewEntity> reviewIdList = reviewRepository.findByReviewListByProductId(productId, pageable);
-        List<ReviewEntity> reviewListWithImage = reviewRepository.findReviewListWithImage(reviewIdList.getContent());
 
-        List<ReviewDTO> reviewDTOList = reviewListWithImage.stream()
+        List<ReviewDTO> reviewDTOList = reviewRepository.findReviewListWithImage(reviewIdList.getContent())
+                .stream()
+                .map(ReviewDTO::new)
+                .toList();
+
+        Page<ReviewDTO> reviewList = new PageImpl<>(reviewDTOList, pageable, reviewIdList.getTotalElements());
+        return myPageUtils.toPageDTO(reviewList);
+    }
+
+    // 회원별 리뷰 목록 조회
+    @Override
+    @Transactional(readOnly = true)
+    public PageDTO<ReviewDTO> getReviewListByMemberId(Pageable initPageable, CustomUserDetails user) {
+
+        int pageNumber = (initPageable.getPageNumber() > 0) ? initPageable.getPageNumber() - 1 : 0;
+
+        Pageable pageable = PageRequest.of(pageNumber, initPageable.getPageSize(), initPageable.getSort());
+        Page<ReviewEntity> reviewIdList = reviewRepository.findByReviewListByMemberId(user.getMemberId(), pageable);
+
+        List<ReviewDTO> reviewDTOList = reviewRepository.findReviewListWithImage(reviewIdList.getContent())
+                .stream()
                 .map(ReviewDTO::new)
                 .toList();
 

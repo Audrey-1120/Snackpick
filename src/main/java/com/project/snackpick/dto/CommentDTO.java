@@ -20,15 +20,22 @@ public class CommentDTO {
     private boolean state;
     private MemberDTO member;
 
-    public CommentDTO(CommentEntity commentEntity) {
+    private CommentDTO(CommentEntity commentEntity, boolean includeMember) {
         this.commentId = commentEntity.getCommentId();
-        this.content = commentEntity.getContent();
         this.depth = commentEntity.getDepth();
-        this.groupId = commentEntity.getGroupId();
+        this.content = commentEntity.getContent();
         this.createDt = commentEntity.getCreateDt();
-        this.updateDt = commentEntity.getUpdateDt();
-        this.state = commentEntity.isState();
-        this.member = new MemberDTO(commentEntity.getMemberEntity());
+
+        if(includeMember) {
+            this.member = new MemberDTO(commentEntity.getMemberEntity());
+        }
     }
 
+    public static CommentDTO withMember(CommentEntity commentEntity) {
+        return new CommentDTO(commentEntity, true);
+    }
+
+    public static CommentDTO withoutMember(CommentEntity commentEntity) {
+        return new CommentDTO(commentEntity, false);
+    }
 }

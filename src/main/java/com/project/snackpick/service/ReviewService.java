@@ -19,7 +19,10 @@ public interface ReviewService {
     Map<String, Object> insertReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, CustomUserDetails user);
 
     // 리뷰 목록 조회
-    PageDTO<ReviewDTO> getReviewList(Pageable pageable, int productNo);
+    PageDTO<ReviewDTO> getReviewList(Pageable pageable, int productId);
+
+    // 회원별 리뷰 목록 조회
+    PageDTO<ReviewDTO> getReviewListByMemberId(Pageable pageable, CustomUserDetails user);
 
     // 리뷰 상세 조회
     ReviewDTO getReviewDetail(int reviewId);

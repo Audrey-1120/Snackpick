@@ -8,6 +8,7 @@ const fnShowCommentList = (commentList) => {
     let loginId = $('.login-id').val();
     let commentContainer = $('.content-3');
     let writerName = $('.writerImage-modal ~ p').text();
+    let commentInput = $('.comment-input input');
 
     let str = ''
 
@@ -83,6 +84,12 @@ const fnShowCommentList = (commentList) => {
 
     commentContainer.empty();
     commentContainer.html(str);
+
+    // 버튼 및 input placeholder 초기화
+    fnChangeCommentBtn('insert');
+    commentInput.val('');
+    commentInput.attr('placeholder', '댓글을 입력해주세요');
+
 }
 
 
@@ -107,7 +114,7 @@ const fnFormatDate = (datetime) => {
 
     // 1시간 이상 경과되었을 경우..
     const yyyy = date.getFullYear();
-    const mm = String(date.getMonth()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
     const hh = String(date.getHours()).padStart(2, '0');
     const mi = String(date.getMinutes()).padStart(2, '0');
@@ -150,6 +157,7 @@ const fnShowComment = (comment) => {
     let commentArea = $('.content-3');
     let isReply = comment.depth === 0;
     let writerName = $('.writerImage-modal ~ p').text();
+    let commentInput = $('.comment-input input');
 
     let commentContainer
         = isReply ? commentArea : $('[data-group-id="' + comment.groupId + '"]').last();
@@ -228,7 +236,8 @@ const fnShowComment = (comment) => {
     $('.no-comment').remove();
 
     $('.selected-comment').removeClass('selected-comment');
-    $('.comment-input input').val('');
+    commentInput.val('');
+    commentInput.attr('placeholder', '댓글을 입력해주세요');
 
 }
 
@@ -266,7 +275,7 @@ const fnWriteComment = (selectedComment) => {
         }
     })
     .catch((error) => {
-        alert(response.data.message);
+        alert(error.response.data.message);
     });
 }
 
@@ -345,12 +354,14 @@ const fnUpdateComment = () => {
         })
     .then((response) => {
         if(response.data.success) {
-            alert('댓글이 수정되었습니다.');
+            alert(response.data.message);
             fnShowUpdateComment(response.data.comment);
+        } else {
+            alert(response.data.message);
         }
     })
-    .catch(() => {
-        alert(response.data.message);
+    .catch((error) => {
+        alert(error.response.data.message);
     });
 }
 
@@ -382,8 +393,8 @@ const fnDeleteComment = (evt) => {
             }
         }
     })
-    .catch(() => {
-        alert(response.data.message);
+    .catch((error) => {
+        alert(error.response.data.message);
     });
 }
 

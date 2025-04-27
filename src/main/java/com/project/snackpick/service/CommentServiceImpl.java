@@ -2,6 +2,7 @@ package com.project.snackpick.service;
 
 import com.project.snackpick.dto.CommentDTO;
 import com.project.snackpick.dto.CustomUserDetails;
+import com.project.snackpick.dto.PageDTO;
 import com.project.snackpick.entity.CommentEntity;
 import com.project.snackpick.entity.MemberEntity;
 import com.project.snackpick.entity.ReviewEntity;
@@ -10,6 +11,8 @@ import com.project.snackpick.exception.ErrorCode;
 import com.project.snackpick.repository.CommentRepository;
 import com.project.snackpick.repository.MemberRepository;
 import com.project.snackpick.repository.ReviewRepository;
+import com.project.snackpick.utils.MyPageUtils;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,17 +20,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static com.project.snackpick.dto.CommentDTO.withMember;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
+    private final MyPageUtils myPageUtils;
 
-    public CommentServiceImpl(CommentRepository commentRepository, ReviewRepository reviewRepository, MemberRepository memberRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, ReviewRepository reviewRepository, MemberRepository memberRepository, MyPageUtils myPageUtils) {
         this.commentRepository = commentRepository;
         this.reviewRepository = reviewRepository;
         this.memberRepository = memberRepository;
+        this.myPageUtils = myPageUtils;
     }
 
     // 댓글 목록 조회
@@ -39,10 +46,32 @@ public class CommentServiceImpl implements CommentService {
                 = commentRepository.findCommentListByReviewId(reviewId);
 
         List<CommentDTO> commentList = commentEntity.stream()
-                .map(CommentDTO::new)
+                .map(CommentDTO::withMember)
                 .toList();
 
         return commentList;
+    }
+
+    // 회원별 댓글 목록 조회
+    @Override
+    @Transactional(readOnly = true)
+    public PageDTO<CommentDTO> getCommentListByMemberId(Pageable initPageable, CustomUserDetails user) {
+
+        int pageNumber = (initPageable.getPageNumber() > 0) ? initPageable.getPageNumber() - 1 : 0;
+        Pageable pageable = PageRequest.of(pageNumber, initPageable.getPageSize(),
+                Sort.by("groupId").ascending()
+                        .and(Sort.by("depth").ascending())
+                        .and(Sort.by("createDt").ascending()));
+
+        Page<CommentEntity> commentEntityPage = commentRepository.findCommentListByMemberId(user.getMemberId(), pageable);
+
+        List<CommentDTO> commentDTOList = commentEntityPage
+                .stream()
+                .map(CommentDTO::withoutMember)
+                .toList();
+
+        Page<CommentDTO> commentList = new PageImpl<>(commentDTOList, pageable, commentEntityPage.getTotalElements());
+        return myPageUtils.toPageDTO(commentList);
     }
 
     // 댓글 저장
@@ -67,7 +96,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return Map.of("success", true
-                    , "comment", new CommentDTO(comment)
+                    , "comment", withMember(comment)
                     , "message", "댓글이 작성되었습니다.");
     }
 
@@ -89,7 +118,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setUpdateDt(LocalDateTime.now());
 
         return Map.of("success", true
-                    , "comment", new CommentDTO(comment)
+                    , "comment", withMember(comment)
                     , "message", "댓글이 수정되었습니다.");
     }
 

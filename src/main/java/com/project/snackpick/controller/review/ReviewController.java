@@ -78,11 +78,10 @@ public class ReviewController {
     @ApiResponse(responseCode = "404", description = "리뷰 ID에 해당하는 리뷰 데이터가 없음.")
     @ApiResponse(responseCode = "403", description = "리뷰를 삭제할 권한이 없음.")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Map<String, Object>> deleteReview(@RequestBody Map<String, String> param,
+    public ResponseEntity<Map<String, Object>> deleteReview(@RequestBody ReviewDTO reviewDTO,
                                                             @AuthenticationPrincipal CustomUserDetails user) {
 
-        int reviewId = Integer.parseInt(param.get("reviewId"));
-        Map<String, Object> response = reviewService.deleteReview(reviewId, user);
+        Map<String, Object> response = reviewService.deleteReview(reviewDTO.getReviewId(), user);
         return ResponseEntity.ok(response);
     }
 
@@ -99,5 +98,16 @@ public class ReviewController {
 
         Map<String, Object> response = reviewService.updateReview(reviewRequestDTO, reviewImageList, user);
         return ResponseEntity.ok(response);
+    }
+
+    // 회원 별 리뷰 목록 조회
+    @GetMapping("/getReviewListByMemberId")
+    @Operation(summary = "회원 별 리뷰 목록 조회", description = "회원 ID로 리뷰 목록 조회")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> getReviewListByMemberId(@PageableDefault(size = 4, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable,
+                                                                       @AuthenticationPrincipal CustomUserDetails user) {
+
+        PageDTO<ReviewDTO> reviewList = reviewService.getReviewListByMemberId(pageable, user);
+        return ResponseEntity.ok(Map.of("reviewList", reviewList));
     }
 }

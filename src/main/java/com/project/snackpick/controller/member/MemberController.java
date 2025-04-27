@@ -1,5 +1,6 @@
 package com.project.snackpick.controller.member;
 
+import com.project.snackpick.dto.CustomUserDetails;
 import com.project.snackpick.dto.MemberDTO;
 import com.project.snackpick.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -52,6 +54,17 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    // 회원 정보 수정
+    @PutMapping("/updateProfile")
+    @Operation(summary = "정보 수정", description = "회원 정보 수정")
+    public ResponseEntity<Map<String, Object>> updateProfile(@ModelAttribute MemberDTO memberDTO,
+                                                             @RequestPart MultipartFile[] files,
+                                                             @AuthenticationPrincipal CustomUserDetails user) {
+
+        Map<String, Object> response = memberService.updateProfile(memberDTO, files, user);
+        return ResponseEntity.ok(response);
+    }
+
     // 로그아웃
     @GetMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃")
@@ -75,5 +88,16 @@ public class MemberController {
         model.addAttribute("error", error);
         model.addAttribute("errorMessage", errorMessage);
         return "member/login";
+    }
+
+    // 비밀번호 검증
+    @PostMapping("/checkPassword")
+    @Operation(summary = "비밀번호 검증", description = "회원 비밀번호가 맞는지 검증")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> checkPassword(@RequestBody MemberDTO memberDTO,
+                                                             @AuthenticationPrincipal CustomUserDetails user) {
+
+        Boolean isMatch = memberService.checkPassword(memberDTO, user);
+        return ResponseEntity.ok(Map.of("success", isMatch));
     }
 }

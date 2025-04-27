@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- <head> 태그 내 공통된 stylesheets 분리 -->
+<head th:replace="~{stylesheets/head :: head (title='내 정보 수정')}"></head>
+
+<link href="/assets/css/profile-update.css" rel="stylesheet">
+
+<body class="index-page">
+
+<!-- 헤더 레이아웃 분리 -->
+<header th:replace="~{layout/header::header}"></header>
+
+<!-- 메인 부분 -->
+<main class="main text-center">
+    <div class="main-section">
+        <section id="testimonials" class="testimonials section">
+            <div class="container">
+                <div class="row gy-4">
+                    <h1 class="main-title">정보 수정</h1>
+                    <div id="profile-section" class="col-lg-6 text-start">
+                        <div class="profile-content mb-4">
+                            <form id="update-form"
+                                  method="put">
+                                <div class="profile-image-form">
+                                    <div class="profile-image mb-3">
+                                        <div class="profile-image-buttons d-flex gap-2">
+                                            <p>프로필 사진</p>
+                                            <label for="profile-image">
+                                                <div class="btn-update-profileImage">첨부하기</div>
+                                            </label>
+                                            <input type="file" name="files" id="profile-image" class="d-none">
+                                            <div class="btn-deleteImage">초기화</div>
+                                        </div>
+                                    </div>
+                                    <div id="image-preview">
+                                        <img th:src="${member.profileImage} ?: '/assets/img/default-profile.jpg'" class="mt-3" alt="profile-image">
+                                    </div>
+                                    <input type="hidden" class="profile-type" th:val="${member.profileImage} != null ? 'non-default' : 'default'">
+                                </div>
+                                <div class="profile-update-form">
+                                    <div class="name-form d-flex gap-2 mt-3">
+                                        <p class="form-title">이름</p>
+                                        <input type="text" class="name-input" name="name" th:value="${member.name}" maxlength="20">
+                                    </div>
+                                    <div class="nickname-form d-flex gap-2 mt-3">
+                                        <p class="form-title">닉네임</p>
+                                        <input type="text" class="nickname-input" name="nickname" th:value="${member.nickname}" maxlength="20">
+                                    </div>
+                                    <div class="password-form d-flex gap-2 mt-3">
+                                        <p class="form-title">비밀번호</p>
+                                        <button type="button" class="change-password">비밀번호 재설정</button>
+                                    </div>
+                                    <div class="cancel-form mt-3">
+                                        <a class="btn-cancel-account text-danger">회원탈퇴</a>
+                                    </div>
+                                    <div class="button-form mt-3">
+                                        <button type="submit" class="btn-save" disabled>저장</button>
+                                        <button type="button" class="btn-undo">취소</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- footer 레이아웃 분리 -->
+<footer th:replace="~{layout/footer::footer}"></footer>
+
+<!-- 공통 script 분리 -->
+<div th:replace="~{scripts/scripts::scripts}"></div>
+
+<script src="/assets/js/profile-update.js"></script>
+</body>
+</html>

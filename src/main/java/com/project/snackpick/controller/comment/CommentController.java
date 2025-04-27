@@ -2,18 +2,18 @@ package com.project.snackpick.controller.comment;
 
 import com.project.snackpick.dto.CommentDTO;
 import com.project.snackpick.dto.CustomUserDetails;
+import com.project.snackpick.dto.PageDTO;
 import com.project.snackpick.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -26,6 +26,16 @@ public class CommentController {
 
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
+    }
+
+    // 회원별 작성 댓글 목록 조회
+    @GetMapping("/getCommentListByMemberId")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> getCommentListByMemberId(@PageableDefault(size = 6) Pageable pageable,
+                                                                        @AuthenticationPrincipal CustomUserDetails user) {
+
+        PageDTO<CommentDTO> commentList = commentService.getCommentListByMemberId(pageable, user);
+        return ResponseEntity.ok(Map.of("commentList", commentList));
     }
 
     // 댓글 작성
