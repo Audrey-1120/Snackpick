@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberDTO {
 
-    private String id, password, name, nickname, profileImage, role;
+    private String id, password, name, nickname, profileImage, role, profileType;
     private int memberId;
     private long reviewCount, commentCount;
+    private boolean fileChanged;
 
     public MemberDTO(MemberEntity memberEntity) {
         this.memberId = memberEntity.getMemberId();

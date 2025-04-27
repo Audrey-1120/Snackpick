@@ -59,6 +59,40 @@ public class MemberServiceImpl implements MemberService {
                 , "redirectUrl", "/member/login.page");
     }
 
+    // 정보 수정
+    @Override
+    @Transactional
+    public Map<String, Object> updateProfile(MemberDTO memberDTO, MultipartFile[] files, CustomUserDetails user) {
+
+        MemberEntity member = memberRepository.findById(user.getUsername())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원 ")));
+
+        member.setName(memberDTO.getName());
+        member.setNickname(memberDTO.getNickname());
+
+        boolean isFileChange = memberDTO.isFileChanged();
+        String profileType = memberDTO.getProfileType();
+
+        try {
+            if(isFileChange) {
+                if(profileType.equals("non-default")) {
+                    deleteProfileImage(member);
+                    uploadProfileImage(member, files);
+                } else {
+                    deleteProfileImage(member);
+                }
+            }
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
+                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("프로필"));
+        }
+
+        return Map.of("success", true
+                , "message", "회원정보가 수정되었습니다."
+                , "redirectUrl", "/member/profile.page");
+    }
+
     // 아이디 중복 체크
     @Override
     @Transactional(readOnly = true)
@@ -80,8 +114,24 @@ public class MemberServiceImpl implements MemberService {
         myFileUtils.uploadImage(files, imageUrlList, "profile");
     }
 
+    // 프로필 사진 삭제
+    @Override
+    public void deleteProfileImage(MemberEntity member) throws IOException {
+
+        String profileImage = member.getProfileImage();
+
+        if(profileImage == null) {
+            return;
+        }
+
+        member.setProfileImage(null);
+        myFileUtils.deleteImage(List.of(profileImage));
+
+    }
+
     // 회원 정보 조회
     @Override
+    @Transactional(readOnly = true)
     public MemberDTO getMemberById(CustomUserDetails user) {
 
         Object[] result = (Object[]) memberRepository.findMemberByMemberId(user.getMemberId())
@@ -97,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 비밀번호 검증
     @Override
+    @Transactional(readOnly = true)
     public Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())

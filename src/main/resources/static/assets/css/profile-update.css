@@ -23,7 +23,7 @@
 
 .btn-update-profileImage,
 .change-password,
-.btn-deleteAllImage,
+.btn-deleteImage,
 .btn-save,
 .btn-undo {
     color: white;
@@ -35,7 +35,7 @@
     transition: 0.3s;
 }
 
-.btn-deleteAllImage,
+.btn-deleteImage,
 .btn-undo {
     background-color: #6c757d !important;
 }
@@ -53,8 +53,12 @@
 }
 
 .btn-update-profileImage,
-.btn-deleteAllImage,
+.btn-deleteImage,
 .change-password,
 .btn-cancel-account {
     cursor: pointer;
+}
+
+.btn-save:disabled {
+    background-color: #6c757d;
 }

@@ -54,6 +54,17 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    // 회원 정보 수정
+    @PutMapping("/updateProfile")
+    @Operation(summary = "정보 수정", description = "회원 정보 수정")
+    public ResponseEntity<Map<String, Object>> updateProfile(@ModelAttribute MemberDTO memberDTO,
+                                                             @RequestPart MultipartFile[] files,
+                                                             @AuthenticationPrincipal CustomUserDetails user) {
+
+        Map<String, Object> response = memberService.updateProfile(memberDTO, files, user);
+        return ResponseEntity.ok(response);
+    }
+
     // 로그아웃
     @GetMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃")
