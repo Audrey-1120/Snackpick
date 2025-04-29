@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberDTO {
 
-    private String id, password, name, nickname, profileImage, role, profileType;
+    private String id, password, newPassword, name, nickname, profileImage, role, profileType;
     private int memberId;
     private long reviewCount, commentCount;
     private boolean fileChanged;

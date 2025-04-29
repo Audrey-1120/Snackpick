@@ -30,4 +30,7 @@ public interface MemberService {
 
     // 비밀번호 인증
     Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user);
+
+    // 비밀번호 재설정
+    Map<String, Object> resetPassword(MemberDTO memberDTO, CustomUserDetails user);
 }

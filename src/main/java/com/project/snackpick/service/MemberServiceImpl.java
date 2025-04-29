@@ -156,4 +156,33 @@ public class MemberServiceImpl implements MemberService {
 
         return bCryptPasswordEncoder.matches(memberDTO.getPassword(), member.getPassword());
     }
+
+    // 비밀번호 재설정
+    @Override
+    @Transactional
+    public Map<String, Object> resetPassword(MemberDTO memberDTO, CustomUserDetails user) {
+
+        MemberEntity member = memberRepository.findById(user.getUsername())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
+
+        String currentPassword = member.getPassword();
+        String newPassword = memberDTO.getNewPassword();
+
+        if(!bCryptPasswordEncoder.matches(memberDTO.getPassword(), currentPassword)) {
+            return Map.of("success", false
+                        ,"message", "현재 비밀번호가 올바르지 않습니다.");
+        }
+
+        if(bCryptPasswordEncoder.matches(newPassword, currentPassword)) {
+            return Map.of("success", false
+                        , "message", "새 비밀번호와 현재 비밀번호를 다르게 설정해주세요.");
+        }
+
+        member.setPassword(bCryptPasswordEncoder.encode(newPassword));
+
+        return Map.of("success", true,
+                    "message", "비밀번호가 재설정되었습니다.",
+                    "redirectUrl", "/member/logout");
+    }
 }

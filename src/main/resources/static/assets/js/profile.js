@@ -348,7 +348,7 @@ const fnCheckPassword = () => {
         password: password
     })
     .then((response) => {
-        if(response.data.success) {
+        if(response.data.isMatch) {
             location.href='/member/profile-update.page';
         } else {
             alert('비밀번호가 일치하지 않습니다.');

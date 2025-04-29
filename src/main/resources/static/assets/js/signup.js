@@ -49,7 +49,7 @@ const fnValidatePw = (pw) => {
 
     isValidPw = pwRegex.test(pw);
 
-    if(isValidPw === false) {
+    if(!isValidPw) {
         checkPwLabel.text('비밀번호는 숫자와 영문자, 특수문자를 혼용하여 8~16자리로 입력해주세요.');
         checkPwLabel.css('color', 'red');
     } else {

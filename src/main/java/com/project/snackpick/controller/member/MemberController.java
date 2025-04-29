@@ -98,6 +98,17 @@ public class MemberController {
                                                              @AuthenticationPrincipal CustomUserDetails user) {
 
         Boolean isMatch = memberService.checkPassword(memberDTO, user);
-        return ResponseEntity.ok(Map.of("success", isMatch));
+        return ResponseEntity.ok(Map.of("isMatch", isMatch));
+    }
+
+    // 비밀번호 재설정
+    @PutMapping("/resetPassword")
+    @Operation(summary = "비밀번호 재설정", description = "회원 비밀번호 재설정")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody MemberDTO memberDTO,
+                                                             @AuthenticationPrincipal CustomUserDetails user) {
+
+        Map<String, Object> response = memberService.resetPassword(memberDTO, user);
+        return ResponseEntity.ok(response);
     }
 }
