@@ -2,10 +2,15 @@ package com.project.snackpick.service;
 
 import com.project.snackpick.dto.CustomUserDetails;
 import com.project.snackpick.dto.MemberDTO;
+import com.project.snackpick.dto.ReviewAction;
+import com.project.snackpick.dto.ReviewDTO;
 import com.project.snackpick.entity.MemberEntity;
+import com.project.snackpick.entity.ReviewEntity;
 import com.project.snackpick.exception.CustomException;
 import com.project.snackpick.exception.ErrorCode;
+import com.project.snackpick.repository.CommentRepository;
 import com.project.snackpick.repository.MemberRepository;
+import com.project.snackpick.repository.ReviewRepository;
 import com.project.snackpick.utils.MyFileUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,11 +28,19 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MyFileUtils myFileUtils;
+    private final ReviewRepository reviewRepository;
+    private final ReviewService reviewService;
+    private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
-    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MyFileUtils myFileUtils) {
+    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MyFileUtils myFileUtils, ReviewRepository reviewRepository, ReviewService reviewService, CommentRepository commentRepository, CommentService commentService) {
         this.memberRepository = memberRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.myFileUtils = myFileUtils;
+        this.reviewRepository = reviewRepository;
+        this.reviewService = reviewService;
+        this.commentRepository = commentRepository;
+        this.commentService = commentService;
     }
 
     // 회원가입
@@ -93,6 +106,54 @@ public class MemberServiceImpl implements MemberService {
                 , "redirectUrl", "/member/profile.page");
     }
 
+    // 회원 정보 조회
+    @Override
+    @Transactional(readOnly = true)
+    public MemberDTO getMemberById(CustomUserDetails user) {
+
+        Object[] result = (Object[]) memberRepository.findMemberByMemberId(user.getMemberId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")))[0];
+
+        MemberEntity member = (MemberEntity) result[0];
+        Long reviewCount = (Long) result[1];
+        Long commentCount = (Long) result[2];
+
+        return new MemberDTO(member, reviewCount, commentCount);
+    }
+
+    // 회원 탈퇴
+    @Override
+    @Transactional
+    public Map<String, Object> leave(CustomUserDetails user) {
+
+        MemberEntity member = memberRepository.findById(user.getUsername())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
+                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원 ")));
+
+        List<ReviewEntity> reviewList = reviewRepository.findAllReviewListByMemberId(user.getMemberId());
+
+        if(!reviewList.isEmpty()) {
+
+            reviewService.deleteReviewList(reviewList);
+
+            for(ReviewEntity review : reviewList) {
+                reviewService.updateProductStats(review.getProductEntity()
+                                                , review
+                                                , new ReviewDTO()
+                                                , ReviewAction.DELETE);
+            }
+        }
+
+        List<Integer> commentIdList = commentRepository.findAllCommentIdListByMemberId(user.getMemberId());
+        commentService.deleteCommentList(commentIdList);
+
+        member.setState(true);
+        return Map.of("success", true,
+                    "message", "회원탈퇴가 완료되었습니다.",
+                    "redirectUrl", "/member/logout");
+    }
+
     // 아이디 중복 체크
     @Override
     @Transactional(readOnly = true)
@@ -127,22 +188,6 @@ public class MemberServiceImpl implements MemberService {
         member.setProfileImage(null);
         myFileUtils.deleteImage(List.of(profileImage));
 
-    }
-
-    // 회원 정보 조회
-    @Override
-    @Transactional(readOnly = true)
-    public MemberDTO getMemberById(CustomUserDetails user) {
-
-        Object[] result = (Object[]) memberRepository.findMemberByMemberId(user.getMemberId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")))[0];
-
-        MemberEntity member = (MemberEntity) result[0];
-        Long reviewCount = (Long) result[1];
-        Long commentCount = (Long) result[2];
-
-        return new MemberDTO(member, reviewCount, commentCount);
     }
 
     // 비밀번호 검증

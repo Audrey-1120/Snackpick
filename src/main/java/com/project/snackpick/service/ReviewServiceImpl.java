@@ -118,7 +118,7 @@ public class ReviewServiceImpl implements ReviewService {
         return new ReviewDTO(review);
     }
 
-    // 리뷰 삭제
+    // 리뷰 단일 삭제
     @Override
     @Transactional
     public Map<String, Object> deleteReview(int reviewId, CustomUserDetails user) {
@@ -147,6 +147,22 @@ public class ReviewServiceImpl implements ReviewService {
 
         return Map.of("success", true
                 , "message", "리뷰가 삭제되었습니다.");
+    }
+
+    // 리뷰 목록 삭제
+    @Override
+    @Transactional
+    public void deleteReviewList(List<ReviewEntity> reviewList) {
+
+        List<Integer> reviewIdList = reviewList.stream()
+                .map(ReviewEntity::getReviewId)
+                .toList();
+
+        int reviewCount = reviewRepository.deleteAllReviewList(reviewIdList);
+        if(reviewCount != reviewIdList.size()) {
+            throw new CustomException(ErrorCode.SERVER_ERROR,
+                    ErrorCode.SERVER_ERROR.formatMessage("회원 탈퇴"));
+        }
     }
 
     // 리뷰 수정

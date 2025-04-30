@@ -78,6 +78,16 @@ public class MemberController {
         return "redirect:/";
     }
 
+    // 회원 탈퇴
+    @PostMapping("/leave")
+    @Operation(summary = "회원탈퇴", description = "회원탈퇴")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Map<String, Object>> leave(@AuthenticationPrincipal CustomUserDetails user) {
+
+        Map<String, Object> response = memberService.leave(user);
+        return ResponseEntity.ok(response);
+    }
+
     // 로그인 실패
     @GetMapping("/loginFail")
     @Operation(summary = "로그인 실패", description = "로그인 실패 시 에러 메시지 반환")

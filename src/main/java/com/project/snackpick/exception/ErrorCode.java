@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorCode {
 
-    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "%s 처리 중 오류가 발생하였습니다."),
+    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "%s 처리 중 문제가 발생하였습니다."),
     FILE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "%s 이미지 업로드 중 오류가 발생하였습니다."),
     NOT_PERMISSION(HttpStatus.FORBIDDEN, "%s 권한이 없습니다."),
     NOT_FOUND_ENTITY(HttpStatus.NOT_FOUND, "해당 %s 정보를 찾을 수 없습니다."),

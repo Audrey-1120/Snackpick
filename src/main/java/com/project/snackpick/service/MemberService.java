@@ -16,6 +16,12 @@ public interface MemberService {
     // 정보 수정
     Map<String, Object> updateProfile(MemberDTO memberDTO, MultipartFile[] files, CustomUserDetails user);
 
+    // 회원 정보 조회
+    MemberDTO getMemberById(CustomUserDetails user);
+
+    // 회원 탈퇴
+    Map<String, Object> leave(CustomUserDetails user);
+
     // 아이디 중복 체크
     Boolean checkId(String id);
 
@@ -24,9 +30,6 @@ public interface MemberService {
 
     // 프로필 사진 삭제
     void deleteProfileImage(MemberEntity member) throws IOException;
-
-    // 회원 정보 조회
-    MemberDTO getMemberById(CustomUserDetails user);
 
     // 비밀번호 인증
     Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user);

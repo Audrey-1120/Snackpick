@@ -52,7 +52,7 @@
                                         <button type="button" class="change-password" data-bs-toggle="modal" data-bs-target="#reset-password">비밀번호 재설정</button>
                                     </div>
                                     <div class="cancel-form mt-3">
-                                        <a class="btn-cancel-account text-danger">회원탈퇴</a>
+                                        <a class="btn-cancel-account text-danger" data-bs-toggle="modal" data-bs-target="#delete-account">회원탈퇴</a>
                                     </div>
                                     <div class="button-form mt-3">
                                         <button type="submit" class="btn-save" disabled>저장</button>
@@ -97,6 +97,28 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="delete-account" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">회원 탈퇴</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body delete-account-box my-5">
+                    <p class="delete-info">
+                        탈퇴하시려면 <span th:text="${member.id} + 'DeleteAccount'" class="text-danger delete-text"></span>을 입력해주세요.
+                    </p>
+                    <div class="delete-input-row">
+                        <input type="text" class="delete-input mt-2">
+                        <button type="button" class="btn-delete-account">확인</button>
+                    </div>
+                    <label class="delete-error text-danger w-100">올바르게 입력해주세요.</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <!-- footer 레이아웃 분리 -->

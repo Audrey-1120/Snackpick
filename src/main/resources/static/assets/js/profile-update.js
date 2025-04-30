@@ -5,6 +5,7 @@ let initNickname;
 let fileChanged = false;
 let defaultImageUrl = '/assets/img/default-profile.jpg';
 let isValidPassword = false;
+let deleteAccountText = '';
 
 /******************** 함수 **********************/
 // 이미지 사이즈 제한
@@ -230,6 +231,36 @@ const fnResetPassword = () => {
     });
 }
 
+// 회원 탈퇴 문구 검사
+const fnCheckDeleteText = () => {
+
+    $('#delete-account').show();
+    let currentText = $('.delete-input').val();
+
+    if(currentText !== deleteAccountText) {
+        $('.delete-error').css('display', 'block');
+        return;
+    }
+
+    fnDeleteAccount();
+}
+
+// 회원 탈퇴
+const fnDeleteAccount = () => {
+
+    axios.post('/member/leave')
+    .then((response) => {
+        let data = response.data;
+        if(data.success) {
+            alert(data.message);
+            window.location.href=data.redirectUrl;
+        }
+    })
+    .catch((error) => {
+        alert(error.response.data.message);
+    });
+}
+
 const fnDebounce = (fn, delay)  => {
     let timer;
     return function(...args) {
@@ -246,6 +277,9 @@ $(document).ready(() => {
     initNickname = $('.nickname-input').val().trim();
 
     fnChangeProfileType();
+
+    deleteAccountText = $('.delete-text').text();
+    $('.delete-account-text').attr('placeholder', deleteAccountText);
 });
 
 $('#update-form input').on('keyup', fnDebounce(fnActiveUpdateBtn, 200));
@@ -282,4 +316,13 @@ $('#new-password').on('keyup', fnDebounce(fnValidatePassword, 500));
 $('#reset-password').on('hidden.bs.modal', () => {
     $('.reset-password-modal input').val('');
     $('.new-password-info').css('display', 'none');
+});
+
+$('#delete-account').on('hidden.bs.modal', () => {
+    $('.delete-input').val('');
+    $('.delete-account-info').css('display', 'none');
+});
+
+$('.btn-delete-account').on('click', () => {
+    fnCheckDeleteText();
 });

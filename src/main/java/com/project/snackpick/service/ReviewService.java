@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public interface ReviewService {
@@ -29,6 +30,9 @@ public interface ReviewService {
 
     // 리뷰 삭제
     Map<String, Object> deleteReview(int reviewId, CustomUserDetails user);
+
+    // 리뷰 목록 삭제
+    void deleteReviewList(List<ReviewEntity> reviewList);
 
     // 리뷰 수정
     Map<String, Object> updateReview(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, CustomUserDetails user);

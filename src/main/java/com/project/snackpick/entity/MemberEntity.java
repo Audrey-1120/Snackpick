@@ -42,6 +42,9 @@ public class MemberEntity {
     @Column(name = "role", length = 20)
     private String role;
 
+    @Column(name = "state", columnDefinition = "TINYINT(1)")
+    private boolean state;
+
     @OneToMany(mappedBy = "memberEntity")
     @BatchSize(size = 10)
     @Builder.Default

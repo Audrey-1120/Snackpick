@@ -147,6 +147,22 @@ public class CommentServiceImpl implements CommentService {
                 , "message", "댓글이 삭제되었습니다.");
     }
 
+    // 댓글 일괄 삭제
+    @Override
+    @Transactional
+    public void deleteCommentList(List<Integer> commentIdList) {
+
+        if(commentIdList.isEmpty()) {
+            return;
+        }
+
+        int commentCount = commentRepository.deleteAllCommentList(commentIdList);
+        if(commentCount != commentIdList.size()) {
+            throw new CustomException(ErrorCode.SERVER_ERROR,
+                    ErrorCode.SERVER_ERROR.formatMessage("회원 탈퇴"));
+        }
+    }
+
     // 권한 확인
     @Override
     public boolean hasPermission(CommentEntity comment, CustomUserDetails user) {
