@@ -155,20 +155,20 @@ const fnGetCsrfToken = () => {
 const fnShowComment = (comment) => {
 
     let commentArea = $('.content-3');
-    let isReply = comment.depth === 0;
+    let isReply = comment.depth === 1;
     let writerName = $('.writerImage-modal ~ p').text();
     let commentInput = $('.comment-input input');
 
     let commentContainer
-        = isReply ? commentArea : $('[data-group-id="' + comment.groupId + '"]').last();
+        = isReply ? $('[data-group-id="' + comment.groupId + '"]').last() : commentArea;
 
     let loginId = $('.login-id').val();
 
     let str = '';
     if(isReply) {
-        str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-    } else {
         str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
+    } else {
+        str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
     }
 
     str += '<div class="comment-writer-section">';
@@ -227,10 +227,10 @@ const fnShowComment = (comment) => {
     str += '</div>';
 
     if(isReply) {
+        commentContainer.after(str);
+    } else {
         commentContainer.append(str);
         commentArea.scrollTop(commentArea[0].scrollHeight);
-    } else {
-        commentContainer.after(str);
     }
 
     $('.no-comment').remove();

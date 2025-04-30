@@ -22,6 +22,7 @@ public class CommentDTO {
 
     private CommentDTO(CommentEntity commentEntity, boolean includeMember) {
         this.commentId = commentEntity.getCommentId();
+        this.groupId = commentEntity.getGroupId();
         this.depth = commentEntity.getDepth();
         this.content = commentEntity.getContent();
         this.createDt = commentEntity.getCreateDt();
