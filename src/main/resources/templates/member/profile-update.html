@@ -36,7 +36,7 @@
                                     <div id="image-preview">
                                         <img th:src="${member.profileImage} ?: '/assets/img/default-profile.jpg'" class="mt-3" alt="profile-image">
                                     </div>
-                                    <input type="hidden" class="profile-type" th:val="${member.profileImage} != null ? 'non-default' : 'default'">
+                                    <input type="hidden" class="profile-type" th:value="${member.profileImage} != null ? 'non-default' : 'default'">
                                 </div>
                                 <div class="profile-update-form">
                                     <div class="name-form d-flex gap-2 mt-3">

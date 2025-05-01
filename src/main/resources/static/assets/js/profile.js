@@ -1,3 +1,5 @@
+import * as comment from './comment.js';
+
 /******************** 전역 변수 **********************/
 let initComment = '';
 let commentModifyForm;
@@ -310,6 +312,79 @@ const fnShowResult = (reviewList) => {
 
 }
 
+// 리뷰 상세 조회
+const fnGetReviewDetail = (evt) => {
+
+    let reviewId = $(evt.currentTarget).data('review-id');
+
+    axios.get('/review/getReviewDetail', {
+        params: {
+            reviewId: reviewId
+        }
+    })
+        .then((response) => {
+
+            fnShowReviewDetail(response.data.review);
+            comment.fnShowCommentList(response.data.commentList);
+
+            $('#review-detail').modal('show');
+        })
+        .catch((error) => {
+            alert(error.response.data.message);
+        })
+}
+
+// 리뷰 상세 조회 데이터 화면에 추가
+const fnShowReviewDetail = (review) => {
+
+    let imageContainer = $('.reviewImage-modal');
+
+    let imageStr = '';
+    review.reviewImageList.forEach((reviewImage) => {
+        imageStr += '<div class="image">';
+        imageStr += '<img src="' + reviewImage.reviewImagePath + '"></div>';
+    });
+    imageContainer.html(imageStr);
+
+    let str = '<p>맛</p>';
+    str += '<div class="stars">';
+    for(let i = 1; i <= 5; i++) {
+        if(review.ratingTaste >= i) {
+            str += '<i class="bi bi-star-fill"></i>';
+        } else if((review.ratingTaste > i - 1) && (review.ratingTaste < i)) {
+            str += '<i class="bi bi-star-half"></i>';
+        } else {
+            str += '<i class="bi bi-star"></i>';
+        }
+    }
+    str += '</div>';
+    str += '<p>가격</p>';
+    str += '<div class="stars">';
+    for(let i = 1; i <= 5; i++) {
+        if(review.ratingPrice >= i) {
+            str += '<i class="bi bi-star-fill"></i>';
+        } else if((review.ratingPrice > i - 1) && (review.ratingPrice < i)) {
+            str += '<i class="bi bi-star-half"></i>';
+        } else {
+            str += '<i class="bi bi-star"></i>';
+        }
+    }
+    str += '</div>';
+    $('.rating-modal').html(str);
+
+    if(review.member.profileImage !== null) {
+        $('.writerImage-modal').html('<img src="' + review.member.profileImage + '">');
+    } else {
+        $('.writerImage-modal').html('<img src="/assets/img/default-profile.jpg">');
+    }
+    $('.writerProfile-modal p').html(review.member.nickname);
+    $('.review-id').val(review.reviewId);
+
+    $('.content-2 p:eq(0)').text(review.content);
+    $('.location-modal span').text(review.location);
+
+}
+
 // 리뷰 삭제
 const fnDeleteReview = (item) => {
 
@@ -462,6 +537,12 @@ $(document).on('click', '.btn-update', (evt) => {
     let reviewId = item.data('review-id');
     let productId = item.data('product-id');
     location.href = "/review/reviewUpdate.page?reviewId=" + reviewId + '&productId=' + productId;
+});
+
+// 작성한 리뷰 상세 조회
+$(document).off('click', '.review-item').on('click', '.review-item', (evt) => {
+    evt.stopPropagation();
+    fnGetReviewDetail(evt);
 });
 
 // 작성한 리뷰 삭제

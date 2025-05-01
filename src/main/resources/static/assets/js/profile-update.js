@@ -2,6 +2,8 @@
 /******************** 전역 변수 **********************/
 let initName;
 let initNickname;
+let initProfileType;
+
 let fileChanged = false;
 let defaultImageUrl = '/assets/img/default-profile.jpg';
 let isValidPassword = false;
@@ -275,6 +277,7 @@ const fnDebounce = (fn, delay)  => {
 $(document).ready(() => {
     initName = $('.name-input').val().trim();
     initNickname = $('.nickname-input').val().trim();
+    initProfileType = $('.profile-type').val();
 
     fnChangeProfileType();
 
@@ -292,8 +295,7 @@ $('.profile-image').on('change', (evt) => {
 $('.btn-deleteImage').on('click', () => {
 
     $('.profile-image-form img').attr('src', defaultImageUrl);
-    fileChanged = true;
-
+    fileChanged = $('.profile-type').val() !== initProfileType;
     fnChangeProfileType();
     fnActiveUpdateBtn();
 });
