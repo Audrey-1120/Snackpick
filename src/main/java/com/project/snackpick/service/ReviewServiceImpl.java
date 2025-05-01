@@ -7,10 +7,7 @@ import com.project.snackpick.entity.ReviewEntity;
 import com.project.snackpick.entity.ReviewImageEntity;
 import com.project.snackpick.exception.CustomException;
 import com.project.snackpick.exception.ErrorCode;
-import com.project.snackpick.repository.MemberRepository;
-import com.project.snackpick.repository.ProductRepository;
-import com.project.snackpick.repository.ReviewImageRepository;
-import com.project.snackpick.repository.ReviewRepository;
+import com.project.snackpick.repository.*;
 import com.project.snackpick.utils.MyFileUtils;
 import com.project.snackpick.utils.MyPageUtils;
 import org.springframework.data.domain.*;
@@ -29,19 +26,23 @@ public class ReviewServiceImpl implements ReviewService {
     private final MyFileUtils myFileUtils;
     private final MyPageUtils myPageUtils;
     private final ProductService productService;
+    private final CommentService commentService;
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final ReviewImageRepository reviewImageRepository;
+    private final CommentRepository commentRepository;
 
-    public ReviewServiceImpl(MyFileUtils myFileUtils, MyPageUtils myPageUtils, ProductService productService, ProductRepository productRepository, ReviewRepository reviewRepository, MemberRepository memberRepository, ReviewImageRepository reviewImageRepository) {
-        this.myFileUtils = myFileUtils;
-        this.myPageUtils = myPageUtils;
-        this.productService = productService;
-        this.productRepository = productRepository;
-        this.reviewRepository = reviewRepository;
-        this.memberRepository = memberRepository;
+    public ReviewServiceImpl(CommentRepository commentRepository, ReviewImageRepository reviewImageRepository, MemberRepository memberRepository, ReviewRepository reviewRepository, ProductRepository productRepository, CommentService commentService, ProductService productService, MyPageUtils myPageUtils, MyFileUtils myFileUtils) {
+        this.commentRepository = commentRepository;
         this.reviewImageRepository = reviewImageRepository;
+        this.memberRepository = memberRepository;
+        this.reviewRepository = reviewRepository;
+        this.productRepository = productRepository;
+        this.commentService = commentService;
+        this.productService = productService;
+        this.myPageUtils = myPageUtils;
+        this.myFileUtils = myFileUtils;
     }
 
     // 리뷰 작성
@@ -137,6 +138,9 @@ public class ReviewServiceImpl implements ReviewService {
                     ErrorCode.ALREADY_DELETE.formatMessage("리뷰"));
         }
 
+        List<Integer> commentIdList = commentRepository.findAllCommentIdListByReviewId(reviewId);
+        commentService.deleteCommentList(commentIdList);
+
         review.setState(true);
 
         ProductEntity product = productRepository.findProductByProductId(review.getProductEntity().getProductId())
@@ -157,6 +161,9 @@ public class ReviewServiceImpl implements ReviewService {
         List<Integer> reviewIdList = reviewList.stream()
                 .map(ReviewEntity::getReviewId)
                 .toList();
+
+        List<Integer> commentIdList = commentRepository.findAllCommentIdListByReviewIdList(reviewIdList);
+        commentService.deleteCommentList(commentIdList);
 
         int reviewCount = reviewRepository.deleteAllReviewList(reviewIdList);
         if(reviewCount != reviewIdList.size()) {

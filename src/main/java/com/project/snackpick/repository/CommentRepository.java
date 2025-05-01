@@ -14,13 +14,25 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
 
-    // 댓글 목록 조회
+    // 단일 리뷰별 댓글 목록 조회 - 페이징
     @Query("SELECT c FROM CommentEntity c " +
             "JOIN FETCH c.memberEntity " +
             "WHERE c.reviewEntity.reviewId = :reviewId " +
             "AND c.state = false " +
             "ORDER BY c.groupId ASC, c.depth ASC, c.createDt ASC")
     List<CommentEntity> findCommentListByReviewId(@Param("reviewId") int reviewId);
+
+    // 단일 리뷰별 댓글 목록 전체 조회
+    @Query("SELECT c.commentId FROM CommentEntity c " +
+            "WHERE c.reviewEntity.reviewId = :reviewId " +
+            "AND c.state = false ")
+    List<Integer> findAllCommentIdListByReviewId(@Param("reviewId") int reviewId);
+
+    // 리뷰 목록으로 댓글 전체 조회
+    @Query("SELECT c.commentId FROM CommentEntity c " +
+            "WHERE c.reviewEntity.reviewId IN :reviewIdList " +
+            "AND c.state = false")
+    List<Integer> findAllCommentIdListByReviewIdList(@Param("reviewIdList") List<Integer> reviewIdList);
 
     // 회원별 댓글 목록 조회
     @Query("SELECT c FROM CommentEntity c " +
