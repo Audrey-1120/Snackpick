@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -54,17 +53,11 @@ public class MemberServiceImpl implements MemberService {
         member.setRole("ROLE_USER");
 
         try {
-
             memberRepository.save(member);
             uploadProfileImage(member, files);
 
         } catch(DataIntegrityViolationException e) {
             throw new CustomException(ErrorCode.MEMBER_DUPLICATE);
-        } catch(IOException e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("프로필"));
-        } catch(Exception e) {
-            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
 
         return Map.of("success", true
@@ -87,18 +80,14 @@ public class MemberServiceImpl implements MemberService {
         boolean isFileChange = memberDTO.isFileChanged();
         String profileType = memberDTO.getProfileType();
 
-        try {
-            if(isFileChange) {
-                if(profileType.equals("non-default")) {
-                    deleteProfileImage(member);
-                    uploadProfileImage(member, files);
-                } else {
-                    deleteProfileImage(member);
-                }
+        if(isFileChange) {
+
+            if(profileType.equals("non-default")) {
+                deleteProfileImage(member);
+                uploadProfileImage(member, files);
+            } else {
+                deleteProfileImage(member);
             }
-        } catch (IOException e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("프로필"));
         }
 
         return Map.of("success", true
@@ -163,21 +152,27 @@ public class MemberServiceImpl implements MemberService {
 
     // 프로필 사진 업로드
     @Override
-    public void uploadProfileImage(MemberEntity member, MultipartFile[] files) throws IOException {
+    public void uploadProfileImage(MemberEntity member, MultipartFile[] files) {
 
         if(files == null || files.length == 0 || files[0].isEmpty()) {
             return;
         }
 
-        List<String> imageUrlList = myFileUtils.getImageUrlList(files, "profile");
-        member.setProfileImage(imageUrlList.get(0));
+        try {
+            List<String> imageUrlList = myFileUtils.getImageUrlList(files, "profile");
+            member.setProfileImage(imageUrlList.get(0));
 
-        myFileUtils.uploadImage(files, imageUrlList, "profile");
+            myFileUtils.uploadImage(files, imageUrlList, "profile");
+
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
+                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("회원 프로필"));
+        }
     }
 
     // 프로필 사진 삭제
     @Override
-    public void deleteProfileImage(MemberEntity member) throws IOException {
+    public void deleteProfileImage(MemberEntity member) {
 
         String profileImage = member.getProfileImage();
 
@@ -185,9 +180,13 @@ public class MemberServiceImpl implements MemberService {
             return;
         }
 
-        member.setProfileImage(null);
-        myFileUtils.deleteImage(List.of(profileImage));
-
+        try {
+            member.setProfileImage(null);
+            myFileUtils.deleteImage(List.of(profileImage));
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SERVER_ERROR,
+                    ErrorCode.SERVER_ERROR.formatMessage("프로필 이미지 삭제"));
+        }
     }
 
     // 비밀번호 검증

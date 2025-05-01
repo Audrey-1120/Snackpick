@@ -5,7 +5,6 @@ import com.project.snackpick.dto.MemberDTO;
 import com.project.snackpick.entity.MemberEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 public interface MemberService {
@@ -26,10 +25,10 @@ public interface MemberService {
     Boolean checkId(String id);
 
     // 프로필 사진 업로드
-    void uploadProfileImage(MemberEntity member, MultipartFile[] files) throws IOException;
+    void uploadProfileImage(MemberEntity member, MultipartFile[] files);
 
     // 프로필 사진 삭제
-    void deleteProfileImage(MemberEntity member) throws IOException;
+    void deleteProfileImage(MemberEntity member);
 
     // 비밀번호 인증
     Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user);

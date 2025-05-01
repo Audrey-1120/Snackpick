@@ -9,7 +9,6 @@ import com.project.snackpick.exception.ErrorCode;
 import com.project.snackpick.repository.CategoryRepository;
 import com.project.snackpick.repository.ProductRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -58,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
 
     // 제품 추가
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public ProductEntity insertProduct(ProductDTO productDTO) {
 
         CategoryEntity topCategory = categoryRepository.findById(Integer.parseInt(productDTO.getTopCategory()))
@@ -80,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
     // 제품 평점 총합 및 리뷰 개수 업데이트
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public void updateProductRating(UpdateRatingDTO rating, ProductEntity product) {
 
         double totalTaste = product.getTotalRatingTaste();

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -54,13 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewEntity review = insertReviewFields(reviewRequestDTO, product, user);
 
         updateProductStats(product, review, new ReviewDTO(), ReviewAction.INSERT);
-
-        try {
-            insertReviewImage(files, review, reviewRequestDTO.getRepresentIndex());
-        } catch(IOException e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("프로필"));
-        }
+        insertReviewImage(files, review, reviewRequestDTO.getRepresentIndex());
 
         return Map.of("success", true
                 , "message", "리뷰가 작성되었습니다."
@@ -74,7 +67,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         int pageNumber = (initPageable.getPageNumber() > 0) ? initPageable.getPageNumber() - 1: 0;
         Sort sort = initPageable.getSort().and(Sort.by(Sort.Order.asc("reviewId")));
-
         Pageable pageable = PageRequest.of(pageNumber, initPageable.getPageSize(), sort);
 
         Page<ReviewEntity> reviewIdList = reviewRepository.findByReviewListByProductId(productId, pageable);
@@ -193,13 +185,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         updateProductStats(product, review, reviewDTO, ReviewAction.UPDATE);
         updateReviewFields(review, reviewDTO);
-
-        try {
-            updateReviewImage(reviewRequestDTO, files, review);
-        } catch(IOException e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("리뷰"));
-        }
+        updateReviewImage(reviewRequestDTO, files, review);
 
         return Map.of("success", true
                 , "message", "리뷰가 수정되었습니다."
@@ -208,26 +194,30 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 이미지 저장
     @Override
-    public void insertReviewImage(MultipartFile[] files, ReviewEntity review, int representIndex) throws IOException {
+    public void insertReviewImage(MultipartFile[] files, ReviewEntity review, int representIndex) {
 
         if(files == null || files.length == 0 || files[0].isEmpty()) {
             return;
         }
 
-        List<String> imageUrlList = myFileUtils.getImageUrlList(files, "review");
+        try {
+            List<String> imageUrlList = myFileUtils.getImageUrlList(files, "review");
+            for(int i = 0; i < imageUrlList.size(); i++) {
 
-        for(int i = 0; i < imageUrlList.size(); i++) {
+                ReviewImageEntity reviewImage = ReviewImageEntity.builder()
+                        .reviewEntity(review)
+                        .reviewImagePath(imageUrlList.get(i))
+                        .build();
 
-            ReviewImageEntity reviewImage = ReviewImageEntity.builder()
-                    .reviewEntity(review)
-                    .reviewImagePath(imageUrlList.get(i))
-                    .build();
+                reviewImage.setRepresent(i == representIndex);
+                reviewImageRepository.save(reviewImage);
+            }
+            myFileUtils.uploadImage(files, imageUrlList, "review");
 
-            reviewImage.setRepresent(i == representIndex);
-            reviewImageRepository.save(reviewImage);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
+                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("리뷰"));
         }
-
-        myFileUtils.uploadImage(files, imageUrlList, "review");
     }
 
     // 리뷰 이미지 삭제
@@ -240,17 +230,23 @@ public class ReviewServiceImpl implements ReviewService {
             return;
         }
 
-        List<String> imageURlList = reviewImageList.stream()
-                .map(ReviewImageEntity::getReviewImagePath)
-                .toList();
+        try {
+            List<String> imageURlList = reviewImageList.stream()
+                    .map(ReviewImageEntity::getReviewImagePath)
+                    .toList();
 
-        reviewImageRepository.deleteAll(review.getReviewImageEntityList());
-        myFileUtils.deleteImage(imageURlList);
+            reviewImageRepository.deleteAll(review.getReviewImageEntityList());
+            myFileUtils.deleteImage(imageURlList);
+
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SERVER_ERROR,
+                    ErrorCode.SERVER_ERROR.formatMessage("리뷰 이미지 삭제"));
+        }
     }
 
     // 리뷰 이미지 수정
     @Override
-    public void updateReviewImage(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, ReviewEntity review) throws IOException {
+    public void updateReviewImage(ReviewRequestDTO reviewRequestDTO, MultipartFile[] files, ReviewEntity review) {
 
         if (reviewRequestDTO.isDeleteAllImageList()) {
             deleteReviewImage(review);
@@ -275,6 +271,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 제품 평점 및 리뷰 개수 업데이트
     @Override
+    @Transactional
     public void updateProductStats(ProductEntity product, ReviewEntity review, ReviewDTO reviewDTO, ReviewAction action) {
 
         UpdateRatingDTO updateRating;
