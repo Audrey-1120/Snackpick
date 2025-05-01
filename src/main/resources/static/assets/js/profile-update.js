@@ -295,8 +295,8 @@ $('.profile-image').on('change', (evt) => {
 $('.btn-deleteImage').on('click', () => {
 
     $('.profile-image-form img').attr('src', defaultImageUrl);
-    fileChanged = $('.profile-type').val() !== initProfileType;
     fnChangeProfileType();
+    fileChanged = $('.profile-type').val() !== initProfileType;
     fnActiveUpdateBtn();
 });
 

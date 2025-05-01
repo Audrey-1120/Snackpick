@@ -326,6 +326,7 @@ const fnGetReviewDetail = (evt) => {
 
             fnShowReviewDetail(response.data.review);
             comment.fnShowCommentList(response.data.commentList);
+            comment.insertDeleteParentComment();
 
             $('#review-detail').modal('show');
         })
