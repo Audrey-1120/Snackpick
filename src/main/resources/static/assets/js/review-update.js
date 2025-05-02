@@ -1,4 +1,65 @@
-import * as kakaoMaps from './kakao-maps.js';
+/******************** kakao maps api **********************/
+// 지도 띄우기
+var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
+var container = document.getElementById('map');
+
+var options = { // 지도의 중심 좌표
+    center: new kakao.maps.LatLng(37.50185785121449, 126.78766910206697),
+    level: 3
+};
+
+// 지도 생성
+var map = new kakao.maps.Map(container, options);
+
+// 장소 검색 객체 생성
+var ps = new kakao.maps.services.Places(map);
+
+// 키워드 주소 검색 함수
+function searchCon() {
+    let keyword = $('.location-input').find('input').val();
+    ps.keywordSearch(keyword, placesSearchCB, {
+        category_group_code: 'CS2'
+    });
+}
+
+// 키워드 검색 완료 시 호출되는 콜백 함수
+function placesSearchCB (data, status) {
+    if (status === kakao.maps.services.Status.OK) {
+
+        var bounds = new kakao.maps.LatLngBounds();
+
+        for (var i=0; i<data.length; i++) {
+            displayMarker(data[i]);
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+        }
+        map.setBounds(bounds);
+    }
+}
+
+// 지도에 마커 표시하는 함수
+function displayMarker(place) {
+
+    var marker = new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(place.y, place.x)
+    });
+
+    var locationFinal = $('.location-final');
+    var locationInput = $('.location-input');
+
+    kakao.maps.event.addListener(marker, 'click', function() {
+
+        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+        infowindow.open(map, marker);
+
+        locationInput.val(place.place_name);
+        locationFinal.text(place.place_name);
+        locationFinal.removeClass(('no-location'));
+
+        fnActivateUpdateBtn();
+    });
+}
 
 /******************** 전역 변수 **********************/
 let productId = 0;
@@ -8,15 +69,13 @@ let initForm;
 let initRepresentIndex = 0;
 let initRatingTaste = 0;
 let initRatingPrice = 0;
+let initImage = 0;
 
 let fileChanged = false;
 let representImageId = 0;
 let deleteAllImageList = false;
 
 let selectedRating = {}; // 별점 그룹별로 선택된 값 저장
-
-let ratingTaste = $('#taste-rating').data('ratingTaste');
-let ratingPrice = $('#price-rating').data('ratingPrice');
 
 /******************** 함수 **********************/
 
@@ -176,7 +235,9 @@ const fnActivateUpdateBtn = () => {
     let currentPriceRating = fnCalculateRating($('#price-rating i'));
     let ratingChange = initRatingTaste !== currentTasteRating || initRatingPrice !== currentPriceRating;
 
-    $('.btn-update').prop('disabled', !(formChange || ratingChange || deleteAllImageList));
+    // let isChangeImage = initImage !== $('.image-preview div').length;
+
+    $('.btn-update').prop('disabled', !(formChange || ratingChange));
 }
 
 // 빈값 검사
@@ -202,6 +263,19 @@ const fnFinalCheck = () => {
 
     fnRepresentIndex();
     fnUpdateReview();
+}
+
+// 이미지 초기화
+const fnDeleteAllImage = () => {
+    $('#review-image').val('');
+    $('.image-preview').empty();
+    $('#represent-index').val(-1);
+
+    representImageId = 0;
+    deleteAllImageList = true;
+    fileChanged = initImage !== $('.image-preview div').length;
+
+    fnActivateUpdateBtn();
 }
 
 // csrf 토큰 가져오기
@@ -263,7 +337,6 @@ const fnUpdateReview = () => {
     }).catch((error) => {
         alert(error.response.data.message);
     });
-
 }
 
 const fnDebounce = (fn, delay)  => {
@@ -284,7 +357,7 @@ $(document).ready(() => {
 
     let locationFinal = $('.location-final').text();
 
-    kakaoMaps.searchCon();
+    searchCon();
 
     $('.location-input').val(locationFinal);
 
@@ -296,6 +369,8 @@ $(document).ready(() => {
     initRatingTaste = Number($('#taste-rating').data('ratingTaste'));
     initRatingPrice = Number($('#price-rating').data('ratingPrice'));
     initRepresentIndex = $('#represent-index').val();
+
+    initImage = $('.image-preview div').length
 });
 
 $('.stars').on('click', 'i', (evt) => {
@@ -311,16 +386,12 @@ $('input[type="file"]').on('change', () => {
     fnActivateUpdateBtn();
 });
 
-$('.btn-LocationSearch').on('click', kakaoMaps.searchCon);
+$('.btn-LocationSearch').on('click', searchCon);
 
 $('#update-form textarea').on('keyup', fnDebounce(fnActivateUpdateBtn, 300));
 
 $('.btn-deleteAllImage').on('click', () => {
-    $('#review-image').val('');
-    $('.image-preview').empty();
-    representImageId = 0;
-    deleteAllImageList = true;
-    fnActivateUpdateBtn();
+    fnDeleteAllImage();
 });
 
 $(document).on('click', '.image img', (evt) => {

@@ -142,8 +142,6 @@ const fnCheckDuplicate = (id) => {
             alert(error.response.data.message);
         });
 
-    } else {
-        return;
     }
 }
 
@@ -206,7 +204,7 @@ const fnDebounce = (fn, delay)  => {
 // 회원가입 최종 체크
 const fnSignupFinalCheck = () => {
 
-    let currentId = $('#id').val();
+    let currentId = $('#id');
     let checkIdLabel = $("label[for='id']");
     let checkPwLabel = $("label[for='password']");
     let checkNicknameLabel = $("label[for='nickname']");
@@ -215,14 +213,14 @@ const fnSignupFinalCheck = () => {
     if(!isValidId) {
         checkIdLabel.text('아이디가 유효하지 않습니다.');
         checkIdLabel.css('color', 'red');
-        $('#id').focus();
+        currentId.focus();
         return;
     }
 
-    if(!isDuplicateChecked || lastCheckedId !== currentId) {
+    if(!isDuplicateChecked || lastCheckedId !== currentId.val()) {
         checkIdLabel.text('아이디 중복 확인을 해주세요.');
         checkIdLabel.css('color', 'red');
-        $('#id').focus();
+        currentId.focus();
         return;
     }
 

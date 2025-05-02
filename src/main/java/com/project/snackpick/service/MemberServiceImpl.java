@@ -179,11 +179,6 @@ public class MemberServiceImpl implements MemberService {
 
         try {
             member.setProfileImage(null);
-
-            if(true) {
-                throw new RuntimeException();
-            }
-
             myFileUtils.deleteImage(List.of(profileImage));
         } catch (Exception e) {
             throw new CustomException(ErrorCode.PROFILE_IMAGE_DELETE_FAIL);
