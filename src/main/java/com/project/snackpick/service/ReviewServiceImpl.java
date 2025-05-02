@@ -5,6 +5,7 @@ import com.project.snackpick.entity.MemberEntity;
 import com.project.snackpick.entity.ProductEntity;
 import com.project.snackpick.entity.ReviewEntity;
 import com.project.snackpick.entity.ReviewImageEntity;
+import com.project.snackpick.enums.UpdateAction;
 import com.project.snackpick.exception.CustomException;
 import com.project.snackpick.exception.ErrorCode;
 import com.project.snackpick.repository.*;
@@ -51,9 +52,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         ProductEntity product = handleProduct(reviewRequestDTO);
         ReviewEntity review = insertReviewFields(reviewRequestDTO, product, user);
+        int representIndex = reviewRequestDTO.getRepresentIndex();
 
-        updateProductStats(product, review, new ReviewDTO(), ReviewAction.INSERT);
-        insertReviewImage(files, review, reviewRequestDTO.getRepresentIndex());
+        updateProductStats(product, review, new ReviewDTO(), UpdateAction.INSERT);
+        insertReviewImage(files, review, representIndex);
 
         return Map.of("success", true
                 , "message", "리뷰가 작성되었습니다."
@@ -117,8 +119,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Map<String, Object> deleteReview(int reviewId, CustomUserDetails user) {
 
         ReviewEntity review = reviewRepository.findReviewByReviewId(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("리뷰")));
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR));
 
         if(!hasPermission(review, user)) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
@@ -136,10 +137,8 @@ public class ReviewServiceImpl implements ReviewService {
         review.setState(true);
 
         ProductEntity product = productRepository.findProductByProductId(review.getProductEntity().getProductId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("제품")));
-
-        updateProductStats(product, review, new ReviewDTO(), ReviewAction.DELETE);
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR));
+        updateProductStats(product, review, new ReviewDTO(), UpdateAction.DELETE);
 
         return Map.of("success", true
                 , "message", "리뷰가 삭제되었습니다.");
@@ -159,8 +158,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         int reviewCount = reviewRepository.deleteAllReviewList(reviewIdList);
         if(reviewCount != reviewIdList.size()) {
-            throw new CustomException(ErrorCode.SERVER_ERROR,
-                    ErrorCode.SERVER_ERROR.formatMessage("회원 탈퇴"));
+            throw new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR);
         }
     }
 
@@ -171,19 +169,17 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewDTO reviewDTO = reviewRequestDTO.getReviewDTO();
         ReviewEntity review = reviewRepository.findReviewByReviewId(reviewDTO.getReviewId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("리뷰")));
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR));
 
         ProductEntity product = productRepository.findProductByProductId(reviewDTO.getProductId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("제품")));
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR));
 
         if(!hasPermission(review, user)) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
                     ErrorCode.NOT_PERMISSION.formatMessage("리뷰 수정"));
         }
 
-        updateProductStats(product, review, reviewDTO, ReviewAction.UPDATE);
+        updateProductStats(product, review, reviewDTO, UpdateAction.UPDATE);
         updateReviewFields(review, reviewDTO);
         updateReviewImage(reviewRequestDTO, files, review);
 
@@ -215,8 +211,7 @@ public class ReviewServiceImpl implements ReviewService {
             myFileUtils.uploadImage(files, imageUrlList, "review");
 
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("리뷰"));
+            throw new CustomException(ErrorCode.REVIEW_IMAGE_UPLOAD_FAIL);
         }
     }
 
@@ -239,8 +234,7 @@ public class ReviewServiceImpl implements ReviewService {
             myFileUtils.deleteImage(imageURlList);
 
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.SERVER_ERROR,
-                    ErrorCode.SERVER_ERROR.formatMessage("리뷰 이미지 삭제"));
+            throw new CustomException(ErrorCode.REVIEW_IMAGE_DELETE_FAIL);
         }
     }
 
@@ -272,7 +266,7 @@ public class ReviewServiceImpl implements ReviewService {
     // 제품 평점 및 리뷰 개수 업데이트
     @Override
     @Transactional
-    public void updateProductStats(ProductEntity product, ReviewEntity review, ReviewDTO reviewDTO, ReviewAction action) {
+    public void updateProductStats(ProductEntity product, ReviewEntity review, ReviewDTO reviewDTO, UpdateAction action) {
 
         UpdateRatingDTO updateRating;
 
@@ -323,8 +317,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewEntity insertReviewFields(ReviewRequestDTO reviewRequestDTO, ProductEntity product, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR));
 
         ReviewEntity review = ReviewEntity.toReviewEntity(reviewRequestDTO.getReviewDTO(), member, product);
         return reviewRepository.save(review);
@@ -349,10 +342,8 @@ public class ReviewServiceImpl implements ReviewService {
             return productService.insertProduct(reviewRequestDTO.getProductDTO());
         } else {
             int productId = reviewRequestDTO.getReviewDTO().getProductId();
-
             return productRepository.findProductByProductId(productId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                            ErrorCode.NOT_FOUND_ENTITY.formatMessage("제품")));
+                    .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR));
         }
     }
 

@@ -2,10 +2,10 @@ package com.project.snackpick.service;
 
 import com.project.snackpick.dto.CustomUserDetails;
 import com.project.snackpick.dto.MemberDTO;
-import com.project.snackpick.dto.ReviewAction;
 import com.project.snackpick.dto.ReviewDTO;
 import com.project.snackpick.entity.MemberEntity;
 import com.project.snackpick.entity.ReviewEntity;
+import com.project.snackpick.enums.UpdateAction;
 import com.project.snackpick.exception.CustomException;
 import com.project.snackpick.exception.ErrorCode;
 import com.project.snackpick.repository.CommentRepository;
@@ -71,8 +71,7 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, Object> updateProfile(MemberDTO memberDTO, MultipartFile[] files, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원 ")));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
 
         member.setName(memberDTO.getName());
         member.setNickname(memberDTO.getNickname());
@@ -81,7 +80,6 @@ public class MemberServiceImpl implements MemberService {
         String profileType = memberDTO.getProfileType();
 
         if(isFileChange) {
-
             if(profileType.equals("non-default")) {
                 deleteProfileImage(member);
                 uploadProfileImage(member, files);
@@ -117,8 +115,7 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, Object> leave(CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원 ")));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
 
         List<ReviewEntity> reviewList = reviewRepository.findAllReviewListByMemberId(user.getMemberId());
 
@@ -130,7 +127,7 @@ public class MemberServiceImpl implements MemberService {
                 reviewService.updateProductStats(review.getProductEntity()
                                                 , review
                                                 , new ReviewDTO()
-                                                , ReviewAction.DELETE);
+                                                , UpdateAction.DELETE);
             }
         }
 
@@ -138,6 +135,7 @@ public class MemberServiceImpl implements MemberService {
         commentService.deleteCommentList(commentIdList);
 
         member.setState(true);
+
         return Map.of("success", true,
                     "message", "회원탈퇴가 완료되었습니다.",
                     "redirectUrl", "/member/logout");
@@ -165,8 +163,7 @@ public class MemberServiceImpl implements MemberService {
             myFileUtils.uploadImage(files, imageUrlList, "profile");
 
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("회원 프로필"));
+            throw new CustomException(ErrorCode.PROFILE_IMAGE_UPLOAD_FAIL);
         }
     }
 
@@ -182,10 +179,14 @@ public class MemberServiceImpl implements MemberService {
 
         try {
             member.setProfileImage(null);
+
+            if(true) {
+                throw new RuntimeException();
+            }
+
             myFileUtils.deleteImage(List.of(profileImage));
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.SERVER_ERROR,
-                    ErrorCode.SERVER_ERROR.formatMessage("프로필 이미지 삭제"));
+            throw new CustomException(ErrorCode.PROFILE_IMAGE_DELETE_FAIL);
         }
     }
 
@@ -195,8 +196,7 @@ public class MemberServiceImpl implements MemberService {
     public Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
 
         return bCryptPasswordEncoder.matches(memberDTO.getPassword(), member.getPassword());
     }
@@ -207,8 +207,7 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, Object> resetPassword(MemberDTO memberDTO, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
 
         String currentPassword = member.getPassword();
         String newPassword = memberDTO.getNewPassword();

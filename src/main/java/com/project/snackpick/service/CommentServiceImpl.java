@@ -80,12 +80,10 @@ public class CommentServiceImpl implements CommentService {
     public Map<String, Object> insertComment(CommentDTO commentDTO, CustomUserDetails user) {
 
         ReviewEntity reviewEntity = reviewRepository.findReviewByReviewId(commentDTO.getReviewId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("리뷰")));
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_PROCESSING_ERROR));
 
         MemberEntity memberEntity = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_PROCESSING_ERROR));
 
         CommentEntity comment = CommentEntity.toCommentEntity(commentDTO, reviewEntity, memberEntity);
 
@@ -106,8 +104,7 @@ public class CommentServiceImpl implements CommentService {
     public Map<String, Object> updateComment(CommentDTO commentDTO, CustomUserDetails user) {
 
         CommentEntity comment = commentRepository.findById(commentDTO.getCommentId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("댓글")));
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_PROCESSING_ERROR));
 
         if(!hasPermission(comment, user)) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
@@ -128,12 +125,11 @@ public class CommentServiceImpl implements CommentService {
     public Map<String, Object> deleteComment(CommentDTO commentDTO, CustomUserDetails user) {
 
         CommentEntity comment = commentRepository.findById(commentDTO.getCommentId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("댓글")));
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_PROCESSING_ERROR));
 
         if(!hasPermission(comment, user)) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
-                    ErrorCode.NOT_PERMISSION.formatMessage("댓글 수정"));
+                    ErrorCode.NOT_PERMISSION.formatMessage("댓글 삭제"));
         }
 
         if(comment.isState()) {
@@ -158,8 +154,7 @@ public class CommentServiceImpl implements CommentService {
 
         int commentCount = commentRepository.deleteAllCommentList(commentIdList);
         if(commentCount != commentIdList.size()) {
-            throw new CustomException(ErrorCode.SERVER_ERROR,
-                    ErrorCode.SERVER_ERROR.formatMessage("회원 탈퇴"));
+            throw new CustomException(ErrorCode.COMMENT_PROCESSING_ERROR);
         }
     }
 
