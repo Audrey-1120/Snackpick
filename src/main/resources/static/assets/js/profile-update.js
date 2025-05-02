@@ -2,8 +2,12 @@
 /******************** 전역 변수 **********************/
 let initName;
 let initNickname;
+let initProfileType;
+
 let fileChanged = false;
 let defaultImageUrl = '/assets/img/default-profile.jpg';
+let isValidPassword = false;
+let deleteAccountText = '';
 
 /******************** 함수 **********************/
 // 이미지 사이즈 제한
@@ -144,6 +148,121 @@ const fnUpdateProfile = () => {
     });
 }
 
+// 새 비밀번호 유효성 검사
+const fnValidatePassword = () => {
+
+    let passwordLabel = $('.new-password-info');
+    let password = $('#new-password');
+
+    const pwRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[^\s]{8,16}$/;
+
+    isValidPw = pwRegex.test(password.val());
+
+    if(!isValidPw) {
+        isValidPassword = false;
+        passwordLabel.css('display', '');
+    } else {
+        isValidPassword = true;
+        passwordLabel.css('display', 'none');
+    }
+}
+
+// 비밀번호란 공백 및 유효성 검사
+const fnCheckResetPassword = () => {
+
+    let currentPassword = $('#current-password');
+    let newPassword = $('#new-password');
+    let newPasswordCheck = $('#new-password-check');
+
+    if(currentPassword.val().trim() === '') {
+        alert('현재 비밀번호를 입력해주세요.');
+        currentPassword.focus();
+        return false;
+    }
+
+    if(newPassword.val().trim() === '') {
+        alert('새 비밀번호를 입력해주세요.');
+        newPassword.focus();
+        return false;
+    }
+
+    if(newPasswordCheck.val().trim() === '') {
+        alert('새 비밀번호를 한번 더 입력해주세요.');
+        newPasswordCheck.focus();
+        return false;
+    }
+
+    if(!isValidPassword) {
+        alert('새 비밀번호를 다시 확인해주세요.');
+        return false;
+    }
+
+    if(newPassword.val().trim() !== newPasswordCheck.val().trim()) {
+        alert('새 비밀번호와 새 비밀번호 확인란이 일치하지 않습니다.');
+        newPasswordCheck.focus();
+        return false;
+    }
+
+    return true;
+}
+
+// 비밀번호 재설정
+const fnResetPassword = () => {
+
+    if(!fnCheckResetPassword()) {
+        return;
+    }
+
+    axios.put('/member/resetPassword', {
+        password: $('#current-password').val().trim(),
+        newPassword: $('#new-password').val().trim()
+    })
+    .then((response) => {
+
+        let data = response.data;
+
+        if(data.success) {
+           alert(data.message);
+           window.location.href=data.redirectUrl;
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch((error) => {
+        alert(error.response.data.message);
+    });
+}
+
+// 회원 탈퇴 문구 검사
+const fnCheckDeleteText = () => {
+
+    $('#delete-account').show();
+    let currentText = $('.delete-input').val();
+
+    if(currentText !== deleteAccountText) {
+        $('.delete-error').css('display', 'block');
+        return;
+    }
+
+    fnDeleteAccount();
+}
+
+// 회원 탈퇴
+const fnDeleteAccount = () => {
+
+    axios.post('/member/leave')
+    .then((response) => {
+        let data = response.data;
+        if(data.success) {
+            alert(data.message);
+            window.location.href=data.redirectUrl;
+        }
+    })
+    .catch((error) => {
+        alert(error.response.data.message);
+    });
+}
+
 const fnDebounce = (fn, delay)  => {
     let timer;
     return function(...args) {
@@ -158,8 +277,12 @@ const fnDebounce = (fn, delay)  => {
 $(document).ready(() => {
     initName = $('.name-input').val().trim();
     initNickname = $('.nickname-input').val().trim();
+    initProfileType = $('.profile-type').val();
 
     fnChangeProfileType();
+
+    deleteAccountText = $('.delete-text').text();
+    $('.delete-account-text').attr('placeholder', deleteAccountText);
 });
 
 $('#update-form input').on('keyup', fnDebounce(fnActiveUpdateBtn, 200));
@@ -172,9 +295,8 @@ $('.profile-image').on('change', (evt) => {
 $('.btn-deleteImage').on('click', () => {
 
     $('.profile-image-form img').attr('src', defaultImageUrl);
-    fileChanged = true;
-
     fnChangeProfileType();
+    fileChanged = $('.profile-type').val() !== initProfileType;
     fnActiveUpdateBtn();
 });
 
@@ -185,4 +307,24 @@ $('#update-form').on('submit', (evt) => {
 
 $('.btn-undo').on('click', () => {
     window.history.back();
+});
+
+$('.btn-reset-password').on('click', () => {
+    fnResetPassword();
+});
+
+$('#new-password').on('keyup', fnDebounce(fnValidatePassword, 500));
+
+$('#reset-password').on('hidden.bs.modal', () => {
+    $('.reset-password-modal input').val('');
+    $('.new-password-info').css('display', 'none');
+});
+
+$('#delete-account').on('hidden.bs.modal', () => {
+    $('.delete-input').val('');
+    $('.delete-account-info').css('display', 'none');
+});
+
+$('.btn-delete-account').on('click', () => {
+    fnCheckDeleteText();
 });

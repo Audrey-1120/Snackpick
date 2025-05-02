@@ -9,10 +9,8 @@ import com.project.snackpick.exception.ErrorCode;
 import com.project.snackpick.repository.CategoryRepository;
 import com.project.snackpick.repository.ProductRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,10 +30,6 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> searchProduct(String searchKeyword) {
 
         List<ProductEntity> productEntityList = productRepository.SearchProductByProductName(searchKeyword);
-
-        if(productEntityList.isEmpty()) {
-            return Collections.emptyList();
-        }
 
         List<ProductDTO> productList = productEntityList.stream()
                 .map(ProductDTO::new)
@@ -58,16 +52,14 @@ public class ProductServiceImpl implements ProductService {
 
     // 제품 추가
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public ProductEntity insertProduct(ProductDTO productDTO) {
 
         CategoryEntity topCategory = categoryRepository.findById(Integer.parseInt(productDTO.getTopCategory()))
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("대분류 카테고리")));
+                .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_PROCESSING_ERROR));
 
         CategoryEntity subCategory = categoryRepository.findById(Integer.parseInt(productDTO.getSubCategory()))
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("중분류 카테고리")));
+                .orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_PROCESSING_ERROR));
 
         ProductEntity productEntity = ProductEntity.builder()
                 .productName(productDTO.getProductName())
@@ -80,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
     // 제품 평점 총합 및 리뷰 개수 업데이트
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public void updateProductRating(UpdateRatingDTO rating, ProductEntity product) {
 
         double totalTaste = product.getTotalRatingTaste();
@@ -111,8 +103,7 @@ public class ProductServiceImpl implements ProductService {
                 break;
 
             default:
-                throw new CustomException(ErrorCode.SERVER_ERROR,
-                        ErrorCode.SERVER_ERROR.formatMessage("제품 정보 업데이트"));
+                throw new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR);
         }
     }
 }

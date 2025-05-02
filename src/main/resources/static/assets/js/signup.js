@@ -10,8 +10,9 @@ let isValidNickname = false;
 /******************** 함수 **********************/
 
 // 아이디 유효성 검사
-const fnValidateId = (id) => {
+const fnValidateId = () => {
 
+    let id = $('#id').val();
     let checkIdLabel = $("label[for='id']");
 
     if(id === '') {
@@ -35,8 +36,9 @@ const fnValidateId = (id) => {
 }
 
 // 비밀번호 유효성 검사
-const fnValidatePw = (pw) => {
+const fnValidatePw = () => {
 
+    let pw = $('#password').val();
     let checkPwLabel = $("label[for='password']");
 
     if(pw === '') {
@@ -49,7 +51,7 @@ const fnValidatePw = (pw) => {
 
     isValidPw = pwRegex.test(pw);
 
-    if(isValidPw === false) {
+    if(!isValidPw) {
         checkPwLabel.text('비밀번호는 숫자와 영문자, 특수문자를 혼용하여 8~16자리로 입력해주세요.');
         checkPwLabel.css('color', 'red');
     } else {
@@ -58,8 +60,9 @@ const fnValidatePw = (pw) => {
 }
 
 // 닉네임 유효성 검사
-const fnValidateNickname = (nickname) => {
+const fnValidateNickname = () => {
 
+    let nickname = $('#nickname').val();
     let checkNicknameLabel = $("label[for='nickname']");
 
     if(nickname === '') {
@@ -80,8 +83,9 @@ const fnValidateNickname = (nickname) => {
 }
 
 // 이름 유효성 검사
-const fnValidateName = (name) => {
+const fnValidateName = () => {
 
+    let name = $('#name').val();
     let checkNameLabel = $("label[for='name']");
 
     if(name === '') {
@@ -138,8 +142,6 @@ const fnCheckDuplicate = (id) => {
             alert(error.response.data.message);
         });
 
-    } else {
-        return;
     }
 }
 
@@ -189,10 +191,20 @@ const fnCheckProfileImage = (fileInput) => {
     fnPreview(fileInput);
 }
 
+const fnDebounce = (fn, delay)  => {
+    let timer;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn.apply(this, args);
+        }, delay);
+    };
+}
+
 // 회원가입 최종 체크
 const fnSignupFinalCheck = () => {
 
-    let currentId = $('#id').val();
+    let currentId = $('#id');
     let checkIdLabel = $("label[for='id']");
     let checkPwLabel = $("label[for='password']");
     let checkNicknameLabel = $("label[for='nickname']");
@@ -201,14 +213,14 @@ const fnSignupFinalCheck = () => {
     if(!isValidId) {
         checkIdLabel.text('아이디가 유효하지 않습니다.');
         checkIdLabel.css('color', 'red');
-        $('#id').focus();
+        currentId.focus();
         return;
     }
 
-    if(!isDuplicateChecked || lastCheckedId !== currentId) {
+    if(!isDuplicateChecked || lastCheckedId !== currentId.val()) {
         checkIdLabel.text('아이디 중복 확인을 해주세요.');
         checkIdLabel.css('color', 'red');
-        $('#id').focus();
+        currentId.focus();
         return;
     }
 
@@ -262,25 +274,14 @@ const fnSignup = () => {
     })
     .catch((error) => {
         alert(error.response.data.message);
-    })
+    });
 }
 
 /******************** 이벤트 **********************/
-$('#id').on('keyup', () => {
-    fnValidateId($('#id').val());
-});
-
-$('#password').on('keyup', () => {
-    fnValidatePw($('#password').val());
-});
-
-$('#name').on('keyup', () => {
-    fnValidateName($('#name').val());
-});
-
-$('#nickname').on('keyup', () => {
-    fnValidateNickname($('#nickname').val());
-});
+$('#id').on('keyup', fnDebounce(fnValidateId, 300));
+$('#password').on('keyup', fnDebounce(fnValidatePw, 300));
+$('#name').on('keyup', fnDebounce(fnValidateName, 300));
+$('#nickname').on('keyup', fnDebounce(fnValidateNickname, 300));
 
 $('.btn-signup').on('click', (evt) => {
     fnSignupFinalCheck(evt);

@@ -1,10 +1,10 @@
-package com.project.snackpick.dto;
+package com.project.snackpick.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ReviewAction {
+public enum UpdateAction {
     INSERT, UPDATE, DELETE
 }

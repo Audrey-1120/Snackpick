@@ -2,10 +2,15 @@ package com.project.snackpick.service;
 
 import com.project.snackpick.dto.CustomUserDetails;
 import com.project.snackpick.dto.MemberDTO;
+import com.project.snackpick.dto.ReviewDTO;
 import com.project.snackpick.entity.MemberEntity;
+import com.project.snackpick.entity.ReviewEntity;
+import com.project.snackpick.enums.UpdateAction;
 import com.project.snackpick.exception.CustomException;
 import com.project.snackpick.exception.ErrorCode;
+import com.project.snackpick.repository.CommentRepository;
 import com.project.snackpick.repository.MemberRepository;
+import com.project.snackpick.repository.ReviewRepository;
 import com.project.snackpick.utils.MyFileUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +27,19 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MyFileUtils myFileUtils;
+    private final ReviewRepository reviewRepository;
+    private final ReviewService reviewService;
+    private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
-    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MyFileUtils myFileUtils) {
+    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder, MyFileUtils myFileUtils, ReviewRepository reviewRepository, ReviewService reviewService, CommentRepository commentRepository, CommentService commentService) {
         this.memberRepository = memberRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.myFileUtils = myFileUtils;
+        this.reviewRepository = reviewRepository;
+        this.reviewService = reviewService;
+        this.commentRepository = commentRepository;
+        this.commentService = commentService;
     }
 
     // 회원가입
@@ -41,17 +53,11 @@ public class MemberServiceImpl implements MemberService {
         member.setRole("ROLE_USER");
 
         try {
-
             memberRepository.save(member);
             uploadProfileImage(member, files);
 
         } catch(DataIntegrityViolationException e) {
             throw new CustomException(ErrorCode.MEMBER_DUPLICATE);
-        } catch(IOException e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("프로필"));
-        } catch(Exception e) {
-            throw new CustomException(ErrorCode.SERVER_ERROR);
         }
 
         return Map.of("success", true
@@ -65,8 +71,7 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, Object> updateProfile(MemberDTO memberDTO, MultipartFile[] files, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원 ")));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
 
         member.setName(memberDTO.getName());
         member.setNickname(memberDTO.getNickname());
@@ -74,59 +79,18 @@ public class MemberServiceImpl implements MemberService {
         boolean isFileChange = memberDTO.isFileChanged();
         String profileType = memberDTO.getProfileType();
 
-        try {
-            if(isFileChange) {
-                if(profileType.equals("non-default")) {
-                    deleteProfileImage(member);
-                    uploadProfileImage(member, files);
-                } else {
-                    deleteProfileImage(member);
-                }
+        if(isFileChange) {
+            if(profileType.equals("non-default")) {
+                deleteProfileImage(member);
+                uploadProfileImage(member, files);
+            } else {
+                deleteProfileImage(member);
             }
-        } catch (IOException e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAIL,
-                    ErrorCode.FILE_UPLOAD_FAIL.formatMessage("프로필"));
         }
 
         return Map.of("success", true
                 , "message", "회원정보가 수정되었습니다."
                 , "redirectUrl", "/member/profile.page");
-    }
-
-    // 아이디 중복 체크
-    @Override
-    @Transactional(readOnly = true)
-    public Boolean checkId(String id) {
-        return memberRepository.existsById(id);
-    }
-
-    // 프로필 사진 업로드
-    @Override
-    public void uploadProfileImage(MemberEntity member, MultipartFile[] files) throws IOException {
-
-        if(files == null || files.length == 0 || files[0].isEmpty()) {
-            return;
-        }
-
-        List<String> imageUrlList = myFileUtils.getImageUrlList(files, "profile");
-        member.setProfileImage(imageUrlList.get(0));
-
-        myFileUtils.uploadImage(files, imageUrlList, "profile");
-    }
-
-    // 프로필 사진 삭제
-    @Override
-    public void deleteProfileImage(MemberEntity member) throws IOException {
-
-        String profileImage = member.getProfileImage();
-
-        if(profileImage == null) {
-            return;
-        }
-
-        member.setProfileImage(null);
-        myFileUtils.deleteImage(List.of(profileImage));
-
     }
 
     // 회원 정보 조회
@@ -145,15 +109,118 @@ public class MemberServiceImpl implements MemberService {
         return new MemberDTO(member, reviewCount, commentCount);
     }
 
+    // 회원 탈퇴
+    @Override
+    @Transactional
+    public Map<String, Object> leave(CustomUserDetails user) {
+
+        MemberEntity member = memberRepository.findById(user.getUsername())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
+
+        List<ReviewEntity> reviewList = reviewRepository.findAllReviewListByMemberId(user.getMemberId());
+
+        if(!reviewList.isEmpty()) {
+
+            reviewService.deleteReviewList(reviewList);
+
+            for(ReviewEntity review : reviewList) {
+                reviewService.updateProductStats(review.getProductEntity()
+                                                , review
+                                                , new ReviewDTO()
+                                                , UpdateAction.DELETE);
+            }
+        }
+
+        List<Integer> commentIdList = commentRepository.findAllCommentIdListByMemberId(user.getMemberId());
+        commentService.deleteCommentList(commentIdList);
+
+        member.setState(true);
+
+        return Map.of("success", true,
+                    "message", "회원탈퇴가 완료되었습니다.",
+                    "redirectUrl", "/member/logout");
+    }
+
+    // 아이디 중복 체크
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean checkId(String id) {
+        return memberRepository.existsById(id);
+    }
+
+    // 프로필 사진 업로드
+    @Override
+    public void uploadProfileImage(MemberEntity member, MultipartFile[] files) {
+
+        if(files == null || files.length == 0 || files[0].isEmpty()) {
+            return;
+        }
+
+        try {
+            List<String> imageUrlList = myFileUtils.getImageUrlList(files, "profile");
+            member.setProfileImage(imageUrlList.get(0));
+
+            myFileUtils.uploadImage(files, imageUrlList, "profile");
+
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.PROFILE_IMAGE_UPLOAD_FAIL);
+        }
+    }
+
+    // 프로필 사진 삭제
+    @Override
+    public void deleteProfileImage(MemberEntity member) {
+
+        String profileImage = member.getProfileImage();
+
+        if(profileImage == null) {
+            return;
+        }
+
+        try {
+            member.setProfileImage(null);
+            myFileUtils.deleteImage(List.of(profileImage));
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.PROFILE_IMAGE_DELETE_FAIL);
+        }
+    }
+
     // 비밀번호 검증
     @Override
     @Transactional(readOnly = true)
     public Boolean checkPassword(MemberDTO memberDTO, CustomUserDetails user) {
 
         MemberEntity member = memberRepository.findById(user.getUsername())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ENTITY,
-                        ErrorCode.NOT_FOUND_ENTITY.formatMessage("회원")));
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
 
         return bCryptPasswordEncoder.matches(memberDTO.getPassword(), member.getPassword());
+    }
+
+    // 비밀번호 재설정
+    @Override
+    @Transactional
+    public Map<String, Object> resetPassword(MemberDTO memberDTO, CustomUserDetails user) {
+
+        MemberEntity member = memberRepository.findById(user.getUsername())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
+
+        String currentPassword = member.getPassword();
+        String newPassword = memberDTO.getNewPassword();
+
+        if(!bCryptPasswordEncoder.matches(memberDTO.getPassword(), currentPassword)) {
+            return Map.of("success", false
+                        ,"message", "현재 비밀번호가 올바르지 않습니다.");
+        }
+
+        if(bCryptPasswordEncoder.matches(newPassword, currentPassword)) {
+            return Map.of("success", false
+                        , "message", "새 비밀번호와 현재 비밀번호를 다르게 설정해주세요.");
+        }
+
+        member.setPassword(bCryptPasswordEncoder.encode(newPassword));
+
+        return Map.of("success", true,
+                    "message", "비밀번호가 재설정되었습니다.",
+                    "redirectUrl", "/member/logout");
     }
 }

@@ -155,20 +155,20 @@ const fnGetCsrfToken = () => {
 const fnShowComment = (comment) => {
 
     let commentArea = $('.content-3');
-    let isReply = comment.depth === 0;
+    let isReply = comment.depth === 1;
     let writerName = $('.writerImage-modal ~ p').text();
     let commentInput = $('.comment-input input');
 
     let commentContainer
-        = isReply ? commentArea : $('[data-group-id="' + comment.groupId + '"]').last();
+        = isReply ? $('[data-group-id="' + comment.groupId + '"]').last() : commentArea;
 
     let loginId = $('.login-id').val();
 
     let str = '';
     if(isReply) {
-        str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
-    } else {
         str += '<div class="comment-modal reply" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
+    } else {
+        str += '<div class="comment-modal" data-group-id="' + comment.groupId + '" data-comment-id="' + comment.commentId + '">';
     }
 
     str += '<div class="comment-writer-section">';
@@ -227,10 +227,10 @@ const fnShowComment = (comment) => {
     str += '</div>';
 
     if(isReply) {
+        commentContainer.after(str);
+    } else {
         commentContainer.append(str);
         commentArea.scrollTop(commentArea[0].scrollHeight);
-    } else {
-        commentContainer.after(str);
     }
 
     $('.no-comment').remove();
@@ -365,6 +365,40 @@ const fnUpdateComment = () => {
     });
 }
 
+// 삭제한 댓글 처리
+const fnHandleDeleteComment = (comment) => {
+
+    let isReply = comment.hasClass('reply');
+    let groupId = comment.data('groupId');
+
+    if(!isReply) {
+
+        let deleteParent = '<div class="comment-modal deleted-parent" data-group-id="' + groupId + '" data-comment-id="deleted-' + groupId + '">';
+
+        deleteParent += '<div class="comment-writer-section">';
+        deleteParent += '<div class="comment-writer">';
+        deleteParent += '<img src="/assets/img/default-profile.jpg">';
+        deleteParent += '</div>';
+        deleteParent += '</div>';
+        deleteParent += '<div class="w-100">';
+        deleteParent += '<div class="comment-profile">';
+        deleteParent += '<p class="text-muted">알 수 없음</p>';
+        deleteParent += '<p class="text-muted">--</p>';
+        deleteParent += '</div>';
+        deleteParent += '<div class="comment-content">';
+        deleteParent += '<p class="text-muted">삭제된 댓글입니다.</p>';
+        deleteParent += '</div>';
+        deleteParent += '</div>';
+        deleteParent += '</div>';
+
+        comment.after(deleteParent);
+        comment.remove();
+
+    } else {
+        comment.remove();
+    }
+}
+
 // 댓글 삭제
 const fnDeleteComment = (evt) => {
 
@@ -384,17 +418,51 @@ const fnDeleteComment = (evt) => {
     .then((response) => {
         if(response.data.success) {
             alert('댓글이 삭제되었습니다.');
-            evt.closest('.comment-modal').remove();
-            if($('.comment-modal').length === 0) {
-                let str = '<div class="no-comment">';
-                str += '<p>댓글이 없습니다.</p>';
-                str += '</div>';
-                $('.content-3').append(str);
-            }
+            fnHandleDeleteComment(evt.closest('.comment-modal'));
         }
     })
     .catch((error) => {
         alert(error.response.data.message);
+    });
+}
+
+// 삭제된 원글 처리
+const insertDeleteParentComment = () => {
+
+    let allCommentList = $('.comment-modal');
+
+    let group = _.groupBy(allCommentList, (item) => {
+        return $(item).data('groupId');
+    });
+
+    _.forEach(group, (commentList, groupId) => {
+
+        let hasParent = commentList.some((item) => {
+            return !$(item).hasClass('reply');
+        });
+
+        if(!hasParent) {
+            let firstReply = $(commentList[0]);
+
+            let deleteParent = '<div class="comment-modal deleted-parent" data-group-id="' + groupId + '" data-comment-id="deleted-' + groupId + '">';
+            deleteParent += '<div class="comment-writer-section">';
+            deleteParent += '<div class="comment-writer">';
+            deleteParent += '<img src="/assets/img/default-profile.jpg">';
+            deleteParent += '</div>';
+            deleteParent += '</div>';
+            deleteParent += '<div class="w-100">';
+            deleteParent += '<div class="comment-profile">';
+            deleteParent += '<p class="text-muted">알 수 없음</p>';
+            deleteParent += '<p class="text-muted">--</p>';
+            deleteParent += '</div>';
+            deleteParent += '<div class="comment-content">';
+            deleteParent += '<p class="text-muted">삭제된 댓글입니다.</p>';
+            deleteParent += '</div>';
+            deleteParent += '</div>';
+            deleteParent += '</div>';
+
+            firstReply.before(deleteParent);
+        }
     });
 }
 
@@ -435,4 +503,4 @@ $(document).on('click', '.icon-comment-delete', (evt) => {
     }
 })
 
-export { fnShowCommentList, fnShowComment };
+export { fnShowCommentList, fnShowComment, insertDeleteParentComment };

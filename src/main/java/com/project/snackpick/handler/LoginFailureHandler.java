@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +31,12 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private String getExceptionMessage(AuthenticationException exception) {
 
-        if(exception instanceof BadCredentialsException) {
+        Throwable cause = (exception.getCause() != null) ? exception.getCause() : exception;
+
+        if(cause instanceof BadCredentialsException) {
             return "아이디 혹은 비밀번호를 다시 확인해주세요.";
-        } else if(exception instanceof UsernameNotFoundException) {
-            return "존재하지 않는 아이디입니다.";
+        } else if(cause instanceof DisabledException){
+            return "탈퇴한 회원입니다.";
         } else {
             return "알 수 없는 에러입니다.";
         }

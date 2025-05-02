@@ -36,7 +36,7 @@
                                     <div id="image-preview">
                                         <img th:src="${member.profileImage} ?: '/assets/img/default-profile.jpg'" class="mt-3" alt="profile-image">
                                     </div>
-                                    <input type="hidden" class="profile-type" th:val="${member.profileImage} != null ? 'non-default' : 'default'">
+                                    <input type="hidden" class="profile-type" th:value="${member.profileImage} != null ? 'non-default' : 'default'">
                                 </div>
                                 <div class="profile-update-form">
                                     <div class="name-form d-flex gap-2 mt-3">
@@ -49,10 +49,10 @@
                                     </div>
                                     <div class="password-form d-flex gap-2 mt-3">
                                         <p class="form-title">비밀번호</p>
-                                        <button type="button" class="change-password">비밀번호 재설정</button>
+                                        <button type="button" class="change-password" data-bs-toggle="modal" data-bs-target="#reset-password">비밀번호 재설정</button>
                                     </div>
                                     <div class="cancel-form mt-3">
-                                        <a class="btn-cancel-account text-danger">회원탈퇴</a>
+                                        <a class="btn-cancel-account text-danger" data-bs-toggle="modal" data-bs-target="#delete-account">회원탈퇴</a>
                                     </div>
                                     <div class="button-form mt-3">
                                         <button type="submit" class="btn-save" disabled>저장</button>
@@ -66,6 +66,59 @@
             </div>
         </section>
     </div>
+
+    <div class="modal" id="reset-password" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">비밀번호 재설정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body reset-password-modal my-5">
+                    <div class="current-form d-flex gap-2">
+                        <label for="current-password">현재 비밀번호</label>
+                        <input type="password" id="current-password" maxlength="16">
+                    </div>
+                    <div class="new-form mt-4">
+                        <div class="new-password-form">
+                            <div class="d-flex gap-2">
+                                <label for="new-password">새 비밀번호</label>
+                                <input type="password" id="new-password" maxlength="16">
+                            </div>
+                            <label class="new-password-info text-danger w-100" style="display: none;">비밀번호는 숫자와 영문자, 특수문자를 혼용하여 8~16자리로 입력해주세요.</label>
+                        </div>
+                        <div class="new-password-check d-flex gap-2 my-2">
+                            <label for="new-password-check">새 비밀번호 확인</label>
+                            <input type="password" id="new-password-check" maxlength="16">
+                        </div>
+                        <button type="button" class="btn-reset-password">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="delete-account" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">회원 탈퇴</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body delete-account-box my-5">
+                    <p class="delete-info">
+                        탈퇴하시려면 <span th:text="${member.id} + 'DeleteAccount'" class="text-danger delete-text"></span>을 입력해주세요.
+                    </p>
+                    <div class="delete-input-row">
+                        <input type="text" class="delete-input mt-2">
+                        <button type="button" class="btn-delete-account">확인</button>
+                    </div>
+                    <label class="delete-error text-danger w-100">올바르게 입력해주세요.</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <!-- footer 레이아웃 분리 -->
