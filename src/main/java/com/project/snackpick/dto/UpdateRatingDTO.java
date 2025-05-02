@@ -1,5 +1,6 @@
 package com.project.snackpick.dto;
 
+import com.project.snackpick.enums.UpdateAction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,6 @@ public class UpdateRatingDTO {
     private double oldRatingPrice;
     private double newRatingTaste;
     private double newRatingPrice;
-    private ReviewAction action;
+    private UpdateAction action;
 
 }
