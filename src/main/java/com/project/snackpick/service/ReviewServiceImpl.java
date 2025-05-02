@@ -119,16 +119,12 @@ public class ReviewServiceImpl implements ReviewService {
     public Map<String, Object> deleteReview(int reviewId, CustomUserDetails user) {
 
         ReviewEntity review = reviewRepository.findReviewByReviewId(reviewId)
-                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_PROCESSING_ERROR));
+                .orElseThrow(() -> new CustomException(ErrorCode.ALREADY_DELETE,
+                        ErrorCode.ALREADY_DELETE.formatMessage("리뷰")));
 
         if(!hasPermission(review, user)) {
             throw new CustomException(ErrorCode.NOT_PERMISSION,
                     ErrorCode.NOT_PERMISSION.formatMessage("리뷰 삭제"));
-        }
-
-        if(review.isState()) {
-            throw new CustomException(ErrorCode.ALREADY_DELETE,
-                    ErrorCode.ALREADY_DELETE.formatMessage("리뷰"));
         }
 
         List<Integer> commentIdList = commentRepository.findAllCommentIdListByReviewId(reviewId);

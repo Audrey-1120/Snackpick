@@ -46,7 +46,8 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     @Query("SELECT DISTINCT r FROM ReviewEntity r " +
             "LEFT JOIN FETCH r.memberEntity m " +
             "LEFT JOIN FETCH r.reviewImageEntityList ri " +
-            "WHERE r.reviewId = :reviewId")
+            "WHERE r.reviewId = :reviewId " +
+            "AND r.state = false")
     Optional<ReviewEntity> findReviewByReviewId(@Param("reviewId") int reviewId);
 
     // 리뷰 목록 삭제
