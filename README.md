@@ -14,16 +14,20 @@
 ✅ ver 1.2 (배포 완료)
 - 댓글 CRUD
 
-🚧 ver 1.3 (추후 순차적으로 업데이트 예정)
+✅ ver 1.3 (배포 완료)
 - 마이페이지
 
+🚧 ver 1.4 (추후 배포 예정)
+- 모바일 UI/UX
 
 # ☑️ 사이트
 - **배포주소** : http://www.snackpick.site
 - **테스트 계정**
   - 아이디 : monami1908
   - 비밀번호 : Asdfg12345@
-
+- **서버 운영관련**
+  - 주말에는 09:00 ~ 22:00 까지 접속 가능합니다.
+  - 평일은 언제든지 접속 가능합니다.
 - **확인 방법**
     - 리뷰가 존재하는 상품을 확인해주세요!
     - 예시 상품 : 이클립스 페퍼민트향
@@ -51,7 +55,9 @@
 <br>
 
 # ☑️ 구현 기능  
+<br>
 
+## 회원가입 및 로그인
 ### 1) 로그인
 ![Image](https://github.com/user-attachments/assets/0cfcadb6-5d27-404f-a377-f4d1c53d3503)
 <br>
@@ -71,6 +77,8 @@
 <br>
 <br>
 
+
+## 리뷰 및 제품 검색
 ### 3) 제품 검색
 ![Image](https://github.com/user-attachments/assets/abc135d2-d25e-49cb-99f4-2fb16a4172ea)
 - 원하는 제품을 제품명으로 검색할 수 있습니다.
@@ -144,6 +152,7 @@
 <br>
 <br>
 
+## 댓글
 ### 10) 댓글 및 대댓글 작성
 ![Image](https://github.com/user-attachments/assets/91955bc0-1249-40d5-ac73-cce7b2fddd40)
 - 댓글 및 대댓글을 작성할 수 있습니다.
@@ -159,7 +168,62 @@
 ### 11) 댓글 수정 및 삭제
 ![Image](https://github.com/user-attachments/assets/f3445d4a-d011-4d2b-9b7f-e624966444db)
 - 댓글을 수정하고 삭제할 수 있습니다.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
+## 마이페이지
+### 12) 정보 조회
+![Image](https://github.com/user-attachments/assets/2660ceb6-4e04-4852-9433-96be8c0509eb)
+- 기본적인 회원 정보를 조회할 수 있습니다.
+- 오른쪽에는 작성한 리뷰 및 댓글을 확인할 수 있습니다.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
+### 14) 회원별 작성한 리뷰, 댓글 조회 및 수정
+![Image](https://github.com/user-attachments/assets/32265644-717e-41ec-a6e7-b43791998132)
+- 회원별로 작성한 리뷰 및 댓글을 목록 및 상세 조회할 수 있습니다.
+- 작성한 리뷰와 댓글을 수정하거나 삭제할 수 있습니다.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
+### 13) 회원 정보 수정
+![Image](https://github.com/user-attachments/assets/6450a378-c384-46fc-9954-9b622b5294dd)
+- 정보 수정 페이지로 접속하기 전에 비밀번호를 입력받아 사용자 검증을 진행합니다.
+- 프로필 이미지, 이름, 닉네임을 수정할 수 있습니다.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+### 14) 비밀번호 재설정
+![Image](https://github.com/user-attachments/assets/f2d4f035-41bb-424e-9409-98137f3a1ae7)
+- 비밀번호를 재설정할 수 있습니다.
+- 아래와 같은 경우에는 경고 문구가 표시됩니다.
+  - 현재 비밀번호가 틀린 경우
+  - 새 비밀번호가 유효성 검사를 통과하지 못할 경우
+  - 새 비밀번호와 새 비밀번호 확인란의 값이 일치하지 않는 경우
+  - 현재 비밀번호와 새 비밀번호가 같은 경우
+<br>
+<br>
+<br>
+<br>
+<br>
+
+### 15) 마이페이지 - 회원탈퇴
+![Image](https://github.com/user-attachments/assets/b07d6f85-b42c-4cf8-9f20-f764f6f95ad7)
+- 정해진 문구를 입력하면 회원탈퇴가 진행됩니다.
 
