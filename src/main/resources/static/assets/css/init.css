@@ -20,6 +20,10 @@ p {
     margin-bottom: 0 !important;
 }
 
+.logo img:last-child {
+    display: none;
+}
+
 @media (min-width: 1200px) {
     .navmenu p {
         padding: 18px 15px;
@@ -50,4 +54,16 @@ p {
     .header .logo img {
         height: 28px;
     }
+}
+
+@media (max-width: 425px) {
+
+    .logo img:first-child {
+        display: none;
+    }
+
+    .logo img:last-child {
+        display: inline;
+    }
+
 }
