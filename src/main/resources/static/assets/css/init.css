@@ -45,3 +45,9 @@ p {
         transition: 0.3s;
     }
 }
+
+@media (max-width: 1024px) {
+    .header .logo img {
+        height: 28px;
+    }
+}

@@ -8,10 +8,6 @@
     justify-content: center;
 }
 
-.detail-section {
-    width: 25%;
-}
-
 /* 로그인 폼 */
 .login-section {
     display: flex;
@@ -19,11 +15,23 @@
     gap: 1rem;
 }
 
-/* 회원가입 & 비밀번호 찾기 */
+/* 로그인 제목 */
+.login-title {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+/* 로그인 input */
+.login-id-input,
+.login-pw-input {
+    width: 320px;
+}
+
+/* 회원가입 */
 .login-submenu {
     display: flex;
     justify-content: space-between;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 
 /* 로그인 버튼 */
@@ -40,4 +48,32 @@
 .login-label {
     font-size: 0.8rem;
     color: red;
+}
+
+@media screen and (max-width: 768px) {
+
+    .login-title {
+        font-size: 20px;
+    }
+
+    .login-id-input,
+    .login-pw-input {
+        width: 210px;
+        height: 35px;
+    }
+
+    .login-section input {
+        font-size: 12px;
+    }
+
+    .login-submenu {
+        font-size: 10px;
+    }
+
+    .btn-login {
+        width: 60px;
+        height: 25px;
+        font-size: 11px;
+        padding: 0;
+    }
 }

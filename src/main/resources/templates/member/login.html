@@ -10,27 +10,27 @@
     <main class="main text-center">
       <section id="contact" class="contact section">
         <div class="container" data-aos="fade-up" data-aos-delay="100">
-          <h1>로그인</h1>
+          <p class="login-title">로그인</p>
           <div class="main-section">
             <div class="detail-section">
               <form th:action="@{/member/login}" method="post" class="pb-5 pt-3" th:csrf>
                 <div>
                   <div class="login-section">
-                    <div class="w-100">
+                    <div class="login-id-input">
                       <input type="text" name="id" class="form-control" placeholder="아이디를 입력해주세요" maxlength="12">
                     </div>
-                    <div class="w-100">
+                    <div class="login-pw-input">
                       <input type="password" class="form-control" name="password" placeholder="비밀번호를 입력해주세요" maxlength="16">
                     </div>
                     <div th:if="${error}" class="w-100">
                       <p th:text="${errorMessage}" class="login-label">아이디와 비밀번호를 다시 확인해주세요.</p>
                     </div>
-                    <div class="login-submenu">
-                      <a href="/member/signup.page">회원가입</a>
-                    </div>
-                    <div class="w-100">
-                      <button type="submit" class="btn-login">로그인</button>
-                    </div>
+                  </div>
+                  <div class="login-submenu mt-1">
+                    <a href="/member/signup.page">회원가입</a>
+                  </div>
+                  <div class="w-100">
+                    <button type="submit" class="btn-login">로그인</button>
                   </div>
                 </div>
               </form>
