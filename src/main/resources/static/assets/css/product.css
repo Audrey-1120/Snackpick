@@ -1,6 +1,6 @@
 /* 메인화면 */
 .main {
-    padding: 15vh 0;
+    padding: 30vh 0;
 }
 
 /* 타이틀 + 검색폼 */
@@ -47,7 +47,7 @@
     }
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 425px) {
     .main-searchform > input {
         width: 300px;
         font-size: 14px;

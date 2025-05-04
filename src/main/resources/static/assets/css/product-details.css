@@ -39,6 +39,7 @@
 /* 제품 제목(분류, 별점평균) */
 .product-title {
     font-size: 1.2rem;
+    font-weight: 600;
 }
 
 /* 분류 */
@@ -159,7 +160,7 @@
 
 /* 구분선 */
 .line {
-    border-bottom: 1px solid #ADADAD;
+    border-bottom: 1px solid #D4D4D4;
 }
 
 /* 편의점 위치 */
@@ -402,11 +403,6 @@
     font-size: 0.7rem;
 }
 
-/* 구분선 */
-.line {
-    border: 1px solid #ECECEC;
-}
-
 /* 선택한 메시지 */
 .selected-comment {
     background-color: rgba(217, 35, 45, .1);
@@ -418,4 +414,83 @@
 .icon-comment-delete {
     align-content: center;
     cursor: pointer;
+}
+
+@media screen and (max-width: 425px) {
+
+    .main {
+        padding: 0 2vh;
+    }
+
+    .main-title {
+        font-size: 1.5rem;
+    }
+
+    .product-title {
+        font-size: 1rem;
+    }
+
+    .rating-average-section i {
+        font-size: 1.3rem;
+    }
+
+    #review-sort {
+        font-size: 0.8rem;
+        width: 120px;
+    }
+
+    .btn-write {
+        font-size: 0.8rem;
+    }
+
+    /* 리뷰 아이템 */
+
+    .review-section {
+        padding: 0 0.4rem;
+    }
+
+    .review-main {
+        gap: 0.5rem;
+    }
+
+    .writer-image img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .writer-name {
+        font-size: 0.5rem !important;
+    }
+
+    .testimonial-item {
+        padding: 0.4rem 0.8rem 0 0.8rem !important;
+    }
+
+    .review-image img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .rating {
+        margin-bottom: 0.1rem;
+    }
+
+    .rating * {
+        font-size: 0.6rem;
+    }
+
+    .rating h4 {
+        font-size: 0.6rem !important;
+    }
+
+    .review-content {
+        font-size: 0.5rem !important;
+        margin-top: 0.3rem !important;
+        height: 47px;
+    }
+
+    .review-location {
+        font-size: 0.5rem !important;
+        margin-top: 0.3rem !important;
+    }
 }
