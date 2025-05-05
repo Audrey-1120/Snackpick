@@ -1,6 +1,6 @@
 /* 메인화면 */
 .main {
-    padding: 0 10vh;
+    padding: 0 5vh;
     min-height: 70vh;
 }
 
@@ -20,7 +20,6 @@
 .main-searchform > input{
     width: 40%;
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
-    border-width: 0;
     border: 1px solid #ADADAD;
     border-radius: 0.5rem;
     outline: none;
