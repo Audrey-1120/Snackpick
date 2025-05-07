@@ -124,6 +124,10 @@
     width: 80%;
 }
 
+.review-content {
+    min-height: 30%;
+}
+
 /* 별점 */
 .rating {
     display: flex;
@@ -134,9 +138,9 @@
     align-content: center;
 }
 
-/* 구분선 */
-.line {
-    border-bottom: 1px solid #ADADAD;
+.rating-modal .stars {
+    display: flex;
+    gap: 0.2rem;
 }
 
 /* 편의점 위치 */
@@ -157,29 +161,38 @@
     overflow-x: auto;
 }
 
-.reviewContent-modal {
-    height: 55vh;
+.modal-body {
+    padding: 1rem 1rem !important;
 }
 
-.content-1 {
-    display: flex;
-    justify-content: space-between;
+.reviewContent-modal {
+    max-height: 60vh;
+    box-sizing: border-box;
 }
 
 .content-2 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    word-break: break-word;
+    padding: 0.5rem 0;
     text-align: start;
-    height: 14%;
+}
+
+.content-2 p {
+    margin: 0;
+    line-height: 1.4;
 }
 
 .content-2 p:first-child {
-    height: 95%;
+    font-size: 1rem;
 }
 
 .image {
     background-color: #ADADAD;
     flex-shrink: 0;
     flex-basis: 25%;
-    height: 15vh;
+    height: 7rem;
 }
 
 .image img {
@@ -187,23 +200,20 @@
     height: 100%;
 }
 
-/* 맛, 가격, 프로필 컨테이너 */
-.rating-modal {
-    width: 70%;
-}
-
 /* 리뷰 상세 모달 - 작성자 프로필 사진 */
 .writerImage-modal {
-    width: 30px;
-    height: 30px;
     border-radius: 50%;
-    background-color: gray;
+}
+
+.writerProfile-modal {
+    margin-bottom: 0.5rem;
 }
 
 /* 리뷰 상세 모달 - 작성자 이름 */
 .writerProfile-modal p {
     align-content: center;
     font-size: 0.7rem;
+    margin-right: auto;
 }
 
 .writerProfile-modal img {
@@ -215,17 +225,18 @@
 
 .location-modal {
     font-size: 0.8rem;
+    margin-top: 0.3rem;
 }
 
 .location-modal span {
-    color: red;
+    color: #D9232d;
 }
 
 /* 댓글 영역 */
 .content-3 {
+    max-height: 15rem;
     text-align: start;
     overflow-y: auto;
-    height: 60%;
 }
 
 /* 댓글(원글) 아이템 */
@@ -254,17 +265,23 @@
     max-width: 100%;
     border-radius: 0.5rem;
     outline: none;
-    border: 0.5px solid gray;
+    border: 0.5px solid #D4D4D4;
     padding: 0.3rem;
 }
 
 @media screen and (max-width: 990px) {
+
+    .image {
+        height: 7rem;
+    }
+
     .comment-input input {
         width: 75%;
     }
 }
 
 @media screen and (max-width: 575px) {
+
     .comment-input {
         display: flex;
         gap: 0.3rem;
@@ -273,11 +290,34 @@
     .comment-input input {
         width: calc(100% - 110px);
         min-width: 0;
+        font-size: 0.8rem;
     }
 
     .comment-buttons {
         display: flex;
         gap: 0.3rem;
+        font-size: 0.8rem;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+
+    .content-2 p:first-child {
+        font-size: 0.8rem;
+    }
+
+    .location-modal {
+        font-size: 0.7rem;
+        margin-top: 0.2rem;
+    }
+
+    .line ~ p {
+        margin: 0.3rem 0 0 !important;
+    }
+
+    .icon-comment-update, .icon-comment-delete {
+        font-size: 0.8rem;
     }
 }
 
@@ -304,7 +344,7 @@
 
 /* 댓글 작성자 이미지 영역 */
 .comment-writer-section {
-    align-content: center;
+    align-content: baseline;
 }
 
 .comment-writer img {
@@ -345,18 +385,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    min-height: 10vh;
 }
 
 /* 답글 작성 아이콘 */
 .btn-reply {
     cursor: pointer;
     font-size: 0.7rem;
-}
-
-/* 구분선 */
-.line {
-    border: 1px solid #ECECEC;
 }
 
 /* 선택한 메시지 */
@@ -441,7 +476,6 @@
     width: 100%;
     border-radius: 0.3rem;
     font-size: 0.8rem;
-    padding: 0.5rem;
     outline: none;
 }
 
@@ -475,4 +509,304 @@
     font-size: 0.8rem;
     padding: 0.5rem;
     outline: none;
+}
+
+@media screen and (max-width: 1024px) {
+
+    .btn-update i,
+    .btn-delete i {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+    .main-title {
+        font-size: 1.7rem;
+    }
+
+    .profile-title h3 {
+        font-size: 1.4rem;
+    }
+
+    #profile-section {
+        text-align: center !important;
+    }
+
+    .profile-title {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-content {
+        margin-bottom: 0.9rem !important;
+    }
+
+    #review-section {
+        margin-top: 5rem;
+    }
+
+    #review-section h3 {
+        display: none;
+    }
+
+    .review-count-section {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .review-title p {
+        font-size: 1rem;
+    }
+
+    .review-count-section span {
+        margin-left: 0.3rem;
+    }
+
+    .content-2 p:first-child {
+        font-size: 0.9rem;
+    }
+
+    .image {
+        height: 7rem;
+    }
+
+    .rating-modal * {
+        font-size: 0.9rem;
+    }
+
+    .comment-title {
+        font-size: 0.9rem;
+    }
+
+    .content-2 p:first-child {
+        font-size: 0.9rem;
+    }
+
+    .location-modal {
+        font-size: 0.7rem;
+    }
+
+    .comment-content > p {
+        font-size: 0.7rem;
+    }
+
+    .comment-input input {
+        font-size: 0.8rem;
+    }
+
+    .comment-buttons {
+        font-size: 0.8rem;
+    }
+
+    .icon-comment-update, .icon-comment-delete {
+        font-size: 0.8rem;
+    }
+
+}
+
+@media screen and (max-width: 425px) {
+
+    .main {
+        padding: 0 2vh;
+    }
+
+    .main-title {
+        display: none;
+    }
+
+    .profile-title h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0 !important;
+    }
+
+    .profile-content {
+        margin-bottom: 0.5rem !important;
+    }
+
+    .profile-image img {
+        width: 8rem;
+        height: 8rem;
+    }
+
+    .profile-nickname {
+        font-size: 1.3rem;
+    }
+
+    .profile-id {
+        font-size: 0.8rem;
+    }
+
+    .review-count-section p {
+        font-size: 0.8rem;
+    }
+
+    #review-section {
+        margin-top: 2rem !important;
+    }
+
+    .review-title p {
+        font-size: 0.8rem;
+    }
+
+    .review-main {
+        gap: 0.5rem;
+    }
+
+    .writer-image img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .writer-name {
+        font-size: 0.5rem !important;
+    }
+
+    .testimonial-item {
+        padding: 0.4rem 0.8rem 0 0.8rem !important;
+    }
+
+    .review-image img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .rating {
+        margin-bottom: 0.1rem;
+    }
+
+    .rating * {
+        font-size: 0.6rem;
+    }
+
+    .rating h4 {
+        font-size: 0.6rem !important;
+    }
+
+    .review-content {
+        font-size: 0.5rem !important;
+        margin-top: 0 !important;
+        min-height: 3.5rem !important;
+    }
+
+    .review-location {
+        font-size: 0.5rem !important;
+        margin-top: 0.3rem !important;
+    }
+
+    .btn-update i,
+    .btn-delete i {
+        font-size: 0.8rem;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+    }
+
+    .image {
+        height: 5.5rem;
+    }
+
+    .comment-profile p {
+        font-size: 0.5rem;
+    }
+
+    .comment-modal {
+        padding: 0.7rem 0;
+    }
+
+    .rating-modal * {
+        font-size: 0.9rem;
+    }
+
+    .writerProfile-modal img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .content-2 p:first-child {
+        font-size: 0.8rem;
+    }
+
+    .location-modal {
+        font-size: 0.6rem;
+    }
+
+    .no-comment {
+        font-size: 0.7rem;
+    }
+
+    .comment-content > p {
+        font-size: 0.7rem;
+    }
+
+    .comment-writer img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .btn-reply {
+        font-size: 0.6rem;
+    }
+
+    .icon-comment-update, .icon-comment-delete {
+        font-size: 0.7rem;
+    }
+
+    .comment-input input {
+        font-size: 0.7rem;
+    }
+
+    .comment-buttons {
+        display: flex;
+        gap: 0.3rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width: 375px) {
+
+    .comment-title {
+        font-size: 0.8rem;
+    }
+
+    .writerProfile-modal p {
+        font-size: 0.6rem;
+    }
+
+    .writerProfile-modal img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .image {
+        height: 8vh;
+    }
+
+    .rating-modal * {
+        font-size: 0.8rem;
+    }
+
+    .content-2 p:first-child {
+        font-size: 0.7rem;
+    }
+
+    .location-modal {
+        font-size: 0.6rem;
+    }
+
+    .comment-writer img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .comment-modal {
+        gap: 0.3rem;
+    }
+
+    .comment-content > p {
+        font-size: 0.6rem;
+    }
 }

@@ -145,7 +145,7 @@ const fnShowResult = (reviewList) => {
         str += '</div>';
         str += '</div>';
         str += '<div class="line"></div>';
-        str += '<h4 class="review-content mt-3">' + review.content + '</h4>';
+        str += '<h4 class="review-content">' + review.content + '</h4>';
         str += '<div class="review-bottom d-flex justify-content-between">';
         str += '<p class="review-location mt-3"><span>' + review.location + '</span>에서 구매했어요!</p>';
 

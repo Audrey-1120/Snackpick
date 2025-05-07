@@ -54,14 +54,18 @@
   </div>
 
   <div class="modal" id="review-detail" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">리뷰 상세</h5>
+          <h5 class="modal-title fw-bolder">리뷰 상세</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <input type="hidden" class="review-id" data-review-id="0">
+          <div class="writerProfile-modal d-flex gap-2">
+            <div class="writerImage-modal"></div>
+            <p>작성자1</p>
+          </div>
           <div class="reviewImage-modal d-flex gap-2"></div>
           <div class="reviewContent-modal">
             <div class="content-1 mt-2">
@@ -71,19 +75,13 @@
                 <p>가격</p>
                 <div class="stars"></div>
               </div>
-              <div class="writerProfile-modal d-flex gap-2">
-                <div class="writerImage-modal"></div>
-                <p>작성자1</p>
-              </div>
             </div>
-            <div class="content-2 mt-3">
+            <div class="content-2">
               <p>리뷰 내용입니다.</p>
               <p class="location-modal"><span>세븐일레븐 혜화역점</span>에서 구매했어요!</p>
             </div>
 
-            <div class="line mt-4"></div>
-
-            <p class="text-start my-2 text-start fw-bolder">댓글</p>
+            <p class="text-start my-2 fw-bolder comment-title">댓글</p>
             <div class="content-3"></div>
 
             <div th:if="${#authorization.expression('isAuthenticated()')}" class="comment-input mt-2">
@@ -95,8 +93,6 @@
                 <button type="button" class="btn-comment-undo">취소</button>
               </div>
             </div>
-          </div>
-          <div class="mb-3 product-search">
           </div>
         </div>
       </div>

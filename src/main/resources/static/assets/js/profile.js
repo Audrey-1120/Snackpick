@@ -289,7 +289,7 @@ const fnShowResult = (reviewList) => {
         str += '</div>';
         str += '</div>';
         str += '<div class="line"></div>';
-        str += '<h4 class="review-content mt-3">' + review.content + '</h4>';
+        str += '<h4 class="review-content">' + review.content + '</h4>';
         str += '<div class="review-bottom d-flex justify-content-between">';
         str += '<p class="review-location mt-3"><span>' + review.location + '</span>에서 구매했어요!</p>';
 
@@ -501,7 +501,6 @@ const fnFormatDate = (datetime) => {
         return '1시간 전';
     }
 
-    // 1시간 이상 경과되었을 경우..
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
