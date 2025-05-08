@@ -11,7 +11,7 @@
   <header th:replace="~{layout/header::header}"></header>
 
   <main class="main text-center">
-    <h1>회원가입</h1>
+    <h1 class="main-title">회원가입</h1>
     <section id="comment-form" class="comment-form section register-form">
       <div class="container">
         <form id="signup-form"
@@ -20,30 +20,40 @@
           <div class="row">
             <div class="col form-group">
               <p>아이디</p>
-              <input id="id" name="id" type="text" class="form-control" placeholder="아이디를 입력해주세요." maxlength="12">
-              <button class="btn-checkId" type="button">중복확인</button>
-              <label for="id"></label>
+              <div class="input-button-wrapper">
+                <div class="input-with-button">
+                  <input id="id" name="id" type="text" class="form-control" placeholder="아이디를 입력해주세요." maxlength="12">
+                  <button class="btn-checkId" type="button">중복확인</button>
+                </div>
+                <label for="id"></label>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col form-group">
               <p>비밀번호</p>
-              <input id="password" name="password" type="password" class="form-control" placeholder="비밀번호를 입력해주세요." maxlength="16">
-              <label for="password"></label>
+              <div class="input-wrapper">
+                <input id="password" name="password" type="password" class="form-control" placeholder="비밀번호를 입력해주세요." maxlength="16">
+                <label for="password"></label>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col form-group">
               <p>이름</p>
-              <input id="name" name="name" type="text" class="form-control" placeholder="이름을 입력해주세요." maxlength="20">
-              <label for="name"></label>
+              <div class="input-wrapper">
+                <input id="name" name="name" type="text" class="form-control" placeholder="이름을 입력해주세요." maxlength="20">
+                <label for="name"></label>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col form-group">
               <p>닉네임</p>
-              <input id="nickname" name="nickname" type="text" class="form-control" placeholder="닉네임을 입력해주세요." maxlength="20">
-              <label for="nickname"></label>
+              <div class="input-wrapper">
+                <input id="nickname" name="nickname" type="text" class="form-control" placeholder="닉네임을 입력해주세요." maxlength="20">
+                <label for="nickname"></label>
+              </div>
             </div>
           </div>
           <div class="row">
