@@ -50,6 +50,15 @@
     color: red;
 }
 
+@media screen and (max-width: 1024px) {
+
+    .login-id-input,
+    .login-pw-input {
+        width: 260px;
+    }
+
+}
+
 @media screen and (max-width: 768px) {
 
     .login-title {
