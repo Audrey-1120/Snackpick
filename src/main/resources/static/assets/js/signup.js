@@ -9,7 +9,6 @@ let isValidNickname = false;
 
 /******************** 함수 **********************/
 
-// 아이디 유효성 검사
 const fnValidateId = () => {
 
     let id = $('#id').val();
@@ -35,7 +34,6 @@ const fnValidateId = () => {
     isDuplicateChecked = false;
 }
 
-// 비밀번호 유효성 검사
 const fnValidatePw = () => {
 
     let pw = $('#password').val();
@@ -59,10 +57,9 @@ const fnValidatePw = () => {
     }
 }
 
-// 닉네임 유효성 검사
 const fnValidateNickname = () => {
 
-    let nickname = $('#nickname').val();
+    let nickname = $('#nickname').val().trim();
     let checkNicknameLabel = $("label[for='nickname']");
 
     if(nickname === '') {
@@ -82,10 +79,9 @@ const fnValidateNickname = () => {
     }
 }
 
-// 이름 유효성 검사
 const fnValidateName = () => {
 
-    let name = $('#name').val();
+    let name = $('#name').val().trim();
     let checkNameLabel = $("label[for='name']");
 
     if(name === '') {
@@ -106,10 +102,9 @@ const fnValidateName = () => {
 }
 
 
-// 아이디 중복 체크
 const fnCheckDuplicate = (id) => {
 
-    if(!isValidId) { // 유효성 검사 통과한 아이디인가?
+    if(!isValidId) {
         alert("아이디가 유효하지 않습니다.");
         $('#id').focus();
         return;
@@ -145,19 +140,16 @@ const fnCheckDuplicate = (id) => {
     }
 }
 
-// 프로필 사이즈 제한
 const fnIsOverSize = (file) => {
     const maxSize = 1024 * 1024 * 5;
     return file.size < maxSize;
 }
 
-// 이미지 파일 확장자 확인
 const fnIsImage = (file) => {
     const contentType = file.type;
     return contentType.startsWith('image');
 }
 
-// 이미지 미리보기
 const fnPreview = (fileInput) => {
 
     let file = fileInput.target.files[0];
@@ -169,7 +161,6 @@ const fnPreview = (fileInput) => {
     reader.readAsDataURL(file);
 }
 
-// 프로필 이미지 체크
 const fnCheckProfileImage = (fileInput) => {
 
     let checkFileLabel = $('#image-preview + p');
@@ -201,7 +192,6 @@ const fnDebounce = (fn, delay)  => {
     };
 }
 
-// 회원가입 최종 체크
 const fnSignupFinalCheck = () => {
 
     let currentId = $('#id');
@@ -248,7 +238,6 @@ const fnSignupFinalCheck = () => {
     fnSignup();
 }
 
-// csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
 }

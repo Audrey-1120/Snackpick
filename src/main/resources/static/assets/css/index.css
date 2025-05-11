@@ -1,9 +1,7 @@
-/* 메인화면 */
 .main {
     padding: 30vh 0 15vh;
 }
 
-/* 타이틀 + 검색폼 */
 .main-section {
     display: flex;
     flex-direction: column;
@@ -11,7 +9,6 @@
     padding: 10vh 0;
 }
 
-/* 한눈에 보는 리뷰들 */
 .main-title {
     font-size: 2rem;
     font-weight: 900;

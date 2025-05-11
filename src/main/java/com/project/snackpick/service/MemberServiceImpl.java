@@ -48,7 +48,6 @@ public class MemberServiceImpl implements MemberService {
     public Map<String, Object> signup(MemberDTO memberDTO, MultipartFile[] files) {
 
         MemberEntity member = MemberEntity.toMemberEntity(memberDTO);
-
         member.setPassword(bCryptPasswordEncoder.encode(memberDTO.getPassword()));
         member.setRole("ROLE_USER");
 
@@ -118,7 +117,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_PROCESSING_ERROR));
 
         List<ReviewEntity> reviewList = reviewRepository.findAllReviewListByMemberId(user.getMemberId());
-
         if(!reviewList.isEmpty()) {
 
             reviewService.deleteReviewList(reviewList);
@@ -159,7 +157,6 @@ public class MemberServiceImpl implements MemberService {
         try {
             List<String> imageUrlList = myFileUtils.getImageUrlList(files, "profile");
             member.setProfileImage(imageUrlList.get(0));
-
             myFileUtils.uploadImage(files, imageUrlList, "profile");
 
         } catch (Exception e) {

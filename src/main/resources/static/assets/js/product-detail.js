@@ -5,7 +5,7 @@ let productId = 0;
 let globalSort = 'createDt,DESC';
 
 /******************** 함수 **********************/
-// 리뷰 리스트 조회 데이터 받아서 정렬
+
 const fnSortReviewList = (reviewList, sortBy, order = 'DESC') => {
 
     return reviewList.sort((a, b) => {
@@ -25,7 +25,6 @@ const fnSortReviewList = (reviewList, sortBy, order = 'DESC') => {
     });
 }
 
-// 리뷰 리스트 조회
 const fnGetReviewList = (page, sort) => {
 
     axios.get('/review/getReviewList', {
@@ -57,7 +56,6 @@ const fnGetReviewList = (page, sort) => {
     })
 }
 
-// 페이징 설정 함수
 const fnSetPaging = (currentPage, totalPage, beginPage, endPage) => {
 
     let pagingContainer = $('.pagination-container');
@@ -90,7 +88,6 @@ const fnSetPaging = (currentPage, totalPage, beginPage, endPage) => {
 
 }
 
-// 리뷰 리스트 조회 결과 표시
 const fnShowResult = (reviewList) => {
 
     let container = $('.review-select');
@@ -168,7 +165,6 @@ const fnShowResult = (reviewList) => {
 
 }
 
-// 리뷰 상세 조회
 const fnGetReviewDetail = (evt) => {
 
     let reviewId = $(evt.currentTarget).data('review-id');
@@ -191,7 +187,6 @@ const fnGetReviewDetail = (evt) => {
     })
 }
 
-// 리뷰 상세 조회 데이터 화면에 추가
 const fnShowReviewDetail = (review) => {
 
     let imageContainer = $('.reviewImage-modal');
@@ -242,12 +237,10 @@ const fnShowReviewDetail = (review) => {
 
 }
 
-// csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
-// 리뷰 삭제
 const fnDeleteReview = (evt) => {
 
     let reviewId = $(evt.currentTarget).closest('.review-item').data('review-id');
@@ -280,25 +273,21 @@ $(document).ready(() => {
     fnGetReviewList(1, 'createDt,DESC');
 });
 
-// 정렬 선택
 $('#review-sort').on('change', () => {
     globalSort = $('#review-sort option:selected').val();
     fnGetReviewList(1, globalSort);
 });
 
-// 리뷰 작성 페이지로 이동
 $('.btn-write').on('click', () => {
     let productId = $('.productId').val();
     location.href = '/review/reviewWrite.page?productId=' + productId;
 });
 
-// 리뷰 상세 조회
 $(document).off('click', '.review-item').on('click', '.review-item', (evt) => {
     evt.stopPropagation();
     fnGetReviewDetail(evt);
 });
 
-// 리뷰 삭제
 $(document).on('click', '.btn-delete', (evt) => {
     evt.stopPropagation();
     if(confirm("리뷰를 삭제하시겠습니까?")) {
@@ -306,7 +295,6 @@ $(document).on('click', '.btn-delete', (evt) => {
     }
 });
 
-// 리뷰 수정
 $(document).on('click', '.btn-update', (evt) => {
     evt.stopPropagation();
     let reviewId = $(evt.currentTarget).closest('.review-item').data('review-id');

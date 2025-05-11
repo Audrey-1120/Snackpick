@@ -19,7 +19,7 @@ import java.util.Map;
 @Tag(name = "Product", description = "제품 API")
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;

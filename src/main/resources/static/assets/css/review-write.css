@@ -1,22 +1,18 @@
-/* 메인화면 */
 .main {
     padding: 10vh 0;
 }
 
-/* 타이틀 + 검색폼 */
 .main-section {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-/* 제목 */
 .main-title {
     font-size: 2rem;
     font-weight: 900;
 }
 
-/* 검색폼 input*/
 .main-searchform > input{
     width: 40%;
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
@@ -25,23 +21,15 @@
     outline: none;
 }
 
-/* 검색버튼 */
 .btn-ProductSearch, .btn-LocationSearch {
     align-content: center;
     cursor: pointer;
 }
 
-/* 리뷰 작성 오른쪽 */
-/*#review-write *{*/
-/*  text-align: justify;*/
-/*}*/
-
-/* 제목 */
 .main-title {
     text-align: justify;
 }
 
-/* 제품 검색 */
 .select-product {
     display: flex;
     gap: 0.4rem;
@@ -52,12 +40,10 @@
     text-align: start;
 }
 
-/* 제품 검색 및 돋보기 버튼 */
 .select-product > p, .select-product > i {
     align-content: center;
 }
 
-/* 제품 검색란 */
 .select-product > input {
     width: 70%;
 }
@@ -66,13 +52,11 @@
     display: none;
 }
 
-/* 분류 */
 .review-category p {
     width: 12%;
     text-align: start;
 }
 
-/* 분류(카테고리) */
 .review-category select {
     width: 70%;
 }
@@ -86,39 +70,33 @@
     align-content: center;
 }
 
-/* 리뷰 글자수 */
 .review-content p {
     text-align: end;
     font-size: small;
 }
 
-/* 구매위치 제목 */
 .location-title {
     display: flex;
     gap: 0.3rem;
 }
 
-/* 편의점 위치 input, 제품 입력 input */
 .location-input,
 .productName-input {
     cursor: pointer;
 }
 
-/* 편의점 위치 글자 */
 .location-title p:last-child {
     font-size: 0.8rem;
     color: #d9232d;
     align-content: center;
 }
 
-/* 카카오 맵 화면 */
 .kakao-map {
     width: 100%;
     height: 250px;
     background-color: gray;
 }
 
-/* 리뷰 사진 섹션*/
 .image-preview, .image-title {
     display: flex;
     gap: 1rem;
@@ -134,7 +112,6 @@
     cursor: pointer;
 }
 
-/* 대표이미지 */
 .is-represent {
     border: 3px solid #d9232d;
 }
@@ -160,19 +137,16 @@
     font-size: 1.5rem;
 }
 
-/* 모달 */
 .btn-productname {
     text-align: end;
 }
 
-/* 제품 결과 창 */
 .product-search {
     overflow-y: auto;
     text-align: justify;
     height: 18vh;
 }
 
-/* 제품 결과 아이템 */
 .product-item {
     cursor: pointer;
     border: 1px solid #ADADAD;
@@ -200,7 +174,6 @@
     color: white;
 }
 
-/* 사진 첨부 버튼 */
 .btn-reviewImage, .btn-deleteAllImage {
     background-color: #D9232D;
     border: none;
@@ -222,7 +195,6 @@
     justify-content: end;
 }
 
-/* 저장 버튼 */
 .btn-write,
 .btn-update {
     padding: 0.5rem 0.9rem;
@@ -232,7 +204,6 @@
     color: white;
 }
 
-/* 취소 버튼 */
 .btn-undo {
     padding: 0.5rem 0.9rem;
     border: none;

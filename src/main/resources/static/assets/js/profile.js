@@ -5,9 +5,8 @@ let initComment = '';
 let commentModifyForm;
 let commentViewForm;
 
-/******************** 함수 **********************/
+/******************** 함수 **********************/``
 
-// 댓글 목록 조회
 const fnGetCommentListByMemberId = (page) => {
 
     axios.get('/comment/getCommentListByMemberId', {
@@ -33,7 +32,6 @@ const fnGetCommentListByMemberId = (page) => {
     })
 }
 
-// 리뷰 목록 조회
 const fnGetReviewListByMemberId = (page) => {
 
     axios.get('/review/getReviewListByMemberId', {
@@ -62,7 +60,6 @@ const fnGetReviewListByMemberId = (page) => {
     })
 }
 
-// 댓글 아이템 표시
 const fnShowCommentResult = (commentList) => {
 
     let container = $('.review-title');
@@ -100,7 +97,6 @@ const fnShowCommentResult = (commentList) => {
 
 }
 
-// 댓글 수정
 const fnUpdateComment = (item) => {
 
     let content = commentModifyForm.find('.comment-input')
@@ -144,7 +140,6 @@ const fnUpdateComment = (item) => {
 
 }
 
-// 댓글 삭제
 const fnDeleteComment = (item) => {
 
     let commentItem = item.closest('.comment-item');
@@ -164,7 +159,7 @@ const fnDeleteComment = (item) => {
     .then((response) => {
         if(response.data.success) {
             alert('댓글이 삭제되었습니다.');
-            $('.review-item').remove();
+            $('.comment-item').remove();
             fnGetCommentListByMemberId(1);
         }
     })
@@ -173,7 +168,6 @@ const fnDeleteComment = (item) => {
     });
 }
 
-// 댓글 폼 변경
 const fnChangeCommentForm = (item, type) => {
 
     let targetButton;
@@ -182,17 +176,13 @@ const fnChangeCommentForm = (item, type) => {
 
         targetButton = item.closest('.comment-buttons');
 
-        // 이 외의 수정 및 삭제 버튼 안보이게
         $('.comment-buttons').not(targetButton).css('display', 'none');
 
-        // viewForm에서 원래 댓글 내용 가져오기
         initComment = item.parents('.comment-wrap').prev().text();
 
-        // 조회폼, 수정폼 가져오기
         commentViewForm = item.closest('.comment-view-form');
         commentModifyForm = commentViewForm.siblings('.comment-modify-form');
 
-        // 조회폼, 수정폼 각각 표시
         commentViewForm.hide();
         commentModifyForm.show();
 
@@ -200,21 +190,16 @@ const fnChangeCommentForm = (item, type) => {
 
         targetButton = item.closest('.comment-buttons');
 
-        // 이 외의 수정 및 삭제 버튼 보이게
         $('.comment-buttons').not(targetButton).css('display', 'flex');
 
-        // 조회폼, 수정폼 각각 표시
         commentViewForm.show();
         commentModifyForm.hide();
-
         commentModifyForm.find('.comment-input').val(initComment);
 
     } else if(type === 'success') {
 
-        // 수정 버튼 다시 다 보이게
         $('.comment-buttons').css('display', 'flex');
 
-        // 여기서는 item = response.data.comment.content
         commentViewForm.find('.comment-content').text(item)
         commentModifyForm.find('.comment-input').val(item);
 
@@ -224,7 +209,6 @@ const fnChangeCommentForm = (item, type) => {
 
 }
 
-// 리뷰 리스트 조회 데이터 정렬
 const fnSortReviewList = (reviewList, sortBy, order = 'DESC') => {
 
     return reviewList.sort((a, b) => {
@@ -244,7 +228,6 @@ const fnSortReviewList = (reviewList, sortBy, order = 'DESC') => {
     });
 }
 
-// 리뷰 리스트 조회 결과 표시
 const fnShowResult = (reviewList) => {
 
     let container = $('.review-title');
@@ -312,7 +295,6 @@ const fnShowResult = (reviewList) => {
 
 }
 
-// 리뷰 상세 조회
 const fnGetReviewDetail = (evt) => {
 
     let reviewId = $(evt.currentTarget).data('review-id');
@@ -335,7 +317,6 @@ const fnGetReviewDetail = (evt) => {
         })
 }
 
-// 리뷰 상세 조회 데이터 화면에 추가
 const fnShowReviewDetail = (review) => {
 
     let imageContainer = $('.reviewImage-modal');
@@ -386,7 +367,6 @@ const fnShowReviewDetail = (review) => {
 
 }
 
-// 리뷰 삭제
 const fnDeleteReview = (item) => {
 
     let reviewId = item.closest('.review-item').data('review-id');
@@ -410,7 +390,6 @@ const fnDeleteReview = (item) => {
     });
 }
 
-// 패스워드 검증
 const fnCheckPassword = () => {
 
     let password = $('.input-password').val().trim();
@@ -435,7 +414,6 @@ const fnCheckPassword = () => {
     });
 }
 
-// 페이징 설정 함수
 const fnSetPaging = (currentPage, totalPage, beginPage, endPage, fnName) => {
 
     let pagingContainer = $('.pagination-container');
@@ -468,7 +446,6 @@ const fnSetPaging = (currentPage, totalPage, beginPage, endPage, fnName) => {
 
 }
 
-// 메뉴 변경
 const fnChangeMenu = (item, type) => {
 
     $('.selected-menu').removeClass('selected-menu');
@@ -482,11 +459,10 @@ const fnChangeMenu = (item, type) => {
     item.addClass('selected-menu');
 }
 
-// 날짜 포맷
 const fnFormatDate = (datetime) => {
     const date = new Date(datetime);
     const now = new Date();
-    const diffMs = now - date; // 시간 차이 (밀리초 단위)
+    const diffMs = now - date;
     const diffMin = Math.floor(diffMs / 60000);
 
     if(diffMin < 1) {
@@ -510,7 +486,6 @@ const fnFormatDate = (datetime) => {
     return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mi;
 }
 
-// csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
 }
@@ -523,13 +498,11 @@ $(document).ready(() => {
     fnGetReviewListByMemberId(1);
 });
 
-// 작성한 리뷰 조회
 $('.btn-write-review').on('click', (evt) => {
     fnChangeMenu($(evt.currentTarget), 'review');
     fnGetReviewListByMemberId(1);
 });
 
-// 작성한 리뷰 수정 페이지 이동
 $(document).on('click', '.btn-update', (evt) => {
     evt.stopPropagation();
     let item = $(evt.currentTarget).closest('.review-item');
@@ -539,13 +512,11 @@ $(document).on('click', '.btn-update', (evt) => {
     location.href = "/review/reviewUpdate.page?reviewId=" + reviewId + '&productId=' + productId;
 });
 
-// 작성한 리뷰 상세 조회
 $(document).off('click', '.review-item').on('click', '.review-item', (evt) => {
     evt.stopPropagation();
     fnGetReviewDetail(evt);
 });
 
-// 작성한 리뷰 삭제
 $(document).on('click', '.btn-delete', (evt) => {
     evt.stopPropagation();
     if(confirm("리뷰를 삭제하시겠습니까?")) {
@@ -553,28 +524,23 @@ $(document).on('click', '.btn-delete', (evt) => {
     }
 });
 
-// 작성한 댓글 조회
 $('.btn-write-comment').on('click', (evt) => {
     fnChangeMenu($(evt.currentTarget), 'comment');
     fnGetCommentListByMemberId(1);
 });
 
-// 댓글 수정란 표시
 $(document).on('click', '.btn-comment-update', (evt) => {
     fnChangeCommentForm($(evt.currentTarget), 'update');
 });
 
-// 댓글 수정
 $(document).on('click', '.btn-comment-save', (evt) => {
     fnUpdateComment($(evt.currentTarget));
 });
 
-// 댓글 수정 취소
 $(document).on('click', '.btn-comment-undo', (evt) => {
     fnChangeCommentForm($(evt.currentTarget), 'undo');
 });
 
-// 작성한 댓글 삭제
 $(document).on('click', '.btn-comment-delete', (evt) => {
     evt.stopPropagation();
     if(confirm("댓글을 삭제하시겠습니까?")) {
@@ -582,7 +548,6 @@ $(document).on('click', '.btn-comment-delete', (evt) => {
     }
 });
 
-// 프로필 수정 시 비밀번호 검증
 $('.btn-check-password').on('click', () => {
     fnCheckPassword();
 });

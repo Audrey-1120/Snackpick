@@ -48,7 +48,6 @@ public class ReviewTest {
     @DisplayName("기존 제품 리뷰 작성")
     public void insertExistProductReview() throws Exception {
 
-        // ReviewDTO 객체 생성
         ReviewDTO reviewDTO = ReviewDTO.builder()
                 .productId(1)
                 .state(false)
@@ -58,47 +57,40 @@ public class ReviewTest {
                 .location("세븐일레븐 종로재동점")
                 .build();
 
-        // ReviewRequestDTO 객체 생성
         ReviewRequestDTO reviewRequestDTO = ReviewRequestDTO.builder()
                 .addProduct(false)
                 .representIndex(1)
                 .reviewDTO(reviewDTO)
                 .build();
 
-        // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
                 .id("mintii92")
                 .build();
 
-        // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)
         MockMultipartFile file1 = new MockMultipartFile(
-                "reviewImage", // 필드명
-                "test1.jpg", // 파일명
-                "image/jpeg", // MIME 타입
-                "image data".getBytes(StandardCharsets.UTF_8) // 가짜 데이터
+                "reviewImage",
+                "test1.jpg",
+                "image/jpeg",
+                "image data".getBytes(StandardCharsets.UTF_8)
         );
 
         MockMultipartFile file2 = new MockMultipartFile(
-                "reviewImage", // 필드명
-                "test2.jpg", // 파일명
-                "image/jpeg", // MIME 타입
-                "image data".getBytes(StandardCharsets.UTF_8) // 가짜 데이터
+                "reviewImage",
+                "test2.jpg",
+                "image/jpeg",
+                "image data".getBytes(StandardCharsets.UTF_8)
         );
 
-        // MultipartFile 배열 초기화
         MultipartFile[] files = {file1, file2};
 
-        // CustomDetails 객체 생성
         CustomUserDetails user = new CustomUserDetails(memberEntity);
 
-        // 서비스 호출
         Map<String, Object> map = reviewService.insertReview(reviewRequestDTO, files, user);
 
         System.out.println("완료 메시지: " + String.valueOf(map.get("message")));
         System.out.println("리다이렉트 경로" + String.valueOf(map.get("redirectUrl")));
 
-        // success값이 true인가?
         assertTrue((Boolean)map.get("success"));
     }
 
@@ -106,7 +98,6 @@ public class ReviewTest {
     @DisplayName("새 제품 리뷰 작성")
     public void insertNewProductReview() throws Exception {
 
-        // ReviewDTO 객체 생성
         ReviewDTO reviewDTO = ReviewDTO.builder()
                 .state(false)
                 .ratingTaste(2.5)
@@ -121,7 +112,6 @@ public class ReviewTest {
                 .subCategory("14")
                 .build();
 
-        // ReviewRequestDTO 객체 생성
         ReviewRequestDTO reviewRequestDTO = ReviewRequestDTO.builder()
                 .addProduct(true)
                 .representIndex(1)
@@ -129,7 +119,6 @@ public class ReviewTest {
                 .productDTO(productDTO)
                 .build();
 
-        // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
                 .id("mintii92")
@@ -137,34 +126,29 @@ public class ReviewTest {
                 .nickname("민티927")
                 .build();
 
-        // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)
         MockMultipartFile file1 = new MockMultipartFile(
-                "reviewImage", // 필드명
-                "test1.jpg", // 파일명
-                "image/jpeg", // MIME 타입
-                "image data".getBytes(StandardCharsets.UTF_8) // 가짜 데이터
+                "reviewImage",
+                "test1.jpg",
+                "image/jpeg",
+                "image data".getBytes(StandardCharsets.UTF_8)
         );
 
         MockMultipartFile file2 = new MockMultipartFile(
-                "reviewImage", // 필드명
-                "test2.jpg", // 파일명
-                "image/jpeg", // MIME 타입
-                "image data".getBytes(StandardCharsets.UTF_8) // 가짜 데이터
+                "reviewImage",
+                "test2.jpg",
+                "image/jpeg",
+                "image data".getBytes(StandardCharsets.UTF_8)
         );
 
-        // MultipartFile 배열 초기화
         MultipartFile[] files = {file1, file2};
 
-        // CustomDetails 객체 생성
         CustomUserDetails user = new CustomUserDetails(memberEntity);
 
-        // 서비스 호출
         Map<String, Object> map = reviewService.insertReview(reviewRequestDTO, files, user);
 
         System.out.println("완료 메시지: " + String.valueOf(map.get("message")));
         System.out.println("리다이렉트 경로" + String.valueOf(map.get("redirectUrl")));
 
-        // success값이 true인가?
         assertTrue((Boolean)map.get("success"));
 
     }
@@ -205,7 +189,6 @@ public class ReviewTest {
     @DisplayName("리뷰 수정")
     public void updateReview() throws Exception {
 
-        // ReviewDTO 객체 생성
         ReviewDTO reviewDTO = ReviewDTO.builder()
                 .reviewId(1)
                 .productId(1)
@@ -216,13 +199,11 @@ public class ReviewTest {
                 .location("세븐일레븐 종로재동점")
                 .build();
 
-        // ReviewRequestDTO 객체 생성
         ReviewRequestDTO reviewRequestDTO = ReviewRequestDTO.builder()
                 .representIndex(1)
                 .reviewDTO(reviewDTO)
                 .build();
 
-        // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
                 .id("mintii92")
@@ -230,34 +211,29 @@ public class ReviewTest {
                 .nickname("민티927")
                 .build();
 
-        // MockMultipartFile 여러개 생성 (필드명은 images로 통일한다.)
         MockMultipartFile file1 = new MockMultipartFile(
-                "reviewImage", // 필드명
-                "test1.jpg", // 파일명
-                "image/jpeg", // MIME 타입
-                "image data".getBytes(StandardCharsets.UTF_8) // 가짜 데이터
+                "reviewImage",
+                "test1.jpg",
+                "image/jpeg",
+                "image data".getBytes(StandardCharsets.UTF_8)
         );
 
         MockMultipartFile file2 = new MockMultipartFile(
-                "reviewImage", // 필드명
-                "test2.jpg", // 파일명
-                "image/jpeg", // MIME 타입
-                "image data".getBytes(StandardCharsets.UTF_8) // 가짜 데이터
+                "reviewImage",
+                "test2.jpg",
+                "image/jpeg",
+                "image data".getBytes(StandardCharsets.UTF_8)
         );
 
-        // MultipartFile 배열 초기화
         MultipartFile[] files = {file1, file2};
 
-        // CustomDetails 객체 생성
         CustomUserDetails user = new CustomUserDetails(memberEntity);
 
-        // 서비스 호출
         Map<String, Object> map = reviewService.updateReview(reviewRequestDTO, files, user);
 
         System.out.println("완료 메시지: " + String.valueOf(map.get("message")));
         System.out.println("리다이렉트 경로" + String.valueOf(map.get("redirectUrl")));
 
-        // success값이 true인가?
         assertTrue((Boolean)map.get("success"));
 
     }
@@ -266,7 +242,6 @@ public class ReviewTest {
     @DisplayName("리뷰 삭제")
     public void deleteReview() throws Exception {
 
-        // MemberEntity 객체 생성
         MemberEntity memberEntity = MemberEntity.builder()
                 .memberId(1)
                 .id("mintii92")
@@ -281,7 +256,6 @@ public class ReviewTest {
         System.out.println("완료 메시지: " + String.valueOf(map.get("message")));
         System.out.println("리다이렉트 경로" + String.valueOf(map.get("redirectUrl")));
 
-        // success값이 true인가?
         assertTrue((Boolean)map.get("success"));
 
     }
