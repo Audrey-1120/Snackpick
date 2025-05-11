@@ -10,19 +10,16 @@ let isValidPassword = false;
 let deleteAccountText = '';
 
 /******************** 함수 **********************/
-// 이미지 사이즈 제한
 const fnIsOverSize = (file) => {
     const maxSize = 1024 * 1024 * 5;
     return file.size < maxSize;
 }
 
-// 이미지 파일 확장자 확인
 const fnIsImage = (file) => {
     const contentType = file.type;
     return contentType.startsWith('image');
 }
 
-// 이미지 미리보기
 const fnPreview = (fileInput) => {
 
     let container = $('#image-preview');
@@ -37,7 +34,6 @@ const fnPreview = (fileInput) => {
     reader.readAsDataURL(file);
 }
 
-// 프로필 이미지 체크
 const fnCheckProfileImage = (fileInput) => {
 
     let input = fileInput.target;
@@ -58,7 +54,6 @@ const fnCheckProfileImage = (fileInput) => {
     fileChanged = true;
 }
 
-// 이미지 프로필 타입 변경
 const fnChangeProfileType = () => {
 
     let profileType = $('.profile-type');
@@ -70,7 +65,6 @@ const fnChangeProfileType = () => {
     }
 }
 
-// 저장 버튼 활성화
 const fnActiveUpdateBtn = () => {
 
     let currentName = $('.name-input').val().trim();
@@ -80,7 +74,6 @@ const fnActiveUpdateBtn = () => {
     $('.btn-save').prop('disabled', !isFormChanged);
 }
 
-// 빈값 검사
 const fnCheckEmpty = () => {
 
     let name = $('.name-input');
@@ -100,7 +93,6 @@ const fnCheckEmpty = () => {
     return true;
 }
 
-// 최종 점검
 const fnFinalCheck = () => {
     if(!fnCheckEmpty()) {
         return;
@@ -117,12 +109,10 @@ const fnFinalCheck = () => {
     fnUpdateProfile();
 }
 
-// csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
-// 서버로 수정할 회원 데이터 전달
 const fnUpdateProfile = () => {
 
     let updateForm = $('#update-form')[0];
@@ -148,7 +138,6 @@ const fnUpdateProfile = () => {
     });
 }
 
-// 새 비밀번호 유효성 검사
 const fnValidatePassword = () => {
 
     let passwordLabel = $('.new-password-info');
@@ -167,7 +156,6 @@ const fnValidatePassword = () => {
     }
 }
 
-// 비밀번호란 공백 및 유효성 검사
 const fnCheckResetPassword = () => {
 
     let currentPassword = $('#current-password');
@@ -206,7 +194,6 @@ const fnCheckResetPassword = () => {
     return true;
 }
 
-// 비밀번호 재설정
 const fnResetPassword = () => {
 
     if(!fnCheckResetPassword()) {
@@ -233,7 +220,6 @@ const fnResetPassword = () => {
     });
 }
 
-// 회원 탈퇴 문구 검사
 const fnCheckDeleteText = () => {
 
     $('#delete-account').show();
@@ -247,7 +233,6 @@ const fnCheckDeleteText = () => {
     fnDeleteAccount();
 }
 
-// 회원 탈퇴
 const fnDeleteAccount = () => {
 
     axios.post('/member/leave')
@@ -303,7 +288,7 @@ $('.btn-deleteImage').on('click', () => {
 $('#update-form').on('submit', (evt) => {
     evt.preventDefault();
     fnFinalCheck();
-})
+});
 
 $('.btn-undo').on('click', () => {
     window.history.back();

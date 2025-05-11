@@ -18,13 +18,13 @@
             <div class="container">
                 <div class="row gy-4">
                     <h1 class="main-title">정보 수정</h1>
-                    <div id="profile-section" class="col-lg-6 text-start">
+                    <div id="profile-section">
                         <div class="profile-content mb-4">
                             <form id="update-form"
                                   method="put">
                                 <div class="profile-image-form">
                                     <div class="profile-image mb-3">
-                                        <div class="profile-image-buttons d-flex gap-2">
+                                        <div class="profile-image-buttons">
                                             <p>프로필 사진</p>
                                             <label for="profile-image">
                                                 <div class="btn-update-profileImage">첨부하기</div>
@@ -39,22 +39,22 @@
                                     <input type="hidden" class="profile-type" th:value="${member.profileImage} != null ? 'non-default' : 'default'">
                                 </div>
                                 <div class="profile-update-form">
-                                    <div class="name-form d-flex gap-2 mt-3">
+                                    <div class="name-form ">
                                         <p class="form-title">이름</p>
                                         <input type="text" class="name-input" name="name" th:value="${member.name}" maxlength="20">
                                     </div>
-                                    <div class="nickname-form d-flex gap-2 mt-3">
+                                    <div class="nickname-form">
                                         <p class="form-title">닉네임</p>
                                         <input type="text" class="nickname-input" name="nickname" th:value="${member.nickname}" maxlength="20">
                                     </div>
-                                    <div class="password-form d-flex gap-2 mt-3">
+                                    <div class="password-form">
                                         <p class="form-title">비밀번호</p>
                                         <button type="button" class="change-password" data-bs-toggle="modal" data-bs-target="#reset-password">비밀번호 재설정</button>
                                     </div>
-                                    <div class="cancel-form mt-3">
+                                    <div class="cancel-form">
                                         <a class="btn-cancel-account text-danger" data-bs-toggle="modal" data-bs-target="#delete-account">회원탈퇴</a>
                                     </div>
-                                    <div class="button-form mt-3">
+                                    <div class="button-form">
                                         <button type="submit" class="btn-save" disabled>저장</button>
                                         <button type="button" class="btn-undo">취소</button>
                                     </div>
@@ -110,7 +110,7 @@
                         탈퇴하시려면 <span th:text="${member.id} + 'DeleteAccount'" class="text-danger delete-text"></span>을 입력해주세요.
                     </p>
                     <div class="delete-input-row">
-                        <input type="text" class="delete-input mt-2">
+                        <input type="text" class="delete-input">
                         <button type="button" class="btn-delete-account">확인</button>
                     </div>
                     <label class="delete-error text-danger w-100">올바르게 입력해주세요.</label>

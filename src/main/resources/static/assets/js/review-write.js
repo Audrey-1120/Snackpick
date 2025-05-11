@@ -1,21 +1,16 @@
 /******************** kakao maps api **********************/
-// 지도 띄우기
 var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
 var container = document.getElementById('map');
 
-var options = { // 지도의 중심 좌표
+var options = {
     center: new kakao.maps.LatLng(37.50185785121449, 126.78766910206697),
     level: 3
 };
 
-// 지도 생성
 var map = new kakao.maps.Map(container, options);
-
-// 장소 검색 객체 생성
 var ps = new kakao.maps.services.Places(map);
 
-// 키워드 주소 검색 함수
 function searchCon() {
     let keyword = $('.location-input').find('input').val();
     ps.keywordSearch(keyword, placesSearchCB, {
@@ -23,7 +18,6 @@ function searchCon() {
     });
 }
 
-// 키워드 검색 완료 시 호출되는 콜백 함수
 function placesSearchCB (data, status) {
     if (status === kakao.maps.services.Status.OK) {
 
@@ -37,7 +31,6 @@ function placesSearchCB (data, status) {
     }
 }
 
-// 지도에 마커 표시하는 함수
 function displayMarker(place) {
 
     var marker = new kakao.maps.Marker({
@@ -71,7 +64,6 @@ let subCategoryList = [];
 
 /******************** 함수 **********************/
 
-// 별점 고정
 function fnSetRating(event) {
 
     let starsGroup = $(event.currentTarget).closest('.stars');
@@ -83,7 +75,6 @@ function fnSetRating(event) {
     fnUpdateStars(starsGroup, index, isHalf);
 }
 
-// 별점 업데이트
 function fnUpdateStars(starsGroup, score, isHalf) {
 
     starsGroup.find('i').each(function () {
@@ -103,7 +94,6 @@ function fnUpdateStars(starsGroup, score, isHalf) {
     });
 }
 
-// 제품 검색
 const fnSearchProduct = () => {
 
     let searchKeyword = $('#product-name').val().replace(/\s+/g, ' ').trim();
@@ -126,7 +116,6 @@ const fnSearchProduct = () => {
     })
 }
 
-// 제품 검색 결과 표시
 const fnShowSearchResult = (productList) => {
 
     let container = $('.product-search');
@@ -156,7 +145,6 @@ const fnShowSearchResult = (productList) => {
     });
 }
 
-// 아이템 클릭 시 input에 추가
 function fnAddProductName() {
 
     let defaultInput = $('.select-product input');
@@ -193,7 +181,6 @@ const fnDebounce = (fn, delay)  => {
     };
 }
 
-// 대분류 선택 시 해당하는 중분류 값 세팅
 const fnSetSubCategory = () => {
 
     if(!addProduct) {
@@ -213,19 +200,16 @@ const fnSetSubCategory = () => {
     subCate.prop('selectedIndex', 0);
 }
 
-// 이미지 사이즈 제한
 const fnIsOverSize = (file) => {
     const maxSize = 1024 * 1024 * 5;
     return file.size < maxSize;
 }
 
-// 이미지 파일 확장자 확인
 const fnIsImage = (file) => {
     const contentType = file.type;
     return contentType.startsWith('image');
 }
 
-// 이미지 미리보기
 const fnPreview = (fileInput) => {
     let files = Array.from(fileInput[0].files);
 
@@ -241,7 +225,6 @@ const fnPreview = (fileInput) => {
     });
 }
 
-// 이미지 체크
 const fnCheckProfileImage = (fileInput) => {
 
     let files = Array.from(fileInput[0].files);
@@ -263,7 +246,6 @@ const fnCheckProfileImage = (fileInput) => {
     });
 }
 
-// 이미지 개수 제한
 const fnCheckImagecount = (evt) => {
 
     let fileInput = $(evt.currentTarget);
@@ -276,7 +258,6 @@ const fnCheckImagecount = (evt) => {
     fnCheckProfileImage(fileInput);
 }
 
-// 대표 이미지 지정
 const fnSelectRepresentImage = (evt) => {
 
     let imageDiv = $(evt.currentTarget).closest('.image');
@@ -289,7 +270,6 @@ const fnSelectRepresentImage = (evt) => {
 
 }
 
-// 대표 이미지 인덱스 지정
 const fnRepresentIndex = () => {
 
     let imageDivs = $('.image');
@@ -308,7 +288,6 @@ const fnRepresentIndex = () => {
     $('#represent-index').val(representIndex);
 }
 
-// 맛, 가격 별점 소수로 변환
 const fnCalculateRating = (list) => {
 
     let rating = 0;
@@ -324,7 +303,6 @@ const fnCalculateRating = (list) => {
     return rating;
 }
 
-// 빈값 검사
 const fnCheckEmpty = () => {
 
     if(addProduct) {
@@ -384,7 +362,6 @@ const fnCheckEmpty = () => {
     return true;
 }
 
-// 작성 버튼 클릭 시 최종 점검
 const fnFinalCheck = () => {
 
     if(!fnCheckEmpty()) {
@@ -395,12 +372,10 @@ const fnFinalCheck = () => {
     fnWriteReview();
 }
 
-// csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
-// 서버로 작성 폼 데이터 전송
 const fnWriteReview = () => {
 
     let form = $('#write-form')[0];

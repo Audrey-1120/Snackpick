@@ -38,16 +38,14 @@ public class ProductTest {
     @Test
     @DisplayName("제품ID로 제품 상세 데이터 조회")
     public void getProductDetail() throws Exception {
-        // Given
+
         int productId = 1;
 
-        // When
         ProductDTO product = productService.getProductDetail(productId);
         System.out.println("================================");
         System.out.println(product);
         System.out.println("================================");
 
-        // Then
         assertNotNull(product);
     }
 
@@ -55,16 +53,13 @@ public class ProductTest {
     @DisplayName("제품 이름으로 제품 리스트 검색")
     public void searchProductList() throws Exception {
 
-        // Given
         String productName = "새우";
 
-        // When
         List<ProductDTO> productList = productService.searchProduct(productName);
         System.out.println("================================");
         System.out.println(productList);
         System.out.println("================================");
 
-        // Then
         assertNotNull(productList);
 
     }

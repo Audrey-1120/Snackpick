@@ -57,9 +57,9 @@ public class MemberTest {
                 .build();
 
         MockMultipartFile file1 = new MockMultipartFile(
-                "profileImage", // 필드명
-                "test1.jpg", // 파일명
-                "image/jpeg", // MIME 타입
+                "profileImage",
+                "test1.jpg",
+                "image/jpeg",
                 "image data".getBytes(StandardCharsets.UTF_8)
         );
 
@@ -90,9 +90,9 @@ public class MemberTest {
                 .build();
 
         MockMultipartFile file1 = new MockMultipartFile(
-                "profileImage", // 필드명
-                "test1.jpg", // 파일명
-                "image/jpeg", // MIME 타입
+                "profileImage",
+                "test1.jpg",
+                "image/jpeg",
                 "image data".getBytes(StandardCharsets.UTF_8)
         );
 

@@ -64,7 +64,6 @@ public class CommentServiceImpl implements CommentService {
                         .and(Sort.by("createDt").ascending()));
 
         Page<CommentEntity> commentEntityPage = commentRepository.findCommentListByMemberId(user.getMemberId(), pageable);
-
         List<CommentDTO> commentDTOList = commentEntityPage
                 .stream()
                 .map(CommentDTO::withoutMember)
@@ -86,7 +85,6 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_PROCESSING_ERROR));
 
         CommentEntity comment = CommentEntity.toCommentEntity(commentDTO, reviewEntity, memberEntity);
-
         commentRepository.save(comment);
 
         if(commentDTO.getDepth() == 0) {
@@ -138,7 +136,6 @@ public class CommentServiceImpl implements CommentService {
         }
 
         comment.setState(true);
-
         return Map.of("success", true
                 , "message", "댓글이 삭제되었습니다.");
     }

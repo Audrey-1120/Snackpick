@@ -1,5 +1,5 @@
 .main {
-    min-height: 61rem;
+    min-height: 50rem;
 }
 
 .main-section {
@@ -11,7 +11,12 @@
 .main-title {
     font-size: 2rem;
     font-weight: 900;
-    text-align: start;
+}
+
+.profile-image-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .profile-image-form img {
@@ -41,7 +46,27 @@
 }
 
 .form-title {
-    width: 20%;
+    min-width: 30%;
+}
+
+.profile-update-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 20rem;
+}
+
+.profile-update-form div {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    min-width: 25%;
+}
+
+.profile-update-form a {
+    font-weight: 700;
+    min-width: 30%;
 }
 
 .profile-update-form input {
@@ -50,6 +75,7 @@
     border-radius: 0.3rem;
     padding: 0.3rem;
     font-size: 0.8rem;
+    width: 60%;
 }
 
 .btn-update-profileImage,
@@ -63,7 +89,15 @@
     background-color: #6c757d;
 }
 
-/* 비밀번호 재설정 모달 */
+.btn-save {
+    margin-left: auto;
+}
+
+.button-form button {
+    padding: 0.3rem 0.5rem;
+    font-size: 1rem;
+}
+
 .current-form,
 .new-password-form,
 .new-password-check {
@@ -174,4 +208,140 @@
     color: #d9232d;
     display: none;
     font-size: 0.9rem;
+}
+
+@media screen and (max-width:1024px) {
+
+    .main-title {
+        font-size: 1.8rem;
+    }
+
+    .form-title {
+        font-size: 0.9rem;
+        align-content: center;
+    }
+
+    .change-password {
+        font-size: 0.7rem;
+    }
+
+    .profile-update-form a {
+        font-size: 0.9rem;
+    }
+
+    .button-form button {
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 425px) {
+
+    .main-title {
+        font-size: 1.5rem;
+    }
+
+    .profile-image-buttons p {
+        font-size: 0.9rem;
+    }
+
+    #profile-image {
+        font-size: 0.9rem;
+    }
+
+    .btn-update-profileImage,
+    .btn-deleteImage {
+        font-size: 0.8rem;
+    }
+
+    .profile-image-form img {
+        width: 8rem;
+        height: 8rem;
+    }
+
+    .profile-update-form {
+        max-width: 18rem;
+    }
+
+    .form-title {
+        font-size: 0.8rem;
+    }
+
+    .profile-update-form input {
+        font-size: 0.7rem;
+    }
+
+    .profile-update-form a {
+        font-size: 0.8rem;
+    }
+
+    .button-form button {
+        font-size: 0.8rem;
+    }
+
+    .modal-title {
+        font-size: 1.2rem;
+    }
+
+    .reset-password-modal {
+        margin: 1rem 0 !important;
+    }
+
+    .current-form label, .new-password-form label:first-child, .new-password-check label {
+        flex: 0 0 110px;
+        min-width: 5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-reset-password {
+        font-size: 0.9rem;
+    }
+
+    .delete-info {
+        font-size: 0.9rem;
+    }
+
+    .delete-input {
+        font-size: 0.9rem;
+    }
+
+    .delete-error {
+        font-size: 0.8rem;
+    }
+
+    .btn-delete-account {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width:375px) {
+
+    .modal-title {
+        font-size: 1rem;
+    }
+
+    .reset-password-modal {
+        padding: 0.5rem;
+    }
+
+    .current-form label, .new-password-form label:first-child, .new-password-check label {
+        font-size: 0.8rem;
+    }
+
+    .new-password-info {
+        font-size: 0.6rem;
+    }
+
+    .btn-reset-password {
+        font-size: 0.8rem;
+    }
+
+    .delete-info,
+    .delete-input {
+        padding: 0.2rem 0.3rem;
+        font-size: 0.8rem;
+    }
+
+    .delete-error {
+        font-size: 0.7rem;
+    }
 }

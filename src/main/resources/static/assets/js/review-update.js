@@ -1,21 +1,16 @@
 /******************** kakao maps api **********************/
-// 지도 띄우기
 var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
 var container = document.getElementById('map');
 
-var options = { // 지도의 중심 좌표
+var options = {
     center: new kakao.maps.LatLng(37.50185785121449, 126.78766910206697),
     level: 3
 };
 
-// 지도 생성
 var map = new kakao.maps.Map(container, options);
-
-// 장소 검색 객체 생성
 var ps = new kakao.maps.services.Places(map);
 
-// 키워드 주소 검색 함수
 function searchCon() {
     let keyword = $('.location-input').find('input').val();
     ps.keywordSearch(keyword, placesSearchCB, {
@@ -23,7 +18,6 @@ function searchCon() {
     });
 }
 
-// 키워드 검색 완료 시 호출되는 콜백 함수
 function placesSearchCB (data, status) {
     if (status === kakao.maps.services.Status.OK) {
 
@@ -37,7 +31,6 @@ function placesSearchCB (data, status) {
     }
 }
 
-// 지도에 마커 표시하는 함수
 function displayMarker(place) {
 
     var marker = new kakao.maps.Marker({
@@ -75,11 +68,10 @@ let fileChanged = false;
 let representImageId = 0;
 let deleteAllImageList = false;
 
-let selectedRating = {}; // 별점 그룹별로 선택된 값 저장
+let selectedRating = {};
 
 /******************** 함수 **********************/
 
-// 별점 고정
 function fnSetRating(event) {
 
     let starsGroup = $(event.currentTarget).closest('.stars');
@@ -91,7 +83,6 @@ function fnSetRating(event) {
     fnUpdateStars(starsGroup, index, isHalf);
 }
 
-// 별점 업데이트
 function fnUpdateStars(starsGroup, score, isHalf) {
 
     starsGroup.find('i').each(function () {
@@ -112,19 +103,16 @@ function fnUpdateStars(starsGroup, score, isHalf) {
 }
 
 
-// 이미지 사이즈 제한
 const fnIsOverSize = (file) => {
     const maxSize = 1024 * 1024 * 5;
     return file.size < maxSize;
 }
 
-// 이미지 파일 확장자 확인
 const fnIsImage = (file) => {
     const contentType = file.type;
     return contentType.startsWith('image');
 }
 
-// 이미지 미리보기
 const fnPreview = (fileInput) => {
     let files = Array.from(fileInput[0].files);
 
@@ -140,7 +128,6 @@ const fnPreview = (fileInput) => {
     });
 }
 
-// 이미지 체크
 const fnCheckProfileImage = (fileInput) => {
 
     let files = Array.from(fileInput[0].files);
@@ -162,7 +149,6 @@ const fnCheckProfileImage = (fileInput) => {
     });
 }
 
-// 이미지 개수 제한
 const fnCheckImagecount = (evt) => {
 
     let fileInput = $(evt.currentTarget);
@@ -175,7 +161,6 @@ const fnCheckImagecount = (evt) => {
     fnCheckProfileImage(fileInput);
 }
 
-// 대표 이미지 지정
 const fnSelectRepresentImage = (evt) => {
 
     let imageDiv = $(evt.currentTarget).closest('.image');
@@ -188,7 +173,6 @@ const fnSelectRepresentImage = (evt) => {
     fnRepresentIndex();
 }
 
-// 대표 이미지 인덱스 지정
 const fnRepresentIndex = () => {
 
     let imageDivs = $('.image');
@@ -207,7 +191,6 @@ const fnRepresentIndex = () => {
     $('#represent-index').val(representIndex);
 }
 
-// 맛, 가격 별점 소수로 변환
 const fnCalculateRating = (list) => {
 
     let rating = 0;
@@ -223,7 +206,6 @@ const fnCalculateRating = (list) => {
     return rating;
 }
 
-// 저장 버튼 활성화 여부
 const fnActivateUpdateBtn = () => {
 
     let currentForm = $('#update-form').serializeArray();
@@ -235,12 +217,9 @@ const fnActivateUpdateBtn = () => {
     let currentPriceRating = fnCalculateRating($('#price-rating i'));
     let ratingChange = initRatingTaste !== currentTasteRating || initRatingPrice !== currentPriceRating;
 
-    // let isChangeImage = initImage !== $('.image-preview div').length;
-
     $('.btn-update').prop('disabled', !(formChange || ratingChange));
 }
 
-// 빈값 검사
 const fnCheckEmpty = () => {
 
     let contentArea = $('.content-area');
@@ -254,7 +233,6 @@ const fnCheckEmpty = () => {
     return true;
 }
 
-// 저장 버튼 클릭 시 최종 점검
 const fnFinalCheck = () => {
 
     if(!fnCheckEmpty()) {
@@ -265,7 +243,6 @@ const fnFinalCheck = () => {
     fnUpdateReview();
 }
 
-// 이미지 초기화
 const fnDeleteAllImage = () => {
     $('#review-image').val('');
     $('.image-preview').empty();
@@ -278,12 +255,10 @@ const fnDeleteAllImage = () => {
     fnActivateUpdateBtn();
 }
 
-// csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
-// 서버로 작성할 폼 데이터 전송
 const fnUpdateReview = () => {
 
     let form = $('#update-form')[0];

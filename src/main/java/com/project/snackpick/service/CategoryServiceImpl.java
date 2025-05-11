@@ -18,6 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     // 카테고리 목록 조회
     @Override
     public List<CategoryDTO> getAllCategoryList() {
+
         List<CategoryDTO> categoryList = categoryRepository.findAllCategoryList().stream()
                 .map(CategoryDTO::new)
                 .toList();

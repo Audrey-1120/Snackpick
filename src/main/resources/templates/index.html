@@ -12,9 +12,105 @@
     <header th:replace="~{layout/header::header}"></header>
 
     <!-- 메인 부분 -->
-    <main class="main text-center">
-      <div class="main-section">
-        <p class="main-title">한눈에 보는 리뷰들</p>
+    <main class="main">
+      <div class="main-section" data-aos="fade-up" data-aos-delay="100">
+        <p class="main-title">궁금한 편의점 신상 리뷰들을 한눈에!</p>
+        <p class="main-title2">리뷰 pick!
+          <span class="snack">Snack </span>
+          <span class="pick">pick!</span>
+        </p>
+      </div>
+
+      <section id="about1" class="about section">
+        <div class="container">
+          <div class="row gy-4 align-items-center">
+            <div class="col-lg-7 item-section" data-aos="fade-up" data-aos-delay="100">
+              <div class="section-title">
+                <h2>first</h2>
+                <p>궁금한 제품의 리뷰를 찾아보세요!<br></p>
+              </div>
+              <ul>
+                <li><i class="bi bi-check2-circle"></i> <span class="description">제품 별 별점 평균과 리뷰 목록을 확인해보세요!</span></li>
+                <li><i class="bi bi-check2-circle"></i> <span class="description">맛 별점, 가격 별점으로 각 리뷰를 빠르게 확인할 수 있어요!</span></li>
+              </ul>
+            </div>
+            <div class="col-lg-5 about-image-section" data-aos="fade-up" data-aos-delay="100">
+              <div id="aboutCarousel1" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="/assets/img/product-search.png" alt="about-image">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="/assets/img/review-list.jpg" alt="about-image">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about2" class="about section">
+        <div class="container">
+          <div class="row gy-4 align-items-center">
+            <div class="col-lg-7 item-section" data-aos="fade-up" data-aos-delay="100">
+              <div class="section-title">
+                <h2>second</h2>
+                <p>구매한 제품을 선택해 리뷰를 남겨보세요!<br></p>
+              </div>
+              <ul>
+                <li><i class="bi bi-check2-circle"></i> <span class="description">기존 제품을 선택해도 되고, 새 제품을 추가할 수도 있어요!</span></li>
+                <li><i class="bi bi-check2-circle"></i> <span class="description">맛 별점, 가격 별점을 매길 수 있어요!</span></li>
+                <li><i class="bi bi-check2-circle"></i> <span class="description">구매한 편의점 위치를 검색해서 지정할 수 있어요!</span></li>
+              </ul>
+            </div>
+            <div class="col-lg-5 about-image-section" data-aos="fade-up" data-aos-delay="100">
+              <div id="aboutCarousel2" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="/assets/img/review-write1.png" alt="about-image">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="/assets/img/review-write2.webp" alt="about-image">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about3" class="about section">
+        <div class="container">
+          <div class="row gy-4 align-items-center">
+            <div class="col-lg-7 item-section" data-aos="fade-up" data-aos-delay="100">
+              <div class="section-title">
+                <h2>third</h2>
+                <p>댓글로 자유롭게 질문해보세요!<br></p>
+              </div>
+              <ul>
+                <li><i class="bi bi-check2-circle"></i> <span class="description">리뷰를 클릭해서 리뷰 상세내용을 확인할 수 있어요!</span></li>
+                <li><i class="bi bi-check2-circle"></i> <span class="description">댓글을 통해 궁금한 것들을 물어볼 수 있어요!</span></li>
+              </ul>
+            </div>
+            <div class="col-lg-5 about-image-section" data-aos="fade-up" data-aos-delay="100">
+              <div id="aboutCarousel3" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="/assets/img/review-detail1.webp" alt="about-image">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="/assets/img/review-detail2.webp" alt="about-image">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="btn-section">
+        <a class="btn-product-page" href="/product/product.page">리뷰 구경하러 가기</a>
       </div>
     </main>
 

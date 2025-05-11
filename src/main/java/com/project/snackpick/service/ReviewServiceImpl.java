@@ -72,7 +72,6 @@ public class ReviewServiceImpl implements ReviewService {
         Pageable pageable = PageRequest.of(pageNumber, initPageable.getPageSize(), sort);
 
         Page<ReviewEntity> reviewIdList = reviewRepository.findByReviewListByProductId(productId, pageable);
-
         List<ReviewDTO> reviewDTOList = reviewRepository.findReviewListWithImage(reviewIdList.getContent())
                 .stream()
                 .map(ReviewDTO::new)

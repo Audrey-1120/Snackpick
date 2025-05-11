@@ -2,7 +2,7 @@
 let initComment = '';
 
 /******************** 함수 **********************/
-// 리뷰 댓글 데이터 화면에 표시
+
 const fnShowCommentList = (commentList) => {
 
     let loginId = $('.login-id').val();
@@ -85,19 +85,16 @@ const fnShowCommentList = (commentList) => {
     commentContainer.empty();
     commentContainer.html(str);
 
-    // 버튼 및 input placeholder 초기화
     fnChangeCommentBtn('insert');
     commentInput.val('');
     commentInput.attr('placeholder', '댓글을 입력해주세요');
 
 }
 
-
-// 날짜 포맷
 const fnFormatDate = (datetime) => {
     const date = new Date(datetime);
     const now = new Date();
-    const diffMs = now - date; // 시간 차이 (밀리초 단위)
+    const diffMs = now - date;
     const diffMin = Math.floor(diffMs / 60000);
 
     if(diffMin < 1) {
@@ -112,7 +109,6 @@ const fnFormatDate = (datetime) => {
         return '1시간 전';
     }
 
-    // 1시간 이상 경과되었을 경우..
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
@@ -122,7 +118,6 @@ const fnFormatDate = (datetime) => {
     return yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + mi;
 }
 
-// 대댓글 선택
 const fnSelectReply = (commentItem, isSelected) => {
 
     let commentInput = $('.comment-input input');
@@ -146,12 +141,10 @@ const fnSelectReply = (commentItem, isSelected) => {
     }
 }
 
-// csrf 토큰 가져오기
 const fnGetCsrfToken = () => {
     return $('meta[name="csrf-token"]').attr('content');
 }
 
-// 작성 댓글 표시
 const fnShowComment = (comment) => {
 
     let commentArea = $('.content-3');
@@ -234,14 +227,12 @@ const fnShowComment = (comment) => {
     }
 
     $('.no-comment').remove();
-
     $('.selected-comment').removeClass('selected-comment');
     commentInput.val('');
     commentInput.attr('placeholder', '댓글을 입력해주세요');
 
 }
 
-// 댓글 작성
 const fnWriteComment = (selectedComment) => {
 
     const isReply = selectedComment.length !== 0;
@@ -258,7 +249,7 @@ const fnWriteComment = (selectedComment) => {
         reviewId,
         content,
         depth: isReply ? 1 : 0,
-        groupId: isReply ? selectedComment.data('commentId') : undefined,
+        groupId: isReply ? selectedComment.data('groupId') : undefined,
         state: false
     }
 
@@ -279,7 +270,6 @@ const fnWriteComment = (selectedComment) => {
     });
 }
 
-// 댓글 수정 입력 표시
 const fnSetUpdateComment = (selectedComment) => {
 
     let commentId = selectedComment.closest('.comment-modal').data('commentId');
@@ -296,7 +286,6 @@ const fnSetUpdateComment = (selectedComment) => {
     $('.update-comment-id').val(commentId);
 }
 
-// 댓글 버튼 타입 변경
 const fnChangeCommentBtn = (type) => {
     if(type === 'insert') {
         $('.btn-comment').css('display', '');
@@ -307,7 +296,6 @@ const fnChangeCommentBtn = (type) => {
     }
 }
 
-// 수정한 댓글 표시
 const fnShowUpdateComment = (comment) => {
 
     let commentId = comment.commentId;
@@ -321,7 +309,6 @@ const fnShowUpdateComment = (comment) => {
     fnChangeCommentBtn('insert');
 }
 
-// 댓글 수정
 const fnUpdateComment = () => {
 
     let content = $('.comment-input input');
@@ -365,7 +352,6 @@ const fnUpdateComment = () => {
     });
 }
 
-// 삭제한 댓글 처리
 const fnHandleDeleteComment = (comment) => {
 
     let isReply = comment.hasClass('reply');
@@ -399,7 +385,6 @@ const fnHandleDeleteComment = (comment) => {
     }
 }
 
-// 댓글 삭제
 const fnDeleteComment = (evt) => {
 
     let commentId = evt.closest('.comment-modal').data('commentId');
@@ -426,7 +411,6 @@ const fnDeleteComment = (evt) => {
     });
 }
 
-// 삭제된 원글 처리
 const insertDeleteParentComment = () => {
 
     let allCommentList = $('.comment-modal');
@@ -467,40 +451,34 @@ const insertDeleteParentComment = () => {
 }
 
 /******************** 이벤트 **********************/
-// 대댓글 달 원글 선택
 $(document).on('click', '.btn-reply', (evt) => {
     evt.stopPropagation();
     fnSelectReply($(evt.currentTarget), true);
 });
 
-// 취소 버튼 클릭 시 일반 댓글 창 표시
 $('.btn-comment-undo').on('click', (evt) => {
     evt.stopPropagation();
     fnSelectReply($(evt.currentTarget), false);
-})
+});
 
-// 댓글 작성
 $('.btn-comment').on('click', () => {
     fnWriteComment($('.selected-comment'));
 });
 
-// 댓글 수정 input 표시
 $(document).on('click', '.icon-comment-update', (evt) => {
     evt.stopPropagation();
     fnSetUpdateComment($(evt.currentTarget));
 });
 
-// 댓글 수정
 $('.btn-comment-update').on('click', () => {
     fnUpdateComment();
 });
 
-// 댓글 삭제
 $(document).on('click', '.icon-comment-delete', (evt) => {
     evt.stopPropagation();
     if(confirm("댓글을 삭제하시겠습니까?")) {
         fnDeleteComment($(evt.currentTarget));
     }
-})
+});
 
 export { fnShowCommentList, fnShowComment, insertDeleteParentComment };

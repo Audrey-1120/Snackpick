@@ -1,5 +1,4 @@
 /******************** 함수 **********************/
-// 검색 버튼
 const fnSearch = () => {
 
     let searchKeyword = $('.main-searchform > input').val();
@@ -17,7 +16,6 @@ const fnSearch = () => {
     })
 }
 
-// 검색 결과 표시
 const fnShowSearchResult = (productList) => {
 
     let resultSection = $('.result-section');
@@ -56,4 +54,4 @@ $('.btn-search').on('click', () => {
 
 $(document).on('click', '.none-item', () => {
     location.href='/review/reviewWrite.page'
-})
+});
