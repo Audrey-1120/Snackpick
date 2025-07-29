@@ -224,3 +224,11 @@
 ![Image](https://github.com/user-attachments/assets/31c97683-37b5-43f5-8e11-9d67c5d5a869)
 - 정해진 문구를 입력하면 회원탈퇴가 진행됩니다.
 
+<br>
+# ☑️프로젝트 문서  
+
+### 요구사항 정의서
+[요구사항정의서_스낵픽.xlsx](https://github.com/user-attachments/files/21485615/_.xlsx)  
+
+### 테이블 정의서  
+[테이블 정의서_스낵픽.xlsx](https://github.com/user-attachments/files/21485618/_.xlsx)
